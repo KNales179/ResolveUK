@@ -1,7 +1,7 @@
 .app {
   max-width: 480px;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 1.5rem 1rem 3rem;
 }
 
 .app-header h1 {
@@ -11,4 +11,189 @@
 
 .app-header p {
   color: #555;
+  margin-top: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab {
+  flex: 1;
+  padding: 0.6rem 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 1rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: #1a7a4a;
+  border-bottom-color: #1a7a4a;
+  font-weight: 600;
+}
+
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.field select,
+.field textarea,
+.field input[type='file'] {
+  font: inherit;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.photo-preview {
+  margin-top: 0.5rem;
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.location-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.map-wrapper {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.secondary-button {
+  align-self: flex-start;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #1a7a4a;
+  border-radius: 6px;
+  background: #fff;
+  color: #1a7a4a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.secondary-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.primary-button {
+  padding: 0.7rem;
+  border: none;
+  border-radius: 6px;
+  background: #1a7a4a;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.field-hint {
+  font-size: 0.85rem;
+  color: #777;
+  margin: 0;
+}
+
+.field-error {
+  font-size: 0.9rem;
+  color: #b3261e;
+  margin: 0;
+}
+
+.field-success {
+  font-size: 0.9rem;
+  color: #1a7a4a;
+  margin: 0;
+}
+
+.report-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.report-card {
+  display: flex;
+  gap: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.report-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.report-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.report-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.report-category {
+  font-weight: 600;
+  color: #1a7a4a;
+}
+
+.report-status {
+  background: #eef6f0;
+  color: #1a7a4a;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.report-description {
+  margin: 0.35rem 0;
+  color: #333;
+  word-wrap: break-word;
+}
+
+.report-date {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #888;
 }
