@@ -15,8 +15,9 @@ const defaultIcon = L.icon({
   iconAnchor: [12, 41],
 })
 
-const UK_CENTER: [number, number] = [54.5, -3]
-const DEFAULT_ZOOM = 6
+// Neutral world view shown only when geolocation isn't available/granted yet.
+const WORLD_CENTER: [number, number] = [20, 0]
+const DEFAULT_ZOOM = 2
 const PIN_ZOOM = 15
 
 interface LocationPickerProps {
@@ -65,7 +66,7 @@ export function LocationPicker({ position, onChange }: LocationPickerProps) {
       {geoError && <p className="field-error">{geoError}</p>}
       <div className="map-wrapper">
         <MapContainer
-          center={position ? [position.lat, position.lng] : UK_CENTER}
+          center={position ? [position.lat, position.lng] : WORLD_CENTER}
           zoom={position ? PIN_ZOOM : DEFAULT_ZOOM}
           style={{ height: '260px', width: '100%', borderRadius: '8px' }}
         >

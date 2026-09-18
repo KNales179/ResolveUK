@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Resolve UK</h1>
+        <img src="/logo.png" alt="Resolve UK" className="logo" />
         <p>Report environmental issues in your area.</p>
       </header>
 
