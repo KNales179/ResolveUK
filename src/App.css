@@ -1,173 +1,305 @@
 .app {
   max-width: 480px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 1.75rem 1rem 3rem;
 }
 
-main {
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 10px;
-  padding: 1.25rem;
+/* ---- Header ---- */
+.app-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
 }
 
 .app-header .logo {
-  height: 56px;
+  height: 52px;
   width: auto;
+  align-self: flex-start;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
 
 .app-header p {
-  color: #555;
-  margin-top: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin: 0;
 }
 
+/* ---- Tabs (segmented control) ---- */
 .tabs {
   display: flex;
-  gap: 0.5rem;
-  margin: 1.5rem 0;
-  border-bottom: 1px solid #ddd;
+  gap: 4px;
+  background: var(--surface-alt);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 1.5rem;
 }
 
 .tab {
   flex: 1;
-  padding: 0.6rem 0;
-  background: none;
+  padding: 0.55rem 0;
+  background: transparent;
   border: none;
-  border-bottom: 2px solid transparent;
-  font-size: 1rem;
-  color: #555;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text-muted);
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .tab.active {
-  color: #155b34;
-  border-bottom-color: #155b34;
+  background: var(--surface);
+  color: var(--accent);
   font-weight: 600;
+  box-shadow: var(--shadow-sm);
 }
 
+/* ---- Main card ---- */
+main {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.4rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- Form layout ---- */
 .report-form {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.35rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.95rem;
-  color: #333;
+  gap: 0.45rem;
 }
 
+.field label,
+.field-label-text {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+/* ---- Shared control styling ---- */
 .field select,
-.field textarea,
-.field input[type='file'] {
+.field textarea {
+  width: 100%;
   font: inherit;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .field textarea {
   resize: vertical;
+  min-height: 4.5rem;
+}
+
+.field textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.85;
+}
+
+/* ---- Custom select (the "drop box") ---- */
+.select-wrap {
+  position: relative;
+}
+
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.5rem;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1.5L7 7.5L13 1.5' stroke='%235f6b64' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  background-size: 14px 9px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1.5L7 7.5L13 1.5' stroke='%239ca6a0' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
+
+/* ---- File control ---- */
+.file-input-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.file-input-hidden:focus-visible + .file-row .secondary-button {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
 .photo-preview {
-  margin-top: 0.5rem;
+  margin-top: 0.35rem;
   max-width: 100%;
   max-height: 200px;
-  border-radius: 8px;
+  border-radius: 10px;
   object-fit: cover;
+  border: 1px solid var(--border);
 }
 
+/* ---- Location picker ---- */
 .location-picker {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .map-wrapper {
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
+/* ---- Buttons ---- */
 .secondary-button {
   align-self: flex-start;
-  padding: 0.4rem 0.8rem;
-  border: 1px solid #155b34;
-  border-radius: 6px;
-  background: #fff;
-  color: #155b34;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--accent);
   font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.secondary-button:hover {
+  background: var(--accent-soft);
+}
+
+.secondary-button:active {
+  transform: scale(0.98);
 }
 
 .secondary-button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: default;
+  transform: none;
 }
 
 .primary-button {
-  padding: 0.7rem;
+  padding: 0.75rem;
   border: none;
-  border-radius: 6px;
-  background: #155b34;
-  color: #fff;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-on);
   font: inherit;
+  font-size: 0.98rem;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.primary-button:active:not(:disabled) {
+  transform: scale(0.99);
 }
 
 .primary-button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: default;
 }
 
+/* ---- Status text ---- */
 .field-hint {
   font-size: 0.85rem;
-  color: #777;
+  color: var(--text-muted);
   margin: 0;
 }
 
 .field-error {
-  font-size: 0.9rem;
-  color: #b3261e;
+  font-size: 0.88rem;
+  color: var(--danger);
   margin: 0;
 }
 
 .field-success {
-  font-size: 0.9rem;
-  color: #155b34;
+  font-size: 0.88rem;
+  color: var(--accent);
   margin: 0;
 }
 
+/* ---- Report list ---- */
 .report-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .report-card {
   display: flex;
-  gap: 0.75rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 0.75rem;
+  gap: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem;
+  background: var(--surface);
+  transition: box-shadow 0.15s ease;
+}
+
+.report-card:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .report-thumb {
   width: 72px;
   height: 72px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 8px;
   flex-shrink: 0;
+  border: 1px solid var(--border);
 }
 
 .report-details {
@@ -184,25 +316,29 @@ main {
 
 .report-category {
   font-weight: 600;
-  color: #155b34;
+  color: var(--accent);
 }
 
 .report-status {
-  background: #eef6f0;
-  color: #155b34;
-  padding: 0.1rem 0.5rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .report-description {
-  margin: 0.35rem 0;
-  color: #333;
+  margin: 0.4rem 0;
+  color: var(--text);
   word-wrap: break-word;
+  font-size: 0.92rem;
 }
 
 .report-date {
   margin: 0;
   font-size: 0.75rem;
-  color: #888;
+  color: var(--text-muted);
 }

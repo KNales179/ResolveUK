@@ -92,42 +92,57 @@ export function ReportForm({ onSubmitted }: ReportFormProps) {
 
   return (
     <form className="report-form" onSubmit={handleSubmit}>
-      <label className="field">
-        <span>Category</span>
-        <select value={category} onChange={(e) => setCategory(e.target.value as ReportCategory)}>
-          {CATEGORIES.map((c) => (
-            <option key={c.value} value={c.value}>
-              {c.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="field">
+        <label htmlFor="category-field">Category</label>
+        <div className="select-wrap">
+          <select
+            id="category-field"
+            value={category}
+            onChange={(e) => setCategory(e.target.value as ReportCategory)}
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
-      <label className="field">
-        <span>Description</span>
+      <div className="field">
+        <label htmlFor="description-field">Description</label>
         <textarea
+          id="description-field"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Briefly describe what you're reporting"
           rows={3}
         />
-      </label>
+      </div>
 
-      <label className="field">
-        <span>Photo</span>
+      <div className="field">
+        <label htmlFor="photo-field">Photo</label>
         <input
+          id="photo-field"
+          className="file-input-hidden"
           type="file"
           accept="image/*"
           capture="environment"
           onChange={(e) => handlePhotoChange(e.target.files?.[0] ?? null)}
         />
+        <div className="file-row">
+          <label htmlFor="photo-field" className="secondary-button">
+            Choose photo
+          </label>
+          <span className="file-name">{photo ? photo.name : 'No file selected'}</span>
+        </div>
         {photoPreview && <img className="photo-preview" src={photoPreview} alt="Selected report" />}
-      </label>
+      </div>
 
-      <label className="field">
-        <span>Location</span>
+      <div className="field">
+        <span className="field-label-text">Location</span>
         <LocationPicker position={position} onChange={setPosition} />
-      </label>
+      </div>
 
       {error && <p className="field-error">{error}</p>}
       {success && <p className="field-success">Report submitted. Thank you.</p>}
