@@ -1,32 +1,44 @@
-# React + TypeScript + Vite
+# Resolve UK
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A citizen environmental-reporting platform for the UK. Citizens report issues
+like fly-tipping and potholes in seconds — a photo, a short description, and
+a location — and can track the status of what they've reported.
 
-Currently, two official plugins are available:
+This is an early-stage prototype covering the core reporting loop only:
+submit a report, see it listed with its status. AI categorisation, routing
+to real local authorities, resolution verification, and public benchmarking
+dashboards are planned but not yet built.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Status
 
-## React Compiler
+**Phase 1 of 5 — complete.** See the weekly development reports for detail
+on what's shipped and what's next.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the Oxlint configuration
+- **Frontend:** React + TypeScript, built with Vite
+- **PWA shell:** `vite-plugin-pwa` (installable, with a service worker and manifest)
+- **Backend:** Supabase (hosted Postgres database, file storage, and API — no custom server)
+- **Location picker:** Leaflet + OpenStreetMap
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Running locally
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+1. Install dependencies:
+   ```
+   npm install
+   ```
+2. Create a Supabase project (see `.env.example` for the two values you need), then create `.env` in the project root:
+   ```
+   VITE_SUPABASE_URL=your-project-url
+   VITE_SUPABASE_ANON_KEY=your-publishable-key
+   ```
+3. Start the dev server:
+   ```
+   npm run dev
+   ```
+4. Open the printed local URL in your browser.
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## License
+
+See [LICENSE](./LICENSE). All rights reserved — this repository is provided
+for viewing purposes only.
