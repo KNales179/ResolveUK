@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-GB" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report a problem · Resolve UK</title>
+<meta name="description" content="Report a local problem with a photo and a location.">
+<script>document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; document.documentElement.classList.add('js')</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-svh antialiased">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol><symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol><symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.2 5 5.3"/></symbol><symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol><symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></symbol><symbol id="i-road" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20 8 4M21 20 16 4M12 5v3M12 11v3M12 17v3"/></symbol><symbol id="i-spray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="8" height="11" rx="1.5"/><path d="M10 10V7h4v3M11 4h2M18 6h2M18 9l2-1"/></symbol><symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v-4l2-5h14l2 5v4M3 15h18M3 15v3h3v-3M18 15v3h3v-3"/><circle cx="7.5" cy="12.5" r=".8"/><circle cx="16.5" cy="12.5" r=".8"/></symbol><symbol id="i-lamp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V8M12 8c0-3 5-4 7-2M9 21h6"/><path d="M17 5.5l4 1.5-1.5 3z"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></symbol><symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol><symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4"/></symbol><symbol id="i-crosshair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></symbol><symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol><symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12M9 21v-6h6v6M8 12h.01M12 12h.01M16 12h.01"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol><symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></symbol><symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol><symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></symbol><symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></symbol></svg><header class="fixed inset-x-0 top-0 z-40">
+<div class="mx-auto mt-3 max-w-7xl px-3 sm:px-6">
+<nav class="glass flex items-center justify-between rounded-full py-2 pl-4 pr-2" aria-label="Main">
+<a href="index.html" class="flex items-center gap-2.5 text-[1.05rem] font-extrabold tracking-tight"><span class="grid size-9 place-items-center rounded-xl dark:bg-white/95"><img src="img/logo-mark.png" width="28" height="32" alt="" class="h-7 w-auto"></span><span>Resolve UK</span></a>
+<div class="hidden items-center gap-1 text-sm font-semibold md:flex">
+<a href="index.html" class="rounded-full px-3.5 py-2 transition text-soft hover:text-ink">Home</a><a href="index.html#how" class="rounded-full px-3.5 py-2 transition text-soft hover:text-ink">How it works</a><a href="reports.html" class="rounded-full px-3.5 py-2 transition text-soft hover:text-ink">Reported problems</a><a href="report.html" class="rounded-full px-3.5 py-2 transition bg-surface2 text-ink">Report</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="icon-btn" data-theme-toggle aria-label="Switch between light and dark mode" type="button"><span class="dark:hidden"><svg class="size-5" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="hidden dark:block"><svg class="size-5" aria-hidden="true"><use href="#i-sun"/></svg></span></button>
+<a class="btn btn-primary btn-sm hidden sm:inline-flex" href="report.html">Report a problem <svg class="size-4" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+<button class="icon-btn md:hidden" data-menu-btn aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" type="button"><svg class="size-5" aria-hidden="true"><use href="#i-menu"/></svg></button>
+</div>
+</nav>
+<div id="mobile-menu" hidden class="glass mt-2 rounded-3xl p-3 md:hidden">
+<div class="grid gap-1 text-base font-semibold">
+<a class="rounded-2xl px-4 py-3 hover:bg-surface2" href="index.html">Home</a>
+<a class="rounded-2xl px-4 py-3 hover:bg-surface2" href="index.html#how">How it works</a>
+<a class="rounded-2xl px-4 py-3 hover:bg-surface2" href="reports.html">Reported problems</a>
+<a class="btn btn-primary mt-1" href="report.html">Report a problem</a>
+</div></div>
+</div>
+</header><div class="page-bg fixed inset-0 -z-20"></div>
+<div class="fixed inset-0 -z-10" style="background:linear-gradient(0deg,var(--c-bg) 8%,color-mix(in oklab,var(--c-bg) 88%,transparent))"></div>
+<main class="mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8">
+<div class="rise max-w-2xl">
+<p class="text-sm font-bold uppercase tracking-widest text-accent">Report a problem</p>
+<h1 class="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">Tell us what you have seen.</h1>
+<p class="mt-4 text-lg text-soft">It takes about a minute. Reports are public, so please do not include names or personal details.</p>
+</div>
+
+<div class="mt-10 grid items-start gap-6 lg:grid-cols-[1.2fr_.8fr]">
+<form class="space-y-5" onsubmit="return false" novalidate>
+
+<section class="card rounded-3xl p-6 sm:p-7">
+<h2 class="flex items-center gap-3 text-lg font-bold"><span class="grid size-8 place-items-center rounded-full bg-accent text-sm font-extrabold text-accent-ink">1</span>What is the problem?</h2>
+<div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3" role="radiogroup" aria-label="Type of problem">
+<label class="tile"><input type="radio" name="type" value="Fly-tipping" checked><span class="tile-icon"><svg class="size-5" aria-hidden="true"><use href="#i-trash"/></svg></span><span class="font-bold leading-tight">Fly-tipping</span><span class="text-xs text-soft">Dumped rubbish</span></label><label class="tile"><input type="radio" name="type" value="Pothole" ><span class="tile-icon"><svg class="size-5" aria-hidden="true"><use href="#i-road"/></svg></span><span class="font-bold leading-tight">Pothole</span><span class="text-xs text-soft">Damaged road</span></label><label class="tile"><input type="radio" name="type" value="Graffiti" ><span class="tile-icon"><svg class="size-5" aria-hidden="true"><use href="#i-spray"/></svg></span><span class="font-bold leading-tight">Graffiti</span><span class="text-xs text-soft">Vandalism</span></label><label class="tile"><input type="radio" name="type" value="Abandoned vehicle" ><span class="tile-icon"><svg class="size-5" aria-hidden="true"><use href="#i-car"/></svg></span><span class="font-bold leading-tight">Abandoned vehicle</span><span class="text-xs text-soft">Left to rot</span></label><label class="tile"><input type="radio" name="type" value="Damaged infrastructure" ><span class="tile-icon"><svg class="size-5" aria-hidden="true"><use href="#i-lamp"/></svg></span><span class="font-bold leading-tight">Damaged infrastructure</span><span class="text-xs text-soft">Lamps, barriers, bins</span></label><label class="tile"><input type="radio" name="type" value="Something else" ><span class="tile-icon"><svg class="size-5" aria-hidden="true"><use href="#i-more"/></svg></span><span class="font-bold leading-tight">Something else</span><span class="text-xs text-soft">Anything else</span></label>
+</div>
+</section>
+
+<section class="card rounded-3xl p-6 sm:p-7">
+<h2 class="flex items-center gap-3 text-lg font-bold"><span class="grid size-8 place-items-center rounded-full bg-accent text-sm font-extrabold text-accent-ink">2</span>Describe it</h2>
+<div class="mt-5">
+<label class="sr-only" for="desc">Description</label>
+<textarea id="desc" class="input" maxlength="1000" placeholder="For example: black bags piled against the wall, blocking the pavement." data-counter="desc-count"></textarea>
+<p class="mt-2 text-right text-xs text-soft"><span id="desc-count">0</span> / 1000</p>
+</div>
+</section>
+
+<section class="card rounded-3xl p-6 sm:p-7">
+<h2 class="flex items-center gap-3 text-lg font-bold"><span class="grid size-8 place-items-center rounded-full bg-accent text-sm font-extrabold text-accent-ink">3</span>Add a photo</h2>
+<label class="dropzone mt-5" data-dropzone>
+<input class="sr-only" type="file" accept="image/*" capture="environment">
+<span class="tile-icon size-12 rounded-2xl"><svg class="size-6" aria-hidden="true"><use href="#i-upload"/></svg></span>
+<span class="font-bold" data-dz-title>Drop a photo here, or browse</span>
+<span class="text-sm text-soft" data-dz-hint>Photos are shrunk before they are sent, so this stays fast on mobile data.</span>
+</label>
+</section>
+
+<section class="card rounded-3xl p-6 sm:p-7">
+<h2 class="flex items-center gap-3 text-lg font-bold"><span class="grid size-8 place-items-center rounded-full bg-accent text-sm font-extrabold text-accent-ink">4</span>Where is it?</h2>
+<div class="mt-5 flex flex-wrap gap-3">
+<button type="button" class="btn btn-ghost"><svg class="size-5 text-accent" aria-hidden="true"><use href="#i-crosshair"/></svg>Use my location</button>
+<button type="button" class="btn btn-ghost"><svg class="size-5 text-accent" aria-hidden="true"><use href="#i-pin"/></svg>Drop a pin on the map</button>
+</div>
+<p class="mt-3 text-sm text-soft">Your phone’s location is usually accurate to a few metres. You can adjust the pin afterwards.</p>
+</section>
+
+<section class="card rounded-3xl border-dashed p-6 sm:p-7" aria-label="Example of the same-problem check">
+<p class="text-xs font-bold uppercase tracking-widest text-soft">Shown only when something similar is nearby</p>
+<h2 class="mt-2 text-lg font-bold">Is this the same problem?</h2>
+<div class="mt-4 flex gap-4 rounded-2xl border border-line bg-surface2/60 p-3">
+<picture><source type="image/avif" srcset="img/litter-bottles-400.avif 400w" sizes="80px"><source type="image/webp" srcset="img/litter-bottles-400.webp 400w" sizes="80px"><img src="img/litter-bottles-400.webp" width="400" height="267" alt="Bottles and litter by the kerb" class="size-20 shrink-0 rounded-xl object-cover" loading="lazy" decoding="async"></picture>
+<div class="min-w-0"><p class="font-semibold">Bottles and litter by the kerb</p><p class="mt-0.5 text-xs text-soft">About 12 m away · Reported · Backed by 3 people</p><button type="button" class="btn btn-ghost btn-sm mt-2">Yes, add my support</button></div>
+</div>
+</section>
+</form>
+
+<aside class="space-y-5 lg:sticky lg:top-24">
+<section class="card overflow-hidden rounded-3xl" aria-label="Map">
+<div class="map-grid relative grid aspect-[4/3] place-items-center bg-surface2">
+<div class="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-sky-400/10"></div>
+<div class="relative text-center">
+<span class="relative mx-auto flex size-14 items-center justify-center"><span class="absolute inline-flex size-full rounded-full bg-accent/40" style="animation:pulse-ring 2s ease-out infinite"></span><span class="relative grid size-11 place-items-center rounded-full bg-accent text-accent-ink shadow-lg"><svg class="size-5" aria-hidden="true"><use href="#i-pin"/></svg></span></span>
+<p class="mt-3 font-bold">The map opens here</p>
+<p class="mt-0.5 text-sm text-soft">Tap it to drop a pin on the exact spot.</p>
+</div>
+<div class="absolute right-3 top-3 grid gap-2"><span class="icon-btn"><svg class="size-4" aria-hidden="true"><use href="#i-plus"/></svg></span><span class="icon-btn"><svg class="size-4" aria-hidden="true"><use href="#i-minus"/></svg></span></div>
+</div>
+</section>
+
+<section class="card rounded-3xl p-6">
+<h2 class="text-lg font-bold">Your report</h2>
+<dl class="mt-4 space-y-3 text-sm">
+<div class="flex justify-between gap-4"><dt class="text-soft">Type</dt><dd class="font-semibold" id="sum-type">Fly-tipping</dd></div>
+<div class="flex justify-between gap-4"><dt class="text-soft">Description</dt><dd class="font-semibold" id="sum-desc">Not written yet</dd></div>
+<div class="flex justify-between gap-4"><dt class="text-soft">Photo</dt><dd class="font-semibold" id="sum-photo">None yet</dd></div>
+<div class="flex justify-between gap-4"><dt class="text-soft">Location</dt><dd class="font-semibold">Not set</dd></div>
+</dl>
+<button type="button" class="btn btn-primary mt-6 w-full text-base">Send report <svg class="size-5" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+<p class="mt-3 text-center text-xs text-soft">You will see it appear in the list straight away.</p>
+</section>
+</aside>
+</div>
+</main><footer class="border-t border-line bg-surface/60">
+<div class="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
+<div>
+<a href="index.html" class="flex items-center gap-2.5 text-lg font-extrabold tracking-tight"><span class="grid size-9 place-items-center rounded-xl dark:bg-white/95"><img src="img/logo-mark.png" width="28" height="32" alt="" class="h-7 w-auto"></span><span>Resolve UK</span></a>
+<p class="mt-3 max-w-sm text-sm leading-relaxed text-soft">Report local problems, follow them to the end, and see whether they were really fixed. An early prototype, built step by step.</p>
+</div>
+<div class="text-sm">
+<p class="font-bold">Explore</p>
+<ul class="mt-3 space-y-2 text-soft"><li><a class="hover:text-ink" href="report.html">Report a problem</a></li><li><a class="hover:text-ink" href="reports.html">Reported problems</a></li><li><a class="hover:text-ink" href="index.html#how">How it works</a></li></ul>
+</div>
+<div class="text-sm">
+<p class="font-bold">For councils</p>
+<ul class="mt-3 space-y-2 text-soft"><li><a class="hover:text-ink" href="#">Staff sign-in</a></li></ul>
+<p class="mt-6 text-xs text-soft">Photo credits: being confirmed. Pictures on this sample page are placeholders until their licences are checked.</p>
+</div>
+</div>
+</footer>
+<script src="app.js" defer></script>
+</body>
+</html>

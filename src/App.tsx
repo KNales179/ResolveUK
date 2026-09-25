@@ -1,52 +1,31 @@
-import { useState } from 'react'
-import './App.css'
-import { ReportForm } from './components/ReportForm'
-import { ReportList } from './components/ReportList'
+import { lazy, Suspense } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import Home from './Home'
+import { SiteShell } from './components/site/SiteShell'
 
-type Tab = 'submit' | 'reports'
+// Each page loads only when it is visited, so the landing page does not download the map or the database code.
+const ReportPage = lazy(() => import('./pages/ReportPage').then((m) => ({ default: m.ReportPage })))
+const ReportsPage = lazy(() => import('./pages/ReportsPage').then((m) => ({ default: m.ReportsPage })))
+const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m.StaffApp })))
 
-function App() {
-  const [tab, setTab] = useState<Tab>('submit')
-  const [refreshKey, setRefreshKey] = useState(0)
+const Blank = <div className="min-h-svh" aria-busy="true" />
 
+export default function App() {
   return (
-    <div className="app">
-      <header className="app-header">
-        <img src="/logo.png" alt="Resolve UK" className="logo" />
-        <p>Report environmental issues in your area.</p>
-      </header>
-
-      <nav className="tabs">
-        <button
-          type="button"
-          className={tab === 'submit' ? 'tab active' : 'tab'}
-          onClick={() => setTab('submit')}
-        >
-          Submit
-        </button>
-        <button
-          type="button"
-          className={tab === 'reports' ? 'tab active' : 'tab'}
-          onClick={() => setTab('reports')}
-        >
-          Reports
-        </button>
-      </nav>
-
-      <main>
-        {tab === 'submit' ? (
-          <ReportForm
-            onSubmitted={() => {
-              setRefreshKey((k) => k + 1)
-              setTab('reports')
-            }}
-          />
-        ) : (
-          <ReportList refreshKey={refreshKey} />
-        )}
-      </main>
-    </div>
+    <BrowserRouter>
+      <Suspense fallback={Blank}>
+        <Routes>
+          <Route element={<SiteShell />}>
+            <Route index element={<Home />} />
+            <Route path="report" element={<ReportPage />} />
+            <Route path="reports" element={<ReportsPage />}>
+              <Route path=":id" element={null} />
+            </Route>
+          </Route>
+          <Route path="/staff/*" element={<StaffApp />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
   )
 }
-
-export default App

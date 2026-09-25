@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en-GB" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reported problems · Resolve UK</title>
+<meta name="description" content="Browse reported problems and follow them to the end.">
+<script>document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; document.documentElement.classList.add('js')</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-svh antialiased">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol><symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></symbol><symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c3 .2 5 2.2 5 5.3"/></symbol><symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol><symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></symbol><symbol id="i-road" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20 8 4M21 20 16 4M12 5v3M12 11v3M12 17v3"/></symbol><symbol id="i-spray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="10" width="8" height="11" rx="1.5"/><path d="M10 10V7h4v3M11 4h2M18 6h2M18 9l2-1"/></symbol><symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v-4l2-5h14l2 5v4M3 15h18M3 15v3h3v-3M18 15v3h3v-3"/><circle cx="7.5" cy="12.5" r=".8"/><circle cx="16.5" cy="12.5" r=".8"/></symbol><symbol id="i-lamp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V8M12 8c0-3 5-4 7-2M9 21h6"/><path d="M17 5.5l4 1.5-1.5 3z"/></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></symbol><symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol><symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></symbol><symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol><symbol id="i-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4"/></symbol><symbol id="i-crosshair" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></symbol><symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol><symbol id="i-building" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-5 8 5v12M9 21v-6h6v6M8 12h.01M12 12h.01M16 12h.01"/></symbol><symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol><symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></symbol><symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-minus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol><symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></symbol><symbol id="i-more" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></symbol></svg><header class="fixed inset-x-0 top-0 z-40">
+<div class="mx-auto mt-3 max-w-7xl px-3 sm:px-6">
+<nav class="glass flex items-center justify-between rounded-full py-2 pl-4 pr-2" aria-label="Main">
+<a href="index.html" class="flex items-center gap-2.5 text-[1.05rem] font-extrabold tracking-tight"><span class="grid size-9 place-items-center rounded-xl dark:bg-white/95"><img src="img/logo-mark.png" width="28" height="32" alt="" class="h-7 w-auto"></span><span>Resolve UK</span></a>
+<div class="hidden items-center gap-1 text-sm font-semibold md:flex">
+<a href="index.html" class="rounded-full px-3.5 py-2 transition text-soft hover:text-ink">Home</a><a href="index.html#how" class="rounded-full px-3.5 py-2 transition text-soft hover:text-ink">How it works</a><a href="reports.html" class="rounded-full px-3.5 py-2 transition bg-surface2 text-ink">Reported problems</a><a href="report.html" class="rounded-full px-3.5 py-2 transition text-soft hover:text-ink">Report</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="icon-btn" data-theme-toggle aria-label="Switch between light and dark mode" type="button"><span class="dark:hidden"><svg class="size-5" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="hidden dark:block"><svg class="size-5" aria-hidden="true"><use href="#i-sun"/></svg></span></button>
+<a class="btn btn-primary btn-sm hidden sm:inline-flex" href="report.html">Report a problem <svg class="size-4" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+<button class="icon-btn md:hidden" data-menu-btn aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu" type="button"><svg class="size-5" aria-hidden="true"><use href="#i-menu"/></svg></button>
+</div>
+</nav>
+<div id="mobile-menu" hidden class="glass mt-2 rounded-3xl p-3 md:hidden">
+<div class="grid gap-1 text-base font-semibold">
+<a class="rounded-2xl px-4 py-3 hover:bg-surface2" href="index.html">Home</a>
+<a class="rounded-2xl px-4 py-3 hover:bg-surface2" href="index.html#how">How it works</a>
+<a class="rounded-2xl px-4 py-3 hover:bg-surface2" href="reports.html">Reported problems</a>
+<a class="btn btn-primary mt-1" href="report.html">Report a problem</a>
+</div></div>
+</div>
+</header><div class="page-bg fixed inset-0 -z-20"></div>
+<div class="fixed inset-0 -z-10" style="background:linear-gradient(0deg,var(--c-bg) 8%,color-mix(in oklab,var(--c-bg) 88%,transparent))"></div>
+<main class="mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8">
+<div class="rise flex flex-wrap items-end justify-between gap-6">
+<div class="max-w-2xl">
+<p class="text-sm font-bold uppercase tracking-widest text-accent">Reported problems</p>
+<h1 class="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">See what is being reported.</h1>
+<p class="mt-4 text-lg text-soft">Open any report to follow it from first report to fix. <span class="whitespace-nowrap font-semibold">Sample data.</span></p>
+</div>
+<a href="report.html" class="btn btn-primary">Report a problem <svg class="size-5" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+</div>
+
+<div class="rise relative z-20 mt-10 flex flex-wrap items-center gap-3" style="animation-delay:.1s">
+<label class="relative min-w-[14rem] flex-1 sm:max-w-sm">
+<span class="sr-only">Search reports</span>
+<span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-soft"><svg class="size-5" aria-hidden="true"><use href="#i-search"/></svg></span>
+<input id="search" class="input pl-12" type="search" placeholder="Search reports" autocomplete="off">
+</label>
+<div class="glass flex flex-wrap gap-1 rounded-full p-1" role="group" aria-label="Filter by status" id="status-filter">
+<button type="button" data-filter="all" aria-pressed="true" class="rounded-full px-4 py-2 text-sm font-semibold text-soft transition hover:text-ink aria-pressed:bg-accent aria-pressed:text-accent-ink">All</button><button type="button" data-filter="reported" aria-pressed="false" class="rounded-full px-4 py-2 text-sm font-semibold text-soft transition hover:text-ink aria-pressed:bg-accent aria-pressed:text-accent-ink">Reported</button><button type="button" data-filter="progress" aria-pressed="false" class="rounded-full px-4 py-2 text-sm font-semibold text-soft transition hover:text-ink aria-pressed:bg-accent aria-pressed:text-accent-ink">In progress</button><button type="button" data-filter="cleared" aria-pressed="false" class="rounded-full px-4 py-2 text-sm font-semibold text-soft transition hover:text-ink aria-pressed:bg-accent aria-pressed:text-accent-ink">Cleared</button><button type="button" data-filter="verified" aria-pressed="false" class="rounded-full px-4 py-2 text-sm font-semibold text-soft transition hover:text-ink aria-pressed:bg-accent aria-pressed:text-accent-ink">Verified</button>
+</div>
+<div class="dd" data-dropdown="type" data-open="false">
+<button type="button" class="btn btn-ghost dd-btn" data-dd-btn aria-haspopup="listbox" aria-expanded="false"><span><span class="text-soft">Type: </span><b data-dd-label>All types</b></span><svg class="dd-chevron size-4" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+<div class="dd-list" role="listbox" aria-label="Type"><button type="button" role="option" class="dd-opt" data-value="All types" aria-selected="true"><span>All types</span><svg class="dd-check size-4" aria-hidden="true"><use href="#i-check"/></svg></button><button type="button" role="option" class="dd-opt" data-value="Fly-tipping" aria-selected="false"><span>Fly-tipping</span><svg class="dd-check size-4" aria-hidden="true"><use href="#i-check"/></svg></button><button type="button" role="option" class="dd-opt" data-value="Litter" aria-selected="false"><span>Litter</span><svg class="dd-check size-4" aria-hidden="true"><use href="#i-check"/></svg></button><button type="button" role="option" class="dd-opt" data-value="Pothole" aria-selected="false"><span>Pothole</span><svg class="dd-check size-4" aria-hidden="true"><use href="#i-check"/></svg></button><button type="button" role="option" class="dd-opt" data-value="Graffiti" aria-selected="false"><span>Graffiti</span><svg class="dd-check size-4" aria-hidden="true"><use href="#i-check"/></svg></button><button type="button" role="option" class="dd-opt" data-value="Abandoned vehicle" aria-selected="false"><span>Abandoned vehicle</span><svg class="dd-check size-4" aria-hidden="true"><use href="#i-check"/></svg></button></div>
+</div>
+<div class="dd" data-dropdown="sort" data-open="false">
+<button type="button" class="btn btn-ghost dd-btn" data-dd-btn aria-haspopup="listbox" aria-expanded="false"><span><span class="text-soft">Sort: </span><b data-dd-label>Newest</b></span><svg class="dd-chevron size-4" aria-hidden="true"><use href="#i-chevron"/></svg></button>
+<div class="dd-list" role="listbox" aria-label="Sort"><button type="button" role="option" class="dd-opt" data-value="Newest" aria-selected="true"><span>Newest</span><svg class="dd-check size-4" aria-hidden="true"><use href="#i-check"/></svg></button><button type="button" role="option" class="dd-opt" data-value="Most backed" aria-selected="false"><span>Most backed</span><svg class="dd-check size-4" aria-hidden="true"><use href="#i-check"/></svg></button></div>
+</div>
+</div>
+
+<p id="count" class="mt-8 text-sm font-semibold text-soft" aria-live="polite"></p>
+<ul id="grid" class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+<li>
+<button type="button" class="card group flex h-full w-full flex-col overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-2xl" data-report="1" data-status="progress" data-type="Fly-tipping" data-text="rubbish bags piled on a residential street fly-tipping">
+<span class="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
+<picture><source type="image/avif" srcset="img/rubbish-street-400.avif 400w, img/rubbish-street-678.avif 678w" sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"><source type="image/webp" srcset="img/rubbish-street-400.webp 400w, img/rubbish-street-678.webp 678w" sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"><img src="img/rubbish-street-678.webp" width="678" height="452" alt="Rubbish bags piled on a residential street" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async"></picture>
+<span class="absolute left-3 top-3"><span class="pill pill-progress">Acknowledged</span></span>
+</span>
+<span class="flex flex-1 flex-col gap-3 p-5">
+<span class="text-xs font-bold uppercase tracking-widest text-soft">Fly-tipping</span>
+<span class="text-lg font-bold leading-snug">Rubbish bags piled on a residential street</span>
+<span class="mt-auto flex items-center justify-between pt-2 text-sm text-soft"><span class="flex items-center gap-1.5"><svg class="size-4" aria-hidden="true"><use href="#i-users"/></svg>12 back this</span><span>2 hours ago</span></span>
+</span>
+</button>
+</li>
+<li>
+<button type="button" class="card group flex h-full w-full flex-col overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-2xl" data-report="2" data-status="reported" data-type="Litter" data-text="bottles and litter by the kerb litter">
+<span class="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
+<picture><source type="image/avif" srcset="img/litter-bottles-400.avif 400w, img/litter-bottles-640.avif 640w" sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"><source type="image/webp" srcset="img/litter-bottles-400.webp 400w, img/litter-bottles-640.webp 640w" sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"><img src="img/litter-bottles-640.webp" width="640" height="427" alt="Bottles and litter by the kerb" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async"></picture>
+<span class="absolute left-3 top-3"><span class="pill pill-reported">Reported</span></span>
+</span>
+<span class="flex flex-1 flex-col gap-3 p-5">
+<span class="text-xs font-bold uppercase tracking-widest text-soft">Litter</span>
+<span class="text-lg font-bold leading-snug">Bottles and litter by the kerb</span>
+<span class="mt-auto flex items-center justify-between pt-2 text-sm text-soft"><span class="flex items-center gap-1.5"><svg class="size-4" aria-hidden="true"><use href="#i-users"/></svg>3 back this</span><span>5 hours ago</span></span>
+</span>
+</button>
+</li>
+<li>
+<button type="button" class="card group flex h-full w-full flex-col overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-2xl" data-report="3" data-status="cleared" data-type="Fly-tipping" data-text="litter scattered along a roadside verge fly-tipping">
+<span class="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
+<picture><source type="image/avif" srcset="img/roadside-litter-400.avif 400w, img/roadside-litter-480.avif 480w" sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"><source type="image/webp" srcset="img/roadside-litter-400.webp 400w, img/roadside-litter-480.webp 480w" sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"><img src="img/roadside-litter-480.webp" width="480" height="639" alt="Litter scattered along a roadside verge" class="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async"></picture>
+<span class="absolute left-3 top-3"><span class="pill pill-cleared">Cleared</span></span>
+</span>
+<span class="flex flex-1 flex-col gap-3 p-5">
+<span class="text-xs font-bold uppercase tracking-widest text-soft">Fly-tipping</span>
+<span class="text-lg font-bold leading-snug">Litter scattered along a roadside verge</span>
+<span class="mt-auto flex items-center justify-between pt-2 text-sm text-soft"><span class="flex items-center gap-1.5"><svg class="size-4" aria-hidden="true"><use href="#i-users"/></svg>7 back this</span><span>Yesterday</span></span>
+</span>
+</button>
+</li>
+<li>
+<button type="button" class="card group flex h-full w-full flex-col overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-2xl" data-report="4" data-status="reported" data-type="Pothole" data-text="deep pothole that has damaged a bike wheel pothole">
+<span class="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
+<span class="absolute inset-0 grid place-items-center bg-gradient-to-br from-accent/20 via-surface2 to-sky-400/20 text-accent"><svg class="size-14 opacity-80" aria-hidden="true"><use href="#i-road"/></svg></span><span class="absolute bottom-3 left-3 rounded-full bg-bg/80 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-soft">Photo shown here</span>
+<span class="absolute left-3 top-3"><span class="pill pill-reported">Reported</span></span>
+</span>
+<span class="flex flex-1 flex-col gap-3 p-5">
+<span class="text-xs font-bold uppercase tracking-widest text-soft">Pothole</span>
+<span class="text-lg font-bold leading-snug">Deep pothole that has damaged a bike wheel</span>
+<span class="mt-auto flex items-center justify-between pt-2 text-sm text-soft"><span class="flex items-center gap-1.5"><svg class="size-4" aria-hidden="true"><use href="#i-users"/></svg>21 back this</span><span>1 day ago</span></span>
+</span>
+</button>
+</li>
+<li>
+<button type="button" class="card group flex h-full w-full flex-col overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-2xl" data-report="5" data-status="progress" data-type="Graffiti" data-text="graffiti on a shop shutter graffiti">
+<span class="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
+<span class="absolute inset-0 grid place-items-center bg-gradient-to-br from-accent/20 via-surface2 to-sky-400/20 text-accent"><svg class="size-14 opacity-80" aria-hidden="true"><use href="#i-spray"/></svg></span><span class="absolute bottom-3 left-3 rounded-full bg-bg/80 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-soft">Photo shown here</span>
+<span class="absolute left-3 top-3"><span class="pill pill-progress">Clearance scheduled</span></span>
+</span>
+<span class="flex flex-1 flex-col gap-3 p-5">
+<span class="text-xs font-bold uppercase tracking-widest text-soft">Graffiti</span>
+<span class="text-lg font-bold leading-snug">Graffiti on a shop shutter</span>
+<span class="mt-auto flex items-center justify-between pt-2 text-sm text-soft"><span class="flex items-center gap-1.5"><svg class="size-4" aria-hidden="true"><use href="#i-users"/></svg>4 back this</span><span>2 days ago</span></span>
+</span>
+</button>
+</li>
+<li>
+<button type="button" class="card group flex h-full w-full flex-col overflow-hidden rounded-3xl text-left transition hover:-translate-y-1 hover:shadow-2xl" data-report="6" data-status="verified" data-type="Abandoned vehicle" data-text="abandoned car left in a lay-by abandoned vehicle">
+<span class="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
+<span class="absolute inset-0 grid place-items-center bg-gradient-to-br from-accent/20 via-surface2 to-sky-400/20 text-accent"><svg class="size-14 opacity-80" aria-hidden="true"><use href="#i-car"/></svg></span><span class="absolute bottom-3 left-3 rounded-full bg-bg/80 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-soft">Photo shown here</span>
+<span class="absolute left-3 top-3"><span class="pill pill-verified">Outcome verified</span></span>
+</span>
+<span class="flex flex-1 flex-col gap-3 p-5">
+<span class="text-xs font-bold uppercase tracking-widest text-soft">Abandoned vehicle</span>
+<span class="text-lg font-bold leading-snug">Abandoned car left in a lay-by</span>
+<span class="mt-auto flex items-center justify-between pt-2 text-sm text-soft"><span class="flex items-center gap-1.5"><svg class="size-4" aria-hidden="true"><use href="#i-users"/></svg>9 back this</span><span>2 weeks ago</span></span>
+</span>
+</button>
+</li>
+</ul>
+<div id="empty" hidden class="card mt-6 rounded-3xl p-12 text-center">
+<span class="tile-icon mx-auto size-14 rounded-2xl"><svg class="size-6" aria-hidden="true"><use href="#i-search"/></svg></span>
+<p class="mt-5 text-xl font-bold">No reports match that</p>
+<p class="mt-1 text-soft">Try a different word or clear the filters.</p>
+</div>
+</main>
+
+<div id="scrim" hidden class="fixed inset-0 z-50 bg-black/55 opacity-0 backdrop-blur-sm transition-opacity duration-300"></div>
+<aside id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" aria-hidden="true" class="fixed inset-y-0 right-0 z-[60] flex w-[min(34rem,100vw)] translate-x-full flex-col border-l border-line bg-surface shadow-2xl transition-transform duration-300 ease-out">
+<div class="flex items-center justify-between border-b border-line px-6 py-4">
+<p class="text-sm font-bold uppercase tracking-widest text-soft" id="dr-type">Report</p>
+<button type="button" class="icon-btn" data-close aria-label="Close"><svg class="size-5" aria-hidden="true"><use href="#i-x"/></svg></button>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="relative aspect-[16/10] bg-surface2" id="dr-photo"></div>
+<div class="space-y-9 px-6 py-7">
+<div>
+<span class="pill" id="dr-pill">Reported</span>
+<h2 class="mt-3 text-2xl font-extrabold leading-tight tracking-tight" id="dr-title">Title</h2>
+<p class="mt-2 text-sm text-soft" id="dr-meta"></p>
+<div class="mt-5 flex flex-wrap gap-3">
+<button type="button" class="btn btn-primary btn-sm" data-back><svg class="size-4" aria-hidden="true"><use href="#i-eye"/></svg>I have seen this too</button>
+<button type="button" class="btn btn-ghost btn-sm" disabled>Share</button>
+</div>
+</div>
+
+<section>
+<h3 class="text-base font-bold">Progress</h3>
+<ol class="mt-4 space-y-0" id="dr-history"></ol>
+</section>
+
+<section>
+<h3 class="text-base font-bold">Where</h3>
+<div class="placeholder-box map-grid mt-3 grid aspect-[16/9] place-items-center text-center">
+<div class="px-6"><span class="mx-auto grid size-11 place-items-center rounded-full bg-surface2 text-soft"><svg class="size-5" aria-hidden="true"><use href="#i-map"/></svg></span><p class="mt-3 font-semibold">Location on a map</p><p class="mt-0.5 text-sm text-soft">The exact spot will be marked here. Coming soon.</p></div>
+</div>
+</section>
+
+<section>
+<h3 class="text-base font-bold">Responsible body</h3>
+<div class="placeholder-box mt-3 flex items-center gap-4 p-4">
+<span class="grid size-11 shrink-0 place-items-center rounded-full bg-surface2 text-soft"><svg class="size-5" aria-hidden="true"><use href="#i-building"/></svg></span>
+<div class="min-w-0 flex-1"><p class="font-semibold">Not shown yet</p><p class="text-sm text-soft">The council or contractor handling this will appear here.</p></div>
+</div>
+</section>
+
+<section>
+<h3 class="text-base font-bold">Updates</h3>
+<div class="placeholder-box mt-3 space-y-3 p-5">
+<div class="skeleton h-3 w-3/4"></div><div class="skeleton h-3 w-full"></div><div class="skeleton h-3 w-2/3"></div>
+<p class="pt-2 text-sm text-soft">Updates from the council or contractor, with photos of the work, will appear here.</p>
+</div>
+</section>
+</div>
+</div>
+</aside>
+<script type="application/json" id="reports-data">[{"id":1,"title":"Rubbish bags piled on a residential street","type":"Fly-tipping","status":"progress","label":"Acknowledged","backers":12,"ago":"2 hours ago","history":[["Reported","2 hours ago"],["Responsible body identified","1 hour ago"],["Acknowledged","40 minutes ago"]],"img":{"name":"rubbish-street","w":678,"h":452,"src":"img/rubbish-street-678.webp"}},{"id":2,"title":"Bottles and litter by the kerb","type":"Litter","status":"reported","label":"Reported","backers":3,"ago":"5 hours ago","history":[["Reported","5 hours ago"]],"img":{"name":"litter-bottles","w":640,"h":427,"src":"img/litter-bottles-640.webp"}},{"id":3,"title":"Litter scattered along a roadside verge","type":"Fly-tipping","status":"cleared","label":"Cleared","backers":7,"ago":"Yesterday","history":[["Reported","Yesterday"],["Responsible body identified","Yesterday"],["Acknowledged","Yesterday"],["Clearance scheduled","Today"],["Cleared","Today"]],"img":{"name":"roadside-litter","w":480,"h":639,"src":"img/roadside-litter-480.webp"}},{"id":4,"title":"Deep pothole that has damaged a bike wheel","type":"Pothole","status":"reported","label":"Reported","backers":21,"ago":"1 day ago","history":[["Reported","1 day ago"]],"img":null},{"id":5,"title":"Graffiti on a shop shutter","type":"Graffiti","status":"progress","label":"Clearance scheduled","backers":4,"ago":"2 days ago","history":[["Reported","2 days ago"],["Responsible body identified","2 days ago"],["Acknowledged","1 day ago"],["Clearance scheduled","Today"]],"img":null},{"id":6,"title":"Abandoned car left in a lay-by","type":"Abandoned vehicle","status":"verified","label":"Outcome verified","backers":9,"ago":"2 weeks ago","history":[["Reported","2 weeks ago"],["Responsible body identified","2 weeks ago"],["Acknowledged","2 weeks ago"],["Cleared","1 week ago"],["Outcome verified","5 days ago"]],"img":null}]</script><footer class="border-t border-line bg-surface/60">
+<div class="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
+<div>
+<a href="index.html" class="flex items-center gap-2.5 text-lg font-extrabold tracking-tight"><span class="grid size-9 place-items-center rounded-xl dark:bg-white/95"><img src="img/logo-mark.png" width="28" height="32" alt="" class="h-7 w-auto"></span><span>Resolve UK</span></a>
+<p class="mt-3 max-w-sm text-sm leading-relaxed text-soft">Report local problems, follow them to the end, and see whether they were really fixed. An early prototype, built step by step.</p>
+</div>
+<div class="text-sm">
+<p class="font-bold">Explore</p>
+<ul class="mt-3 space-y-2 text-soft"><li><a class="hover:text-ink" href="report.html">Report a problem</a></li><li><a class="hover:text-ink" href="reports.html">Reported problems</a></li><li><a class="hover:text-ink" href="index.html#how">How it works</a></li></ul>
+</div>
+<div class="text-sm">
+<p class="font-bold">For councils</p>
+<ul class="mt-3 space-y-2 text-soft"><li><a class="hover:text-ink" href="#">Staff sign-in</a></li></ul>
+<p class="mt-6 text-xs text-soft">Photo credits: being confirmed. Pictures on this sample page are placeholders until their licences are checked.</p>
+</div>
+</div>
+</footer>
+<script src="app.js" defer></script>
+</body>
+</html>

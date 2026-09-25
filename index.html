@@ -1,19 +1,18 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/icons/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f4f8f5" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#15181a" media="(prefers-color-scheme: dark)" />
-    <meta name="description" content="Report environmental issues in your area and track their resolution." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <title>Resolve UK</title>
+    <meta name="theme-color" content="#f4f6fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#060a13" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="See it. Report it. Resolve it. Report local problems, follow them to the end, and see whether they were really fixed." />
+    <script>
+      // Follow the device's light or dark setting before the first paint, so there is no flash.
+      document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      document.documentElement.classList.add('js')
+    </script>
+    <title>Resolve UK · See it. Report it. Resolve it.</title>
   </head>
   <body>
     <div id="root"></div>

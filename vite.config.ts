@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -5,6 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -13,10 +15,10 @@ export default defineConfig({
         name: 'Resolve UK',
         short_name: 'Resolve UK',
         description: 'Report environmental issues in your area and track their resolution.',
-        theme_color: '#155b34',
-        background_color: '#ffffff',
+        theme_color: '#0b8a5f',
+        background_color: '#060a13',
         display: 'standalone',
-        start_url: '/',
+        start_url: '/report',
         icons: [
           {
             src: 'icons/icon-192.png',
