@@ -1,0 +1,8 @@
+/* The map (MapLibre), restyled so nothing on it looks like a default. */
+.maplibregl-map { font-family: inherit; }
+.map-pin { color: var(--c-accent); cursor: grab; filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.35)); }
+.map-pin:active { cursor: grabbing; }
+.maplibregl-ctrl-attrib { background: var(--c-glass) !important; color: var(--c-soft) !important; border-radius: 0.6rem 0 0 0 !important; font-size: 0.65rem !important; }
+.maplibregl-ctrl-attrib a { color: var(--c-soft) !important; }
+[data-theme="dark"] .maplibregl-ctrl-attrib-button { filter: invert(1); }
+.maplibregl-cooperative-gesture-screen { font-family: inherit; font-weight: 600; }
