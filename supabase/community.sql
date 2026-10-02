@@ -25,7 +25,8 @@ create index if not exists reports_lat_lng_idx on public.reports (lat, lng);
 create table if not exists public.report_supports (
   id           uuid primary key default gen_random_uuid(),
   report_id    uuid not null references public.reports (id) on delete restrict,
-  -- a random id each phone or browser makes for itself. It is private: the public cannot read this column.
+  -- a random id each phone or browser makes for itself. It is scrambled (hashed) before it is stored, so what
+  -- the public can read here cannot be used to pose as anyone's device.
   device_token uuid not null,
   kind         text not null default 'same_issue' check (kind in ('same_issue', 'still_there', 'fixed')),
   created_at   timestamptz not null default now(),
@@ -37,9 +38,25 @@ create index if not exists report_supports_report_idx on public.report_supports 
 alter table public.report_supports enable row level security;
 revoke all on public.report_supports from anon, authenticated;
 
--- The public can add a "same issue" backing, and read everything except the private device id (so it can be counted).
+-- Store only a one-way scramble of the device id. Nobody, including the database owner, can turn it back into
+-- the id the phone holds, so the table can be read (and counted) by everyone without exposing anyone.
+create or replace function public.report_supports_scramble_token()
+returns trigger language plpgsql set search_path = public as $$
+begin
+  new.device_token := md5('resolve-uk-device:' || new.device_token::text)::uuid;
+  return new;
+end $$;
+
+revoke all on function public.report_supports_scramble_token() from public, anon, authenticated;
+
+drop trigger if exists report_supports_scramble on public.report_supports;
+create trigger report_supports_scramble before insert on public.report_supports
+  for each row execute function public.report_supports_scramble_token();
+
+-- The public can add a "same issue" backing and read the table (the site counts backings through the API,
+-- which needs whole-row read rights).
 grant insert (report_id, device_token, kind) on public.report_supports to anon, authenticated;
-grant select (id, report_id, kind, created_at) on public.report_supports to anon, authenticated;
+grant select on public.report_supports to anon, authenticated;
 
 drop policy if exists "anyone can read backings" on public.report_supports;
 create policy "anyone can read backings" on public.report_supports

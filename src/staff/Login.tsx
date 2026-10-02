@@ -10,11 +10,11 @@ function Frame({ title, children }: { title: string; children: ReactNode }) {
       <PageBackdrop />
       <main className="grid min-h-svh place-items-center px-5 py-16">
         <div className="rise card w-full max-w-md rounded-3xl p-8">
-          <Link to="/" className="flex items-center gap-2.5 text-lg font-extrabold tracking-tight">
+          <Link to="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
             <Logo />
             <span>Resolve UK</span>
           </Link>
-          <h1 className="mt-6 text-3xl font-extrabold tracking-tight">{title}</h1>
+          <h1 className="mt-6 text-4xl">{title}</h1>
           {children}
         </div>
       </main>

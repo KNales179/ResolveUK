@@ -35,7 +35,7 @@ export function ReportRow({ report, me, categories, bodies, onAction, busy }: Pr
       <img className="aspect-[4/3] w-full shrink-0 rounded-2xl object-cover sm:size-40" src={photoUrl(report.photo_path)} alt="" loading="lazy" />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="report-category text-xs font-bold uppercase tracking-widest text-soft">{label}</span>
+          <span className="report-category text-xs font-semibold uppercase tracking-widest text-soft">{label}</span>
           <span className={`report-status pill pill-${statusGroup(report.current_status)}`}>{STATUS_LABELS[report.current_status]}</span>
         </div>
         <p className="report-description mt-2 text-lg font-bold leading-snug">{report.description}</p>
@@ -62,7 +62,7 @@ export function ReportRow({ report, me, categories, bodies, onAction, busy }: Pr
         )}
 
         <label className="staff-note mt-4 block">
-          <span className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-soft">Note (optional)</span>
+          <span className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-soft">Note (optional)</span>
           <input className="input" type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Add a note with this action" />
         </label>
 

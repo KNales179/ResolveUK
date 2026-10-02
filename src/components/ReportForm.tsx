@@ -23,9 +23,9 @@ const TYPE_ICON: Record<string, IconName> = {
 }
 const TYPE_HINT: Record<string, string> = {
   'fly-tipping': 'Dumped rubbish',
-  pothole: 'Damaged road',
-  graffiti: 'Vandalism',
-  'abandoned-vehicle': 'Left to rot',
+  pothole: 'Holes in the road',
+  graffiti: 'On walls and signs',
+  'abandoned-vehicle': 'No sign of an owner',
   'damaged-infrastructure': 'Lamps, barriers, bins',
   other: 'Anything else',
 }
@@ -33,8 +33,8 @@ const MAX = 1000
 
 function StepTitle({ n, children }: { n: number; children: string }) {
   return (
-    <h2 className="flex items-center gap-3 text-lg font-bold">
-      <span className="grid size-8 place-items-center rounded-full bg-accent text-sm font-extrabold text-accent-ink">{n}</span>
+    <h2 className="flex items-center gap-3 font-sans text-lg font-semibold tracking-normal">
+      <span className="grid size-8 place-items-center rounded-full bg-accent text-sm font-semibold text-accent-ink">{n}</span>
       {children}
     </h2>
   )
@@ -220,8 +220,8 @@ export function ReportForm() {
       )}
       {matches ? (
         <section className="card rounded-3xl p-6 sm:p-7" aria-labelledby="match-title">
-          <p className="text-xs font-bold uppercase tracking-widest text-accent">Before you send it</p>
-          <h2 id="match-title" className="mt-2 text-2xl font-extrabold tracking-tight">
+          <p className="eyebrow">Before you send it</p>
+          <h2 id="match-title" className="mt-3 text-3xl">
             Is this the same problem?
           </h2>
           <p className="mt-2 text-soft">Someone has already reported something like this close by. If it is the same problem, add your support to that report instead of sending a new one.</p>
@@ -319,7 +319,7 @@ export function ReportForm() {
                 </span>
               )}
               <span className="font-bold">{photo ? photo.name : 'Drop a photo here, or browse'}</span>
-              <span className="text-sm text-soft">{photo ? 'Ready. Click to choose a different photo.' : 'Photos are shrunk before they are sent, so this stays fast on mobile data.'}</span>
+              <span className="text-sm text-soft">{photo ? 'Ready. Click to choose a different photo.' : 'Large photos are reduced in size before they are sent.'}</span>
             </label>
           </section>
 
@@ -369,7 +369,7 @@ export function ReportForm() {
         )}
 
         <section className="card hidden rounded-3xl p-6 lg:block">
-          <h2 className="text-lg font-bold">Your report</h2>
+          <h2 className="font-sans text-lg font-semibold tracking-normal">Your report</h2>
           <dl className="mt-4 space-y-3 text-sm">
             <div className="flex justify-between gap-4">
               <dt className="text-soft">Type</dt>

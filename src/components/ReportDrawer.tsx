@@ -95,7 +95,7 @@ export function ReportDrawer({ report, categories, onClose, onBacked }: Props) {
       >
         <div className="mx-auto mt-2.5 h-1.5 w-12 shrink-0 rounded-full bg-line sm:hidden" aria-hidden="true" />
         <div className="flex items-center justify-between border-b border-line px-6 py-3 sm:py-4">
-          <p className="text-sm font-bold uppercase tracking-widest text-soft">{label || 'Report'}</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-soft">{label || 'Report'}</p>
           <button ref={closeBtn} type="button" className="icon-btn" onClick={onClose} aria-label="Close" tabIndex={open ? 0 : -1}>
             <Icon name="x" />
           </button>
@@ -109,7 +109,7 @@ export function ReportDrawer({ report, categories, onClose, onBacked }: Props) {
             <div className="space-y-9 px-6 py-7">
               <div>
                 <span className={`pill pill-${statusGroup(r.current_status)}`}>{STATUS_LABELS[r.current_status]}</span>
-                <h2 id="drawer-title" className="mt-3 text-2xl font-extrabold leading-tight tracking-tight">
+                <h2 id="drawer-title" className="mt-3 text-3xl leading-tight">
                   {r.description}
                 </h2>
                 <p className="mt-2 text-sm text-soft">
