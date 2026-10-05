@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'rea
 import { useMediaQuery } from '../lib/useMediaQuery'
 import { useNavigate } from 'react-router-dom'
 import { useCategories } from '../lib/categories'
+import { deviceToken } from '../lib/device'
 import { backReport, findNearby } from '../lib/nearby'
 import { preparePhoto } from '../lib/photo'
 import { photoUrl } from '../lib/photos'
@@ -9,6 +10,11 @@ import { STATUS_LABELS } from '../lib/status'
 import { supabase } from '../lib/supabase'
 import type { NearbyReport, Position } from '../types'
 import { Icon, type IconName } from './ui/Icon'
+
+// A loose box around the UK and Ireland. Just a nudge for someone testing from abroad, not a
+// hard rule: the pilot is UK-only, but the project itself is still being tested from outside it.
+const UK_BOUNDS = { minLat: 49.5, maxLat: 61, minLng: -8.75, maxLng: 2 }
+const inUK = (p: Position) => p.lat >= UK_BOUNDS.minLat && p.lat <= UK_BOUNDS.maxLat && p.lng >= UK_BOUNDS.minLng && p.lng <= UK_BOUNDS.maxLng
 
 // The map library is large, so it loads in the background and the form is usable straight away.
 const MapPicker = lazy(() => import('./MapPicker').then((m) => ({ default: m.MapPicker })))
@@ -123,6 +129,7 @@ export function ReportForm() {
       lng: p.lng,
       location_accuracy_m: p.accuracy,
       location_source: p.source,
+      device_token: deviceToken(),
     })
     if (insertError) throw insertError
 
@@ -344,6 +351,11 @@ export function ReportForm() {
             {geoError && (
               <p className="msg msg-error mt-3" role="alert">
                 {geoError}
+              </p>
+            )}
+            {position && !inUK(position) && (
+              <p className="msg msg-warn mt-3" role="alert">
+                This looks like it is outside the UK. Resolve UK only routes reports to UK councils and contractors, so this may not reach anyone who can act on it.
               </p>
             )}
             {!desktop && (

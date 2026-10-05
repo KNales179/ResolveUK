@@ -14,6 +14,7 @@ interface StaffAuth {
   isStaff: boolean
   signIn: (email: string, password: string) => Promise<string | null>
   signOut: () => Promise<void>
+  refresh: () => Promise<void>
 }
 
 const Ctx = createContext<StaffAuth | null>(null)
@@ -37,6 +38,11 @@ export function StaffAuthProvider({ children }: { children: ReactNode }) {
 
   const known = session !== undefined
   const userId = session?.user.id ?? null
+
+  const loadProfile = async (id: string) => {
+    const { data } = await supabase.from('staff_profiles').select('*').eq('id', id).maybeSingle()
+    setProfile((data as StaffProfile | null) ?? null)
+  }
 
   useEffect(() => {
     if (!known) return
@@ -79,7 +85,11 @@ export function StaffAuthProvider({ children }: { children: ReactNode }) {
       async signOut() {
         await supabase.auth.signOut()
       },
+      async refresh() {
+        if (userId) await loadProfile(userId)
+      },
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [known, userId, profile, session])
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

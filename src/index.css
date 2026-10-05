@@ -222,7 +222,9 @@
   .msg { border-radius: 0.65rem; padding: 0.75rem 1rem; font-size: 0.9rem; font-weight: 600; }
   .msg-error { background: color-mix(in oklab, #ef4444 14%, var(--c-surface)); color: #b91c1c; border: 1px solid color-mix(in oklab, #ef4444 35%, transparent); }
   .msg-ok { background: color-mix(in oklab, var(--c-accent) 13%, var(--c-surface)); color: var(--c-accent); border: 1px solid color-mix(in oklab, var(--c-accent) 35%, transparent); }
+  .msg-warn { background: color-mix(in oklab, #d97706 14%, var(--c-surface)); color: #b45309; border: 1px solid color-mix(in oklab, #d97706 35%, transparent); }
   [data-theme="dark"] .msg-error { color: #fca5a5; }
+  [data-theme="dark"] .msg-warn { color: #fcd34d; }
 }
 
 

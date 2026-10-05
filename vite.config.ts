@@ -10,6 +10,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Registered from main.tsx instead of an auto-injected inline <script>, so the site's
+      // Content-Security-Policy can require scripts to come from this origin with no exceptions.
+      injectRegister: false,
       includeAssets: ['icons/icon-192.png', 'icons/icon-512.png'],
       manifest: {
         name: 'Resolve UK',

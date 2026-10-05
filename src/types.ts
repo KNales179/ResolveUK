@@ -67,6 +67,7 @@ export interface StaffProfile {
   role: StaffRole
   display_name: string
   active: boolean
+  must_change_password: boolean
 }
 
 // A report as the staff dashboard sees it: with its history and the name of whoever holds it.

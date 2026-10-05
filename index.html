@@ -7,11 +7,7 @@
     <meta name="theme-color" content="#f4f6fb" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#060a13" media="(prefers-color-scheme: dark)" />
     <meta name="description" content="See it. Report it. Resolve it. Report local problems, follow them to the end, and see whether they were really fixed." />
-    <script>
-      // Follow the device's light or dark setting before the first paint, so there is no flash.
-      document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-      document.documentElement.classList.add('js')
-    </script>
+    <script src="/theme-init.js"></script>
     <title>Resolve UK · See it. Report it. Resolve it.</title>
   </head>
   <body>

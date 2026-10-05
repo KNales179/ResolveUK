@@ -105,6 +105,11 @@ function Footer() {
                 How it works
               </Link>
             </li>
+            <li>
+              <Link className="hover:text-ink" to="/about">
+                About
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="text-sm">

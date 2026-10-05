@@ -3,10 +3,12 @@ import { Icon } from '../components/ui/Icon'
 import { Logo } from '../components/site/Logo'
 import { PageBackdrop } from '../components/site/SiteShell'
 import { toggleTheme } from '../lib/theme'
+import { StaffAccount } from './Account'
 import { StaffAuthProvider, useStaffAuth } from './auth'
 import { StaffDashboard } from './Dashboard'
 import { StaffLogin, StaffNoAccess } from './Login'
 import { StaffManage } from './Manage'
+import { SetPassword } from './SetPassword'
 
 const ROLE_LABEL = { staff: 'Council or contractor staff', reviewer: 'Resolve reviewer', resolve_admin: 'Resolve admin' } as const
 const tab = ({ isActive }: { isActive: boolean }) => `rounded-full px-4 py-2 transition ${isActive ? 'bg-surface2 text-ink' : 'text-soft hover:text-ink'}`
@@ -19,6 +21,7 @@ function Shell() {
   }
   if (status === 'signedOut') return <StaffLogin />
   if (status === 'noAccess') return <StaffNoAccess />
+  if (profile?.must_change_password) return <SetPassword />
 
   return (
     <>
@@ -39,6 +42,9 @@ function Shell() {
                   Manage
                 </NavLink>
               )}
+              <NavLink to="/staff/account" className={tab}>
+                Account
+              </NavLink>
             </div>
             <div className="flex items-center gap-2">
               <button className="icon-btn" type="button" onClick={toggleTheme} aria-label="Switch between light and dark mode">
@@ -65,6 +71,7 @@ function Shell() {
         <Routes>
           <Route index element={<StaffDashboard />} />
           {profile?.role === 'resolve_admin' && <Route path="manage" element={<StaffManage />} />}
+          <Route path="account" element={<StaffAccount />} />
           <Route path="*" element={<Navigate to="/staff" replace />} />
         </Routes>
       </main>

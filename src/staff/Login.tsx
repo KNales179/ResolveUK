@@ -4,7 +4,7 @@ import { Logo } from '../components/site/Logo'
 import { PageBackdrop } from '../components/site/SiteShell'
 import { useStaffAuth } from './auth'
 
-function Frame({ title, children }: { title: string; children: ReactNode }) {
+export function Frame({ title, children }: { title: string; children: ReactNode }) {
   return (
     <>
       <PageBackdrop />

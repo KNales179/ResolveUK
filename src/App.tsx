@@ -6,6 +6,7 @@ import { SiteShell } from './components/site/SiteShell'
 // Each page loads only when it is visited, so the landing page does not download the map or the database code.
 const ReportPage = lazy(() => import('./pages/ReportPage').then((m) => ({ default: m.ReportPage })))
 const ReportsPage = lazy(() => import('./pages/ReportsPage').then((m) => ({ default: m.ReportsPage })))
+const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })))
 const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m.StaffApp })))
 
 const Blank = <div className="min-h-svh" aria-busy="true" />
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="reports" element={<ReportsPage />}>
               <Route path=":id" element={null} />
             </Route>
+            <Route path="about" element={<AboutPage />} />
           </Route>
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />
