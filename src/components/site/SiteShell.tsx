@@ -33,6 +33,9 @@ function Nav() {
             <NavLink to="/report" className={linkClass}>
               Report
             </NavLink>
+            <NavLink to="/about" className={linkClass}>
+              About
+            </NavLink>
           </div>
           <div className="flex items-center gap-2">
             <button className="icon-btn" type="button" onClick={toggleTheme} aria-label="Switch between light and dark mode">
@@ -62,6 +65,9 @@ function Nav() {
               </Link>
               <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/reports">
                 Reported problems
+              </Link>
+              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/about">
+                About
               </Link>
               <Link className="btn btn-primary mt-1" to="/report">
                 Report a problem
