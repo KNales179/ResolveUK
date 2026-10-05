@@ -87,7 +87,7 @@ export function AboutPage() {
               <p className="mt-1.5 leading-relaxed text-soft">
                 Resolve UK is a website rather than something from an app store, but a phone's browser can install it like one. Open the site, then use the browser's "Add to Home Screen" or "Install" option. An icon is added to the home screen, and it opens full-screen from there, the same as any other app. The exact wording differs between phones; here is what it looks like on Android.
               </p>
-              <ol className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 md:grid-cols-6" aria-label="Steps to install Resolve UK">
+              <ol className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3" aria-label="Steps to install Resolve UK">
                 {INSTALL_STEPS.map(([file, caption], i) => (
                   <li key={file}>
                     <img src={`/install/${file}.jpg`} alt={caption} loading="lazy" className="aspect-[1080/2460] w-full rounded-xl border border-line object-cover" />
