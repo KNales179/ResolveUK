@@ -8,6 +8,15 @@ const PRINCIPLES: Array<[string, string]> = [
   ['No claims ahead of what is built', 'Features that are not working yet are shown as placeholders, not hidden or implied. This is an early prototype, and it says so.'],
 ]
 
+const INSTALL_STEPS: Array<[string, string]> = [
+  ['step0', 'Open the site. Some browsers offer to install it straight away.'],
+  ['step1-marked', "If not, open the browser's own menu."],
+  ['step2-marked', 'Choose "Install and create shortcut" (the wording varies by browser).'],
+  ['step3-marked', 'Pick "Install".'],
+  ['step4-marked', 'Confirm by tapping "Install" again.'],
+  ['step5', 'Done. Resolve UK now opens full-screen, the same as any other app.'],
+]
+
 export function AboutPage() {
   return (
     <>
@@ -38,6 +47,59 @@ export function AboutPage() {
               </li>
             ))}
           </ul>
+        </Reveal>
+
+        <Reveal className="mt-14">
+          <h2 className="font-serif text-2xl">Questions</h2>
+
+          <div className="mt-6 space-y-8 divide-y divide-line [&>div]:pt-8 [&>div:first-child]:pt-0">
+            <div>
+              <p className="font-semibold">Is this a council website?</p>
+              <p className="mt-1.5 leading-relaxed text-soft">No. Resolve UK is not run by a council. It sends a report to the council or contractor responsible for the area, the same as writing to them yourself would.</p>
+            </div>
+
+            <div>
+              <p className="font-semibold">Do I need an account to report something?</p>
+              <p className="mt-1.5 leading-relaxed text-soft">No. Reporting is open to anyone, with no sign-in. An account is only needed by council and contractor staff, to handle the reports that come in.</p>
+            </div>
+
+            <div>
+              <p className="font-semibold">What shouldn't I report here?</p>
+              <p className="mt-1.5 leading-relaxed text-soft">
+                Anything urgent or dangerous, such as a gas leak, a dangerous structure, or a fallen tree blocking a road, should go straight to the emergency services or the relevant utility, not through this site. Anything that isn't a physical problem in a public place, such as noise, a missed bin collection, or a complaint about a council decision, should go directly to the council instead.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold">What can council and contractor staff do?</p>
+              <p className="mt-1.5 leading-relaxed text-soft">
+                Staff have their own sign-in, separate from the public site. Once a report is claimed for their council or contractor, they can acknowledge it, schedule the work and mark it cleared. A Resolve reviewer then checks a cleared report before it counts as verified. Staff can only act on a report; they cannot change what the public sees was originally reported.
+              </p>
+              <p className="mt-3">
+                <Link to="/staff" className="font-semibold text-accent hover:underline">
+                  Staff sign-in
+                </Link>
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold">Is there an app?</p>
+              <p className="mt-1.5 leading-relaxed text-soft">
+                Resolve UK is a website rather than something from an app store, but a phone's browser can install it like one. Open the site, then use the browser's "Add to Home Screen" or "Install" option. An icon is added to the home screen, and it opens full-screen from there, the same as any other app. The exact wording differs between phones; here is what it looks like on Android.
+              </p>
+              <ol className="no-scrollbar mt-5 flex gap-4 overflow-x-auto pb-2" aria-label="Steps to install Resolve UK">
+                {INSTALL_STEPS.map(([file, caption], i) => (
+                  <li key={file} className="w-36 shrink-0">
+                    <img src={`/install/${file}.jpg`} alt={caption} loading="lazy" className="aspect-[1080/2460] w-full rounded-xl border border-line object-cover" />
+                    <p className="mt-2 text-xs leading-snug text-soft">
+                      <span className="font-semibold text-ink">{i + 1}. </span>
+                      {caption}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </Reveal>
 
         <Reveal className="mt-14">
