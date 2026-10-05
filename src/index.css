@@ -5,20 +5,21 @@
 
 /* ---- Colour tokens. Light is a bright morning, dark is a deep night. Neither is green-tinted. ---- */
 :root {
-  --c-bg: #f4f6fb;
+  --c-bg: #eef1f6;
   --c-surface: #ffffff;
-  --c-surface2: #ebeff7;
+  --c-surface2: #e7ebf3;
   --c-ink: #0b1322;
   --c-soft: #46536b;
   --c-line: #d9e0ec;
   --c-accent: #0b8a5f;
+  --c-accent-display: #0f9d58;
   --c-accent-ink: #ffffff;
   --c-glass: rgb(255 255 255 / 0.72);
   --c-glass-line: rgb(15 23 42 / 0.08);
   --c-shadow: 15 23 42;
-  --c-hero-from: rgb(244 246 251 / 0.94);
-  --c-hero-mid: rgb(244 246 251 / 0.62);
-  --c-hero-to: rgb(244 246 251 / 0.05);
+  --c-hero-from: rgb(238 241 246 / 0.86);
+  --c-hero-mid: rgb(238 241 246 / 0.48);
+  --c-hero-to: rgb(238 241 246 / 0.05);
   color-scheme: light;
 }
 
@@ -30,6 +31,7 @@
   --c-soft: #9ba8c0;
   --c-line: #1f2a44;
   --c-accent: #4fcf9d;
+  --c-accent-display: #4fcf9d;
   --c-accent-ink: #04140d;
   --c-glass: rgb(10 16 30 / 0.6);
   --c-glass-line: rgb(255 255 255 / 0.1);
@@ -53,6 +55,7 @@
   --color-soft: var(--c-soft);
   --color-line: var(--c-line);
   --color-accent: var(--c-accent);
+  --color-accent-display: var(--c-accent-display);
   --color-accent-ink: var(--c-accent-ink);
 }
 

@@ -56,7 +56,7 @@ export default function Home() {
               <br />
               Report it.
               <br />
-              <em className="font-medium italic text-accent">Resolve it.</em>
+              <em className="font-medium italic text-accent-display">Resolve it.</em>
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-relaxed text-ink/80 sm:text-xl">
               Fly-tipping in a lay-by, a pothole that catches bike wheels, graffiti that stays for months. Report it in about a minute, then follow what happens until it is dealt with.
