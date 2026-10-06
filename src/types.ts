@@ -35,6 +35,7 @@ export interface Report {
   location_accuracy_m: number | null
   location_source: LocationSource
   responsible_body_id: string | null
+  reporter_id?: string | null
   current_status: ReportStatus
   created_at: string
   report_events?: ReportEvent[]

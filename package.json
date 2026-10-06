@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test:db": "node supabase/tests/foundation.test.mjs && node supabase/tests/community.test.mjs && node supabase/tests/dashboard.test.mjs && node supabase/tests/security-update.test.mjs",
+    "test:db": "node supabase/tests/foundation.test.mjs && node supabase/tests/community.test.mjs && node supabase/tests/dashboard.test.mjs && node supabase/tests/security-update.test.mjs && node supabase/tests/v2-concept.test.mjs",
     "sample:css": "tailwindcss -i design-preview/src/input.css -o design-preview/styles.css --minify",
     "sample:build": "node design-preview/build-pages.mjs && npm run sample:css"
   },
