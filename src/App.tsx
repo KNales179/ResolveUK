@@ -10,7 +10,6 @@ const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default:
 const WhyPage = lazy(() => import('./pages/WhyPage').then((m) => ({ default: m.WhyPage })))
 const GetInvolvedPage = lazy(() => import('./pages/GetInvolvedPage').then((m) => ({ default: m.GetInvolvedPage })))
 const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m.StaffApp })))
-const V2Shell = lazy(() => import('./v2/V2Shell').then((m) => ({ default: m.V2Shell })))
 const V2Landing = lazy(() => import('./v2/V2Landing').then((m) => ({ default: m.V2Landing })))
 const V2Community = lazy(() => import('./v2/V2Community').then((m) => ({ default: m.V2Community })))
 const V2Commercial = lazy(() => import('./v2/V2Commercial').then((m) => ({ default: m.V2Commercial })))
@@ -32,14 +31,12 @@ export default function App() {
             <Route path="about" element={<AboutPage />} />
             <Route path="why" element={<WhyPage />} />
             <Route path="get-involved" element={<GetInvolvedPage />} />
+            <Route path="v2" element={<V2Landing />} />
+            <Route path="v2/community" element={<V2Community />} />
+            <Route path="v2/commercial" element={<V2Commercial />} />
+            <Route path="v2/account" element={<V2Account />} />
           </Route>
           <Route path="/staff/*" element={<StaffApp />} />
-          <Route element={<V2Shell />}>
-            <Route path="/v2" element={<V2Landing />} />
-            <Route path="/v2/community" element={<V2Community />} />
-            <Route path="/v2/commercial" element={<V2Commercial />} />
-            <Route path="/v2/account" element={<V2Account />} />
-          </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

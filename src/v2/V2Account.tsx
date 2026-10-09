@@ -1,4 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { PageBackdrop } from '../components/site/SiteShell'
+import { Reveal } from '../components/ui/Reveal'
 import { useCategories } from '../lib/categories'
 import { deviceToken } from '../lib/device'
 import { preparePhoto } from '../lib/photo'
@@ -6,7 +8,8 @@ import { photoUrl } from '../lib/photos'
 import { STATUS_LABELS } from '../lib/status'
 import { supabase } from '../lib/supabase'
 import type { Report } from '../types'
-import { useReporterAuth } from './reporterAuth'
+import { ConceptBanner } from './ConceptBanner'
+import { ReporterAuthProvider, useReporterAuth } from './reporterAuth'
 
 function AuthForm() {
   const { signIn, signUp } = useReporterAuth()
@@ -207,7 +210,7 @@ function LinkedReportForm({ reporterId, onSent }: { reporterId: string; onSent: 
   )
 }
 
-export function V2Account() {
+function AccountBody() {
   const { status, profile, email, signOut } = useReporterAuth()
   const [refreshKey, setRefreshKey] = useState(0)
 
@@ -240,5 +243,19 @@ export function V2Account() {
         )}
       </div>
     </div>
+  )
+}
+
+export function V2Account() {
+  return (
+    <ReporterAuthProvider>
+      <PageBackdrop />
+      <main className="mx-auto max-w-3xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
+        <ConceptBanner back />
+        <Reveal>
+          <AccountBody />
+        </Reveal>
+      </main>
+    </ReporterAuthProvider>
   )
 }
