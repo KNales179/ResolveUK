@@ -5,11 +5,10 @@ import { useCategories } from '../lib/categories'
 import { deviceToken } from '../lib/device'
 import { preparePhoto } from '../lib/photo'
 import { photoUrl } from '../lib/photos'
+import { ReporterAuthProvider, useReporterAuth } from '../lib/reporterAuth'
 import { STATUS_LABELS } from '../lib/status'
 import { supabase } from '../lib/supabase'
 import type { Report } from '../types'
-import { ConceptBanner } from './ConceptBanner'
-import { ReporterAuthProvider, useReporterAuth } from './reporterAuth'
 
 function AuthForm() {
   const { signIn, signUp } = useReporterAuth()
@@ -45,23 +44,23 @@ function AuthForm() {
       <form onSubmit={submit} className="mt-6 space-y-4">
         {mode === 'signUp' && (
           <div>
-            <label htmlFor="v2-name" className="mb-1.5 block text-sm font-semibold">
+            <label htmlFor="account-name" className="mb-1.5 block text-sm font-semibold">
               Your name
             </label>
-            <input id="v2-name" className="input" type="text" required value={name} onChange={(e) => setName(e.target.value)} />
+            <input id="account-name" className="input" type="text" required value={name} onChange={(e) => setName(e.target.value)} />
           </div>
         )}
         <div>
-          <label htmlFor="v2-email" className="mb-1.5 block text-sm font-semibold">
+          <label htmlFor="account-email" className="mb-1.5 block text-sm font-semibold">
             Email
           </label>
-          <input id="v2-email" className="input" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input id="account-email" className="input" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div>
-          <label htmlFor="v2-password" className="mb-1.5 block text-sm font-semibold">
+          <label htmlFor="account-password" className="mb-1.5 block text-sm font-semibold">
             Password
           </label>
-          <input id="v2-password" className="input" type="password" autoComplete={mode === 'signUp' ? 'new-password' : 'current-password'} required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input id="account-password" className="input" type="password" autoComplete={mode === 'signUp' ? 'new-password' : 'current-password'} required value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
         {error && (
           <p className="msg msg-error" role="alert">
@@ -216,10 +215,10 @@ function AccountBody() {
 
   return (
     <div className="max-w-xl">
-      <p className="eyebrow">Account idea · real, but isolated to this preview</p>
-      <h1 className="mt-4 text-4xl sm:text-5xl">An optional account for whoever sends a report.</h1>
+      <p className="eyebrow">Optional, for whoever wants it</p>
+      <h1 className="mt-4 text-4xl sm:text-5xl">Keep track of the reports you've sent.</h1>
       <p className="mt-6 text-lg leading-relaxed text-soft">
-        Reporting on the real site stays fully anonymous, with no change there. This is what it would look like if someone chose to create an account, so a report can stay theirs to follow, and eventually to pick a quote on, for the commercial route. This sign-up is real and stored for real, kept apart from the live site.
+        Reporting still needs no account at all. Creating one just means a report can stay yours to follow, and, once the commercial route exists, yours to pick a quote on.
       </p>
 
       <div className="mt-10">
@@ -246,12 +245,11 @@ function AccountBody() {
   )
 }
 
-export function V2Account() {
+export function AccountPage() {
   return (
     <ReporterAuthProvider>
       <PageBackdrop />
       <main className="mx-auto max-w-3xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
-        <ConceptBanner back />
         <Reveal>
           <AccountBody />
         </Reveal>

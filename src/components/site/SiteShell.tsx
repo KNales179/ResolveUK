@@ -83,14 +83,14 @@ function Nav() {
 function Footer() {
   return (
     <footer className="border-t border-line bg-surface/60">
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div>
           <Link to="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
             <Logo />
             <span>Resolve UK</span>
           </Link>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-soft">
-            Report local problems, follow each one through to the end, and see whether it was fixed. An early prototype.
+            See it, report it, and follow it through to whoever actually resolves it. An early prototype.
           </p>
         </div>
         <div className="text-sm">
@@ -124,6 +124,26 @@ function Footer() {
             <li>
               <Link className="hover:text-ink" to="/get-involved">
                 Get involved
+              </Link>
+            </li>
+          </ul>
+        </div>
+        <div className="text-sm">
+          <p className="font-semibold">Resolution network</p>
+          <ul className="mt-3 space-y-2 text-soft">
+            <li>
+              <Link className="hover:text-ink" to="/community">
+                Community route
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-ink" to="/commercial">
+                Commercial route
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-ink" to="/account">
+                Your account
               </Link>
             </li>
           </ul>

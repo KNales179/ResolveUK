@@ -40,7 +40,7 @@ export interface Report {
   created_at: string
   report_events?: ReportEvent[]
   report_supports?: { count: number }[]
-  responsible_bodies?: { name: string } | null
+  responsible_bodies?: { name: string; kind: 'council' | 'contractor' | 'other' } | null
 }
 
 export interface Position {
@@ -73,7 +73,7 @@ export interface StaffProfile {
 
 // A report as the staff dashboard sees it: with its history and the name of whoever holds it.
 export interface StaffReport extends Report {
-  responsible_bodies: { name: string } | null
+  responsible_bodies: { name: string; kind: 'council' | 'contractor' | 'other' } | null
 }
 
 // A result of the "is this the same problem?" search.

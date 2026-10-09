@@ -11,7 +11,7 @@ export const listReports = () =>
   unwrap<StaffReport[]>(
     supabase
       .from('reports')
-      .select('*, report_events(id, seq, status, note, created_at), report_supports(count), responsible_bodies(name)')
+      .select('*, report_events(id, seq, status, note, created_at), report_supports(count), responsible_bodies(name, kind)')
       .order('created_at', { ascending: false }),
   )
 

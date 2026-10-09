@@ -1,24 +1,22 @@
 import { PageBackdrop } from '../components/site/SiteShell'
 import { Pic } from '../components/ui/Pic'
 import { Reveal } from '../components/ui/Reveal'
-import { ConceptBanner } from './ConceptBanner'
 
-export function V2Community() {
+export function CommunityPage() {
   return (
     <>
       <PageBackdrop />
       <main className="mx-auto max-w-3xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
-        <ConceptBanner back />
         <Reveal>
-          <p className="eyebrow">Community route · concept</p>
-          <h1 className="mt-4 text-4xl sm:text-5xl">Some problems, a local group could just clear.</h1>
+          <p className="eyebrow">The community route</p>
+          <h1 className="mt-4 text-4xl sm:text-5xl">Some problems, a local group can just clear.</h1>
           <p className="mt-6 text-lg leading-relaxed text-soft">
-            A report that is safe and legal for a volunteer to deal with, such as litter, would stay visible to the council as normal, but would also be offered to a registered local group. If a group takes it on, the report shows who cleared it and how, with a photo, instead of waiting in a council queue.
+            A report that is safe and legal for a volunteer to deal with, such as litter, stays visible to the council as normal, but can also be offered to a registered local group. If a group takes it on, the report shows who cleared it and how, with a photo, instead of waiting in a council queue.
           </p>
         </Reveal>
 
         <Reveal className="mt-14">
-          <p className="text-sm font-semibold uppercase tracking-widest text-soft">What a group would see, as a mock-up</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-soft">What a group would see, shown here as a preview</p>
           <div className="card mt-4 flex gap-4 rounded-2xl p-4 sm:p-5">
             <Pic name="litter-bottles" widths={[400]} width={400} height={267} alt="" className="size-24 shrink-0 rounded-xl object-cover sm:size-28" sizes="112px" />
             <div className="min-w-0 flex-1">
@@ -30,7 +28,7 @@ export function V2Community() {
               </button>
             </div>
           </div>
-          <p className="mt-3 text-sm text-soft">That photo and button are a mock-up, from the real site's own image set. Nothing is claimed if you press it.</p>
+          <p className="mt-3 text-sm text-soft">This is not working yet. The photo is a real sample from the site's own image set; the claim button does nothing when pressed.</p>
         </Reveal>
 
         <Reveal className="mt-14 leading-relaxed text-soft">

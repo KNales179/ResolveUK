@@ -9,11 +9,10 @@ const ReportsPage = lazy(() => import('./pages/ReportsPage').then((m) => ({ defa
 const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })))
 const WhyPage = lazy(() => import('./pages/WhyPage').then((m) => ({ default: m.WhyPage })))
 const GetInvolvedPage = lazy(() => import('./pages/GetInvolvedPage').then((m) => ({ default: m.GetInvolvedPage })))
+const CommunityPage = lazy(() => import('./pages/CommunityPage').then((m) => ({ default: m.CommunityPage })))
+const CommercialPage = lazy(() => import('./pages/CommercialPage').then((m) => ({ default: m.CommercialPage })))
+const AccountPage = lazy(() => import('./pages/AccountPage').then((m) => ({ default: m.AccountPage })))
 const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m.StaffApp })))
-const V2Landing = lazy(() => import('./v2/V2Landing').then((m) => ({ default: m.V2Landing })))
-const V2Community = lazy(() => import('./v2/V2Community').then((m) => ({ default: m.V2Community })))
-const V2Commercial = lazy(() => import('./v2/V2Commercial').then((m) => ({ default: m.V2Commercial })))
-const V2Account = lazy(() => import('./v2/V2Account').then((m) => ({ default: m.V2Account })))
 
 const Blank = <div className="min-h-svh" aria-busy="true" />
 
@@ -31,10 +30,9 @@ export default function App() {
             <Route path="about" element={<AboutPage />} />
             <Route path="why" element={<WhyPage />} />
             <Route path="get-involved" element={<GetInvolvedPage />} />
-            <Route path="v2" element={<V2Landing />} />
-            <Route path="v2/community" element={<V2Community />} />
-            <Route path="v2/commercial" element={<V2Commercial />} />
-            <Route path="v2/account" element={<V2Account />} />
+            <Route path="community" element={<CommunityPage />} />
+            <Route path="commercial" element={<CommercialPage />} />
+            <Route path="account" element={<AccountPage />} />
           </Route>
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />

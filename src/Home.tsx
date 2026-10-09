@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
-import { Icon } from './components/ui/Icon'
+import { Icon, type IconName } from './components/ui/Icon'
 import { Pic } from './components/ui/Pic'
 import { Reveal } from './components/ui/Reveal'
 
 const STAGES: Array<[string, string]> = [
   ['Reported', 'A resident sends it in with a photo and a place.'],
-  ['Responsible body named', 'The council or contractor that looks after it is identified.'],
+  ['Responsible body named', 'The council, contractor or other organisation that looks after it is identified.'],
   ['Acknowledged', 'They confirm they have seen it.'],
   ['Clearance scheduled', 'A date for the work is set.'],
   ['Cleared', 'They say the job is done.'],
@@ -15,7 +15,13 @@ const STAGES: Array<[string, string]> = [
 const STEPS: Array<[string, string, string]> = [
   ['1', 'Describe it', 'Choose the type of problem, add a photo and write a line or two about it.'],
   ['2', 'Mark the place', 'The map starts where you are. Drag the pin if it is a little off. If someone has already reported the same thing nearby, you can add your support to theirs.'],
-  ['3', 'Follow it', 'Every step is added to the report’s history, from picked up to cleared to verified, with the date and time.'],
+  ['3', 'Follow it', 'Every step is added to the report’s history, from picked up to cleared to verified, with the date and time, whoever ends up resolving it.'],
+]
+
+const ROUTES: Array<[IconName, string, string, string, string]> = [
+  ['map', 'Public', 'A report on public land goes to the council or contractor responsible for it. This is what already works today.', '/report', 'Report a problem'],
+  ['users', 'Community', 'A safe, non-hazardous problem, such as litter, can be claimed and cleared by a registered local group instead of waiting on a council.', '/community', 'See how it would work'],
+  ['building', 'Commercial', 'On private land, where a council has no duty to clear it, registered waste carriers can quote a price and the landowner picks one.', '/commercial', 'See how it would work'],
 ]
 
 const OTHER_TYPES: Array<[string, string]> = [
@@ -30,11 +36,15 @@ const TODAY = [
   'A check for the same problem nearby, before a report is sent',
   'Adding your support to someone else’s report',
   'A public history of every step on each report',
+  'Routing a report to any responsible organisation, not just a council',
   'Sign-in for council, contractor and Resolve staff, to handle reports',
+  'An optional account, to keep track of the reports you have sent',
   'Report data stored in the UK',
 ]
 const NEXT = [
-  'Sending each report to the right council automatically',
+  'A local group claiming and clearing a safe problem itself',
+  'A registered waste carrier quoting to clear private land, and getting chosen',
+  'Sending each report to the right organisation automatically',
   'Residents confirming a fix with a photo',
   'A map inside each report, and updates with photos of the work',
   'Suggesting the type of problem from the photo',
@@ -59,7 +69,7 @@ export default function Home() {
               <em className="font-medium italic text-accent-display">Resolve it.</em>
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-relaxed text-ink/80 sm:text-xl">
-              Fly-tipping in a lay-by, a pothole that catches bike wheels, graffiti that stays for months. Report it in about a minute, then follow what happens until it is dealt with.
+              Fly-tipping in a lay-by, a pothole that catches bike wheels, graffiti that stays for months. Report it in about a minute, then follow it through to whoever actually resolves it: a council, a local group, or a commercial service for private land.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link to="/report" className="btn btn-primary text-base">
@@ -105,7 +115,7 @@ export default function Home() {
           <Reveal>
             <p className="eyebrow">How it works</p>
             <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Report it in a minute, then follow it.</h2>
-            <p className="mt-5 max-w-md text-lg leading-relaxed text-soft">Each report has a public history. When a council or contractor takes it on, says they have seen it or says the work is done, the date and time are added to that history.</p>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-soft">Each report has a public history. Whoever takes it on, whether that is a council, a contractor or another organisation, adds to that history as it moves towards fixed.</p>
           </Reveal>
           <ol className="divide-y divide-line border-y border-line">
             {STEPS.map(([n, title, text], i) => (
@@ -121,8 +131,42 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---- three ways a problem gets resolved ---- */}
+      <section className="cv border-y border-line bg-surface2/50">
+        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
+          <Reveal className="max-w-2xl">
+            <p className="eyebrow">Not just a reporting form</p>
+            <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Three ways a problem gets resolved.</h2>
+            <p className="mt-5 text-lg leading-relaxed text-soft">Who should act on a report depends on who is actually responsible for the place it happened. Resolve UK is built around that, not just around one route to a council.</p>
+          </Reveal>
+
+          <ul className="mt-14 grid gap-5 sm:grid-cols-3">
+            {ROUTES.map(([icon, title, text, href, cta], i) => (
+              <Reveal as="li" key={title} delay={i * 70} className="card group relative overflow-hidden rounded-3xl p-7 transition hover:-translate-y-1">
+                <span className="absolute -right-2 -top-6 select-none text-[6rem] font-serif font-medium leading-none text-ink/[0.05]">0{i + 1}</span>
+                <span className="tile-icon size-12 rounded-2xl">
+                  <Icon name={icon} className="size-6" />
+                </span>
+                <h3 className="mt-6 font-serif text-2xl">{title}</h3>
+                <p className="mt-2 leading-relaxed text-soft">{text}</p>
+                <Link to={href} className="mt-5 inline-flex items-center gap-1.5 font-semibold text-accent hover:underline">
+                  {cta} <Icon name="arrow" className="size-4" />
+                </Link>
+              </Reveal>
+            ))}
+          </ul>
+
+          <Reveal className="mt-10 flex max-w-3xl gap-4 rounded-3xl border border-accent/30 bg-accent/10 p-6">
+            <Icon name="shield" className="mt-0.5 size-6 shrink-0 text-accent" />
+            <p className="leading-relaxed">
+              Public routing already works. Community and commercial routing are not built yet; the pages above show what they would look like. Reporting itself does not change either way, and stays open to anyone with no account needed.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ---- what people report ---- */}
-      <section className="cv mx-auto max-w-7xl px-5 pb-24 sm:px-8 sm:pb-32">
+      <section className="cv mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
         <Reveal className="max-w-2xl">
           <p className="eyebrow">What you can report</p>
           <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">The everyday problems that wear a place down.</h2>
@@ -179,7 +223,7 @@ export default function Home() {
           </ol>
           <Reveal className="mt-14 max-w-3xl border-l-2 border-accent pl-6">
             <p className="text-lg leading-relaxed">
-              <b className="font-semibold">Cleared and verified mean different things.</b> Cleared is the council or contractor saying the work is done. Verified is someone else confirming it. The site shows both, so you can see the difference.
+              <b className="font-semibold">Cleared and verified mean different things.</b> Cleared is the responsible body saying the work is done. Verified is someone else confirming it. The site shows both, so you can see the difference.
             </p>
           </Reveal>
         </div>

@@ -14,6 +14,12 @@ interface Props {
   onBacked: (id: string) => void
 }
 
+const BODY_KIND_LABELS: Record<'council' | 'contractor' | 'other', string> = {
+  council: 'Council',
+  contractor: 'Contractor',
+  other: 'Other organisation',
+}
+
 // The side panel that opens when a report is chosen: its photo, its whole history, and places for the
 // map, the responsible body and updates, which fill in as those parts of the project are built.
 export function ReportDrawer({ report, categories, onClose, onBacked }: Props) {
@@ -182,7 +188,10 @@ export function ReportDrawer({ report, categories, onClose, onBacked }: Props) {
                   </span>
                   <div className="min-w-0 flex-1">
                     {r.responsible_bodies ? (
-                      <p className="font-semibold">{r.responsible_bodies.name}</p>
+                      <>
+                        <p className="font-semibold">{r.responsible_bodies.name}</p>
+                        <p className="text-sm text-soft">{BODY_KIND_LABELS[r.responsible_bodies.kind]}</p>
+                      </>
                     ) : (
                       <>
                         <p className="font-semibold">Not shown yet</p>
