@@ -53,7 +53,7 @@ export interface Position {
 export interface ResponsibleBody {
   id: string
   name: string
-  kind: 'council' | 'contractor'
+  kind: 'council' | 'contractor' | 'other'
   tier: 'unitary' | 'county' | 'district' | null
   works_for_id: string | null
   functions: string[]

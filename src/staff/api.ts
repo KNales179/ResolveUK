@@ -38,7 +38,7 @@ export const linkStaff = (email: string, role: string, bodyId: string | null, di
   call('admin_link_staff', { p_email: email, p_role: role, p_body_id: bodyId, p_display_name: displayName })
 export const setStaffActive = (staffId: string, active: boolean) => call('admin_set_staff_active', { p_staff_id: staffId, p_active: active })
 
-export const addBody = async (body: { name: string; kind: 'council' | 'contractor'; tier: string | null; works_for_id: string | null }) => {
+export const addBody = async (body: { name: string; kind: 'council' | 'contractor' | 'other'; tier: string | null; works_for_id: string | null }) => {
   const { error } = await supabase.from('responsible_bodies').insert(body)
   if (error) throw new Error(error.message)
 }

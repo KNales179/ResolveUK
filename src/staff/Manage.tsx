@@ -20,7 +20,7 @@ function Field({ id, label, children }: { id: string; label: string; children: R
 
 function AddBody({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () => void }) {
   const [name, setName] = useState('')
-  const [kind, setKind] = useState<'council' | 'contractor'>('council')
+  const [kind, setKind] = useState<'council' | 'contractor' | 'other'>('council')
   const [tier, setTier] = useState('unitary')
   const [worksFor, setWorksFor] = useState('')
   const [busy, setBusy] = useState(false)
@@ -33,7 +33,9 @@ function AddBody({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () =
     setBusy(true)
     setError('')
     try {
-      await addBody(kind === 'council' ? { name: name.trim(), kind, tier, works_for_id: null } : { name: name.trim(), kind, tier: null, works_for_id: worksFor || null })
+      if (kind === 'council') await addBody({ name: name.trim(), kind, tier, works_for_id: null })
+      else if (kind === 'contractor') await addBody({ name: name.trim(), kind, tier: null, works_for_id: worksFor || null })
+      else await addBody({ name: name.trim(), kind, tier: null, works_for_id: null })
       setName('')
       onAdded()
     } catch (err) {
@@ -49,17 +51,29 @@ function AddBody({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () =
         <input id="body-name" className="input" type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Colchester City Council" />
       </Field>
       <Field id="body-kind" label="Type">
-        <Select id="body-kind" label="Type" value={kind} onChange={(v) => setKind(v as 'council' | 'contractor')} choices={[{ value: 'council', label: 'Council' }, { value: 'contractor', label: 'Contractor' }]} />
+        <Select
+          id="body-kind"
+          label="Type"
+          value={kind}
+          onChange={(v) => setKind(v as 'council' | 'contractor' | 'other')}
+          choices={[
+            { value: 'council', label: 'Council' },
+            { value: 'contractor', label: 'Contractor' },
+            { value: 'other', label: 'Other (a business, waste company or community group)' },
+          ]}
+        />
       </Field>
-      {kind === 'council' ? (
+      {kind === 'council' && (
         <Field id="body-tier" label="Tier">
           <Select id="body-tier" label="Tier" value={tier} onChange={setTier} choices={[{ value: 'unitary', label: 'Unitary' }, { value: 'county', label: 'County' }, { value: 'district', label: 'District' }]} />
         </Field>
-      ) : (
+      )}
+      {kind === 'contractor' && (
         <Field id="body-works-for" label="Works for which council?">
           <Select id="body-works-for" label="Works for which council?" value={worksFor} onChange={setWorksFor} required placeholder="Choose a council" choices={councils.map((c) => ({ value: c.id, label: c.name }))} />
         </Field>
       )}
+      {kind === 'other' && <p className="text-sm text-soft">No sign-in for them yet: an admin assigns and tracks reports on their behalf, by contacting them directly.</p>}
       {error && (
         <p className="msg msg-error" role="alert">
           {error}
@@ -178,7 +192,7 @@ export function StaffManage() {
             <li key={b.id} className="py-3">
               <b>{b.name}</b>
               <span className="ml-2 text-sm text-soft">
-                {b.kind === 'council' ? b.tier : `contractor for ${bodies.find((c) => c.id === b.works_for_id)?.name ?? '—'}`}
+                {b.kind === 'council' ? b.tier : b.kind === 'contractor' ? `contractor for ${bodies.find((c) => c.id === b.works_for_id)?.name ?? '—'}` : 'other, handled manually'}
                 {!b.active && ' · retired'}
               </span>
             </li>
