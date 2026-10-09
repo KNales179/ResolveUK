@@ -7,6 +7,8 @@ import { SiteShell } from './components/site/SiteShell'
 const ReportPage = lazy(() => import('./pages/ReportPage').then((m) => ({ default: m.ReportPage })))
 const ReportsPage = lazy(() => import('./pages/ReportsPage').then((m) => ({ default: m.ReportsPage })))
 const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })))
+const WhyPage = lazy(() => import('./pages/WhyPage').then((m) => ({ default: m.WhyPage })))
+const GetInvolvedPage = lazy(() => import('./pages/GetInvolvedPage').then((m) => ({ default: m.GetInvolvedPage })))
 const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m.StaffApp })))
 const V2Shell = lazy(() => import('./v2/V2Shell').then((m) => ({ default: m.V2Shell })))
 const V2Landing = lazy(() => import('./v2/V2Landing').then((m) => ({ default: m.V2Landing })))
@@ -28,6 +30,8 @@ export default function App() {
               <Route path=":id" element={null} />
             </Route>
             <Route path="about" element={<AboutPage />} />
+            <Route path="why" element={<WhyPage />} />
+            <Route path="get-involved" element={<GetInvolvedPage />} />
           </Route>
           <Route path="/staff/*" element={<StaffApp />} />
           <Route element={<V2Shell />}>

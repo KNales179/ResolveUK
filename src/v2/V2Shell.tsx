@@ -18,7 +18,7 @@ export function V2Shell() {
       </div>
       <header className="sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-xl">
         <div className="mx-auto max-w-5xl px-4 sm:px-8">
-          <nav className="flex h-16 flex-wrap items-center justify-between gap-2" aria-label="Concept">
+          <nav className="flex min-h-16 flex-wrap items-center justify-between gap-2 py-2" aria-label="Concept">
             <Link to="/v2" className="flex items-center gap-2.5 text-[1.05rem] font-semibold tracking-tight">
               <Logo />
               <span>Resolve UK · Concept</span>

@@ -28,6 +28,11 @@ export function AboutPage() {
           <p className="mt-6 text-lg leading-relaxed text-soft">
             Reporting a problem to a council is often the easy part. What happens afterwards, whether it was picked up, when, and whether it was actually fixed, is usually invisible once the form is submitted. Resolve UK exists to make that part visible: one place to report a problem with a photo and a place on the map, and to follow it through every step a council or contractor takes.
           </p>
+          <p className="mt-4">
+            <Link to="/why" className="font-semibold text-accent hover:underline">
+              Why this matters, with the numbers behind it
+            </Link>
+          </p>
         </Reveal>
 
         <Reveal className="mt-14">

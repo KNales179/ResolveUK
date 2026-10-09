@@ -1,4 +1,4 @@
-import { Icon } from '../components/ui/Icon'
+import { Pic } from '../components/ui/Pic'
 
 const QUOTES: Array<[string, string, string]> = [
   ['Sample Waste Co.', '£65', 'Collection tomorrow'],
@@ -18,9 +18,7 @@ export function V2Commercial() {
       <p className="mt-10 text-sm font-semibold uppercase tracking-widest text-soft">What a landowner would see, as a mock-up</p>
       <div className="card mt-4 rounded-2xl p-5 sm:p-7">
         <div className="flex gap-4">
-          <span className="tile-icon size-16 shrink-0 rounded-2xl">
-            <Icon name="trash" className="size-7" />
-          </span>
+          <Pic name="rubbish-street" widths={[400]} width={400} height={267} alt="" className="size-24 shrink-0 rounded-xl object-cover sm:size-28" sizes="112px" />
           <div className="min-w-0">
             <span className="pill pill-reported">Private land · not a council job</span>
             <h3 className="mt-2 text-lg font-semibold leading-snug">Dumped sofa and bin bags behind the unit</h3>
@@ -43,7 +41,7 @@ export function V2Commercial() {
           ))}
         </ul>
       </div>
-      <p className="mt-3 text-sm text-soft">Those quotes and the "Choose" button are a mock-up. No real carrier, price or payment exists yet.</p>
+      <p className="mt-3 text-sm text-soft">That photo, those quotes and the "Choose" button are a mock-up, from the real site's own image set. No real carrier, price or payment exists yet.</p>
 
       <p className="mt-10 leading-relaxed text-soft">
         Still to work out: who verifies a waste carrier is actually registered, how payment and the fee are taken, and the registered company needed to legally hold that money.

@@ -116,6 +116,16 @@ function Footer() {
                 About
               </Link>
             </li>
+            <li>
+              <Link className="hover:text-ink" to="/why">
+                Why this matters
+              </Link>
+            </li>
+            <li>
+              <Link className="hover:text-ink" to="/get-involved">
+                Get involved
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="text-sm">
