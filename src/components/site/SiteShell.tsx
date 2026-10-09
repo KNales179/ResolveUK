@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Icon } from '../ui/Icon'
 import { toggleTheme } from '../../lib/theme'
@@ -6,6 +6,51 @@ import { Logo } from './Logo'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `rounded-lg px-3.5 py-2 transition ${isActive ? 'bg-surface2 text-ink' : 'text-soft hover:text-ink'}`
+
+const ABOUT_LINKS: Array<[string, string]> = [
+  ['/about', 'About'],
+  ['/why', 'Why this matters'],
+  ['/get-involved', 'Get involved'],
+]
+
+// A small link menu for the About cluster, so the flat nav does not have to grow every time an
+// info page is added. Styled with the same .dd / .dd-list classes the filter dropdowns use.
+function AboutMenu() {
+  const [open, setOpen] = useState(false)
+  const { pathname } = useLocation()
+  const root = useRef<HTMLDivElement>(null)
+  const active = ABOUT_LINKS.some(([href]) => href === pathname)
+
+  useEffect(() => {
+    if (!open) return
+    const away = (e: MouseEvent) => {
+      if (root.current && !root.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', away)
+    return () => document.removeEventListener('mousedown', away)
+  }, [open])
+
+  return (
+    <div ref={root} className="dd" data-open={open} onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}>
+      <button
+        type="button"
+        className={`flex items-center gap-1 rounded-lg px-3.5 py-2 transition ${active ? 'bg-surface2 text-ink' : 'text-soft hover:text-ink'}`}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
+        About <Icon name="chevron" className="dd-chevron size-4" />
+      </button>
+      <div className="dd-list min-w-[12rem]" role="menu">
+        {ABOUT_LINKS.map(([href, label]) => (
+          <Link key={href} to={href} role="menuitem" className="dd-opt" onClick={() => setOpen(false)}>
+            <span>{label}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 function Nav() {
   const [open, setOpen] = useState(false)
@@ -20,7 +65,7 @@ function Nav() {
             <Logo />
             <span className="whitespace-nowrap">Resolve UK</span>
           </Link>
-          <div className="hidden items-center gap-1 whitespace-nowrap text-sm font-semibold lg:flex">
+          <div className="hidden items-center gap-1 whitespace-nowrap text-sm font-semibold xl:flex">
             <NavLink to="/" end className={linkClass}>
               Home
             </NavLink>
@@ -30,14 +75,18 @@ function Nav() {
             <NavLink to="/reports" className={linkClass}>
               Reported problems
             </NavLink>
-            <NavLink to="/report" className={linkClass}>
-              Report
+            <NavLink to="/community" className={linkClass}>
+              Community
             </NavLink>
-            <NavLink to="/about" className={linkClass}>
-              About
+            <NavLink to="/commercial" className={linkClass}>
+              Commercial
             </NavLink>
+            <AboutMenu />
           </div>
           <div className="flex items-center gap-2">
+            <Link className="icon-btn hidden sm:inline-flex" to="/account" aria-label="Your account">
+              <Icon name="user" />
+            </Link>
             <button className="icon-btn" type="button" onClick={toggleTheme} aria-label="Switch between light and dark mode">
               <span className="dark:hidden">
                 <Icon name="moon" />
@@ -49,13 +98,13 @@ function Nav() {
             <Link className="btn btn-primary btn-sm hidden sm:inline-flex" to="/report">
               Report a problem <Icon name="arrow" className="size-4" />
             </Link>
-            <button className="icon-btn lg:hidden" type="button" aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => setOpen((o) => !o)}>
+            <button className="icon-btn xl:hidden" type="button" aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => setOpen((o) => !o)}>
               <Icon name={open ? 'x' : 'menu'} />
             </button>
           </div>
         </nav>
         {open && (
-          <div id="mobile-menu" className="border-t border-line py-3 lg:hidden">
+          <div id="mobile-menu" className="max-h-[calc(100svh-4rem)] overflow-y-auto border-t border-line py-3 xl:hidden">
             <div className="grid gap-1 text-base font-semibold">
               <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/">
                 Home
@@ -66,8 +115,23 @@ function Nav() {
               <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/reports">
                 Reported problems
               </Link>
+              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/community">
+                Community
+              </Link>
+              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/commercial">
+                Commercial
+              </Link>
               <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/about">
                 About
+              </Link>
+              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/why">
+                Why this matters
+              </Link>
+              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/get-involved">
+                Get involved
+              </Link>
+              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/account">
+                Your account
               </Link>
               <Link className="btn btn-primary mt-1" to="/report">
                 Report a problem

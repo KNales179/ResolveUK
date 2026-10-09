@@ -29,6 +29,7 @@ const PATHS = {
   minus: '<path d="M5 12h14"/>',
   layers: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
   more: '<circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/>',
+  user: '<circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4.1 3.1-7 7-7s7 2.9 7 7"/>',
 } as const
 
 export type IconName = keyof typeof PATHS
