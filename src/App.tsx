@@ -17,7 +17,7 @@ const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m
 const Blank = <div className="min-h-svh" aria-busy="true" />
 
 export default function App() {
-  return (
+  return ( 
     <BrowserRouter>
       <Suspense fallback={Blank}>
         <Routes>

@@ -12,7 +12,7 @@ interface Props {
   categories: Category[]
   onClose: () => void
   onBacked: (id: string) => void
-}
+} 
 
 const BODY_KIND_LABELS: Record<'council' | 'contractor' | 'other', string> = {
   council: 'Council',

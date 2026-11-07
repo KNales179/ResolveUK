@@ -37,7 +37,7 @@ function pinElement(): HTMLElement {
   el.setAttribute('aria-label', 'The spot of the problem. Drag it to move it.')
   el.innerHTML =
     '<svg viewBox="0 0 32 42" width="34" height="44" aria-hidden="true"><path d="M16 41S2 27 2 15a14 14 0 0 1 28 0c0 12-14 26-14 26z" fill="currentColor" stroke="#fff" stroke-width="2.5"/><circle cx="16" cy="15" r="5.5" fill="#fff"/></svg>'
-  return el
+  return el 
 }
 
 interface Props {

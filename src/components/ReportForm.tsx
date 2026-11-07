@@ -33,7 +33,7 @@ const TYPE_HINT: Record<string, string> = {
   graffiti: 'On walls and signs',
   'abandoned-vehicle': 'No sign of an owner',
   'damaged-infrastructure': 'Lamps, barriers, bins',
-  other: 'Anything else',
+  other: 'Anything else', 
 }
 const MAX = 1000
 

@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom'
 import { Icon, type IconName } from './components/ui/Icon'
 import { Pic } from './components/ui/Pic'
@@ -16,9 +17,10 @@ const STEPS: Array<[string, string, string]> = [
   ['1', 'Describe it', 'Choose the type of problem, add a photo and write a line or two about it.'],
   ['2', 'Mark the place', 'The map starts where you are. Drag the pin if it is a little off. If someone has already reported the same thing nearby, you can add your support to theirs.'],
   ['3', 'Follow it', 'Every step is added to the report’s history, from picked up to cleared to verified, with the date and time, whoever ends up resolving it.'],
-]
+] 
 
-const ROUTES: Array<[IconName, string, string, string, string]> = [
+const 
+ROUTES: Array<[IconName, string, string, string, string]> = [
   ['map', 'Public', 'A report on public land goes to the council or contractor responsible for it. This is what already works today.', '/report', 'Report a problem'],
   ['users', 'Community', 'A safe, non-hazardous problem, such as litter, can be claimed and cleared by a registered local group instead of waiting on a council.', '/community', 'See how it would work'],
   ['building', 'Commercial', 'On private land, where a council has no duty to clear it, registered waste carriers can quote a price and the landowner picks one.', '/commercial', 'See how it would work'],
