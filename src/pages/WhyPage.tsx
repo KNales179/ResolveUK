@@ -53,7 +53,26 @@ export function WhyPage() {
                 </div>
               </div>
             </CornerHover>
-            <div className="grid gap-4 sm:grid-cols-3">
+            {/* Three more full cards stacking below the featured one is clutter at phone width,
+                so below `sm` they collapse into one compact divided list instead. */}
+            <ul className="panel-tint divide-y divide-line overflow-hidden rounded-3xl sm:hidden">
+              {STATS.slice(1).map(([icon, title, stat, detail, source, url]) => (
+                <CornerHover as="li" key={title} className="flex items-start gap-3.5 px-5 py-4">
+                  <span className="tile-icon size-10 shrink-0 rounded-lg">
+                    <Icon name={icon} className="size-4" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold uppercase tracking-widest text-soft">{title}</p>
+                    <p className="font-serif text-2xl">{stat}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-soft">{detail}</p>
+                    <a href={url} target="_blank" rel="noreferrer" className="mt-1.5 inline-block text-xs font-semibold text-accent hover:underline">
+                      {source} ↗
+                    </a>
+                  </div>
+                </CornerHover>
+              ))}
+            </ul>
+            <div className="hidden gap-4 sm:grid sm:grid-cols-3">
               {STATS.slice(1).map(([icon, title, stat, detail, source, url]) => (
                 <CornerHover key={title} className="block">
                   <div className="card hover-lift h-full rounded-2xl p-6">

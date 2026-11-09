@@ -57,10 +57,26 @@ export function AboutPage() {
         <Reveal className="mt-10">
           <h2 className="font-serif text-2xl">What it does today</h2>
           {/* A bento rather than one dense paragraph: three distinct moments (reporting, staff
-              handling it, the public record) as their own tiles, first one emphasised. CornerHover
-              wraps a plain outer layer, not accent-panel/card itself, so its hover tint can't
-              override the tile's own solid background. */}
-          <div className="mt-6 grid gap-5 lg:grid-cols-[1.3fr_1fr_1fr]">
+              handling it, the public record) as their own tiles, first one emphasised. Below `lg`
+              a bento is just every tile stacked full-width, one card after another — so it
+              collapses into one compact divided list there instead, and only becomes the grid
+              from `lg` up. CornerHover wraps a plain outer layer, not accent-panel/card itself, so
+              its hover tint can't override a tile's own solid background. */}
+          <ul className="panel-tint divide-y divide-line mt-6 overflow-hidden rounded-3xl lg:hidden">
+            {TODAY_TILES.map(([icon, title, text]) => (
+              <CornerHover as="li" key={title} className="flex items-start gap-3.5 px-5 py-4">
+                <span className="tile-icon size-10 shrink-0 rounded-lg">
+                  <Icon name={icon} className="size-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">{title}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-soft">{text}</p>
+                </div>
+              </CornerHover>
+            ))}
+          </ul>
+
+          <div className="mt-6 hidden gap-5 lg:grid lg:grid-cols-[1.3fr_1fr_1fr]">
             {TODAY_TILES.map(([icon, title, text], i) => (
               <CornerHover key={title} className="block">
                 <div className={`hover-lift flex h-full flex-col rounded-3xl p-7 sm:p-8 ${i === 0 ? 'accent-panel' : 'card'}`}>

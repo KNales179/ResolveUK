@@ -231,6 +231,16 @@
 .page-bg { background-image: image-set(url(/img/longimg-768.avif) type("image/avif"), url(/img/longimg-768.webp) type("image/webp")); background-size: 100% auto; background-position: top center; background-repeat: repeat-y; }
 [data-theme="dark"] .page-bg { background-image: image-set(url(/img/longimg-768.avif) type("image/avif"), url(/img/longimg-768.webp) type("image/webp")); }
 
+/* Both photos are built for a wide viewport: the hero's mask reveals a horizontal band next to
+   the card stack (on a narrow, tall mobile screen that band becomes an odd full-height vertical
+   stripe instead), and the long page-bg tiled at 100% width shows a tight, busy crop of foliage
+   detail once that width is a phone's. Below tablet width both just drop out to the plain page
+   colour instead — still legible, not fighting the text on top of it. The card stack and every
+   other animation are untouched; this is the two background photos only. */
+@media (max-width: 767px) {
+  .hero-photo, .page-bg { display: none; }
+}
+
 /* ---- Motion, always switched off for anyone who asks ---- */
 @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes shimmer { to { background-position: -200% 0; } }

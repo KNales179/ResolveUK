@@ -181,13 +181,21 @@ export function HillsScene({ zoneColors, children }: { zoneColors: string[]; chi
     const canvas = canvasRef.current
     const animCanvas = animCanvasRef.current
     if (!wrap || !canvas || !animCanvas) return
-    const motionOff = reducedMotion()
+    // The animated layer redraws the river's flow particles and every walking figure on a
+    // canvas spanning the whole multi-thousand-pixel scene, 60 times a second — cheap on
+    // desktop, heavy enough on mobile GPUs to visibly lag scrolling. Below the tablet
+    // breakpoint it reuses the same static fallback already built for reduced motion (still
+    // glints, a standing figure) instead of a separate code path.
+    const motionOff = reducedMotion() || window.innerWidth < 768
 
     const draw = () => {
       const cssW = wrap.clientWidth
       const cssH = wrap.scrollHeight
       if (cssW < 1 || cssH < 1) return
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      // The canvas still spans the whole scene even with the animation loop off, so the browser
+      // keeps compositing it on every scroll frame regardless — capped lower on mobile keeps
+      // that bitmap a quarter the size instead of just stopping the JS redraw loop.
+      const dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1 : 2)
       canvas.width = cssW * dpr
       canvas.height = cssH * dpr
       canvas.style.width = `${cssW}px`

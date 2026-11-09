@@ -172,50 +172,76 @@ function ResolutionRoutes() {
         </Reveal>
 
         <Reveal className="mt-14">
-          <StaticCorners>
-            <div className="grid gap-5 rounded-3xl p-1 lg:grid-cols-[1.3fr_1fr]">
-              {/* CornerHover wraps a plain, backgroundless layer here rather than carrying
-                  accent-panel/card itself — combined on one element, its hover tint (meant for a
-                  bare row) would override the panel's own solid fill and wash the whole tile out
-                  on hover. The inner div keeps the solid background; hover-lift gives its own,
-                  non-opacity feedback (a small lift + deeper shadow) alongside the corner brackets. */}
-              <CornerHover className="block">
-                <div className="accent-panel hover-lift flex h-full flex-col justify-between rounded-3xl p-8 sm:p-10">
-                  <div>
-                    <span className="tile-icon size-14 rounded-2xl bg-black/10">
-                      <Icon name={publicIcon} className="size-7" />
-                    </span>
-                    <p className="eyebrow mt-6">Already works today</p>
-                    <h3 className="mt-3 font-serif text-4xl">{publicTitle}</h3>
-                    <p className="mt-4 max-w-md leading-relaxed opacity-85">{publicText}</p>
+          {/* Below `lg` a bento grid is just every tile stacked full-width, one padded card after
+              another — more clutter than layout at that width. So below `lg` this collapses into
+              one compact divided list instead of trying to preserve the grid; the bento itself
+              only renders from `lg` up, where there is room for it. */}
+          <ul className="panel-tint divide-y divide-line overflow-hidden rounded-3xl lg:hidden">
+            {ROUTES.map(([icon, title, text, href, cta], i) => (
+              <CornerHover as="li" key={title} className="flex items-start gap-3.5 px-5 py-4">
+                <span className="tile-icon size-10 shrink-0 rounded-lg">
+                  <Icon name={icon} className="size-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-semibold">{title}</p>
+                    <span className={`pill ${i === 0 ? 'pill-cleared' : 'pill-reported'}`}>{i === 0 ? 'Already works' : 'Not live yet'}</span>
                   </div>
-                  <Link to={publicHref} className="link-nudge mt-8 inline-flex w-fit font-semibold">
-                    {publicCta} <Icon name="arrow" className="size-4" />
+                  <p className="mt-1 text-sm leading-relaxed text-soft">{text}</p>
+                  <Link to={href} className="link-nudge mt-2 inline-flex text-sm font-semibold text-accent">
+                    {cta} <Icon name="arrow" className="size-3.5" />
                   </Link>
                 </div>
               </CornerHover>
+            ))}
+          </ul>
 
-              <div className="grid gap-5">
-                {otherRoutes.map(([icon, title, text, href, cta]) => (
-                  <CornerHover key={title} className="block">
-                    <div className="card hover-lift flex h-full flex-col justify-between rounded-3xl p-7">
-                      <div>
-                        <div className="flex items-start justify-between gap-3">
-                          <span className="tile-icon size-11 rounded-xl"><Icon name={icon} className="size-5" /></span>
-                          <span className="pill pill-reported shrink-0">Not live yet</span>
-                        </div>
-                        <h3 className="mt-4 font-serif text-2xl">{title}</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-soft">{text}</p>
-                      </div>
-                      <Link to={href} className="link-nudge mt-5 inline-flex w-fit text-sm font-semibold text-accent">
-                        {cta} <Icon name="arrow" className="size-4" />
-                      </Link>
+          <div className="hidden lg:block">
+            <StaticCorners>
+              <div className="grid gap-5 rounded-3xl p-1 lg:grid-cols-[1.3fr_1fr]">
+                {/* CornerHover wraps a plain, backgroundless layer here rather than carrying
+                    accent-panel/card itself — combined on one element, its hover tint (meant for a
+                    bare row) would override the panel's own solid fill and wash the whole tile out
+                    on hover. The inner div keeps the solid background; hover-lift gives its own,
+                    non-opacity feedback (a small lift + deeper shadow) alongside the corner brackets. */}
+                <CornerHover className="block">
+                  <div className="accent-panel hover-lift flex h-full flex-col justify-between rounded-3xl p-8 sm:p-10">
+                    <div>
+                      <span className="tile-icon size-14 rounded-2xl bg-black/10">
+                        <Icon name={publicIcon} className="size-7" />
+                      </span>
+                      <p className="eyebrow mt-6">Already works today</p>
+                      <h3 className="mt-3 font-serif text-4xl">{publicTitle}</h3>
+                      <p className="mt-4 max-w-md leading-relaxed opacity-85">{publicText}</p>
                     </div>
-                  </CornerHover>
-                ))}
+                    <Link to={publicHref} className="link-nudge mt-8 inline-flex w-fit font-semibold">
+                      {publicCta} <Icon name="arrow" className="size-4" />
+                    </Link>
+                  </div>
+                </CornerHover>
+
+                <div className="grid gap-5">
+                  {otherRoutes.map(([icon, title, text, href, cta]) => (
+                    <CornerHover key={title} className="block">
+                      <div className="card hover-lift flex h-full flex-col justify-between rounded-3xl p-7">
+                        <div>
+                          <div className="flex items-start justify-between gap-3">
+                            <span className="tile-icon size-11 rounded-xl"><Icon name={icon} className="size-5" /></span>
+                            <span className="pill pill-reported shrink-0">Not live yet</span>
+                          </div>
+                          <h3 className="mt-4 font-serif text-2xl">{title}</h3>
+                          <p className="mt-2 text-sm leading-relaxed text-soft">{text}</p>
+                        </div>
+                        <Link to={href} className="link-nudge mt-5 inline-flex w-fit text-sm font-semibold text-accent">
+                          {cta} <Icon name="arrow" className="size-4" />
+                        </Link>
+                      </div>
+                    </CornerHover>
+                  ))}
+                </div>
               </div>
-            </div>
-          </StaticCorners>
+            </StaticCorners>
+          </div>
         </Reveal>
 
         <Reveal className="mt-10 flex max-w-3xl gap-4 rounded-3xl border border-accent/30 bg-accent/10 p-6">
@@ -412,24 +438,27 @@ export default function Home() {
           </Reveal>
 
           {/* A pair of stat tiles ahead of the two lists, so this section is more than one
-              repeated card shape — a small bento touch before the fuller lists below. */}
-          <div className="mt-10 grid gap-5 sm:grid-cols-2">
-            <Reveal className="card flex items-center gap-4 rounded-3xl p-6">
-              <span className="tile-icon size-12 shrink-0 rounded-xl bg-accent-vivid text-accent-ink">
-                <Icon name="check" className="size-5" />
+              repeated card shape — a small bento touch before the fuller lists below. Always two
+              columns, even on a phone: two small stat tiles side by side reads fine at any width,
+              where stacking them full-width would just be two more cards piling on top of the
+              bigger lists below. */}
+          <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5">
+            <Reveal className="card flex items-center gap-3 rounded-2xl p-4 sm:gap-4 sm:rounded-3xl sm:p-6">
+              <span className="tile-icon size-10 shrink-0 rounded-xl bg-accent-vivid text-accent-ink sm:size-12">
+                <Icon name="check" className="size-4 sm:size-5" />
               </span>
               <div>
-                <span className="font-serif text-4xl leading-none">{TODAY.length}</span>
-                <span className="ml-2 text-sm text-soft">features working today</span>
+                <span className="font-serif text-2xl leading-none sm:text-4xl">{TODAY.length}</span>
+                <span className="ml-1.5 text-xs text-soft sm:ml-2 sm:text-sm">features working today</span>
               </div>
             </Reveal>
-            <Reveal delay={40} className="card flex items-center gap-4 rounded-3xl border-dashed p-6 opacity-90">
-              <span className="tile-icon size-12 shrink-0 rounded-xl">
-                <Icon name="clock" className="size-5" />
+            <Reveal delay={40} className="card flex items-center gap-3 rounded-2xl border-dashed p-4 opacity-90 sm:gap-4 sm:rounded-3xl sm:p-6">
+              <span className="tile-icon size-10 shrink-0 rounded-xl sm:size-12">
+                <Icon name="clock" className="size-4 sm:size-5" />
               </span>
               <div>
-                <span className="font-serif text-4xl leading-none text-soft">{NEXT.length}</span>
-                <span className="ml-2 text-sm text-soft">planned next</span>
+                <span className="font-serif text-2xl leading-none text-soft sm:text-4xl">{NEXT.length}</span>
+                <span className="ml-1.5 text-xs text-soft sm:ml-2 sm:text-sm">planned next</span>
               </div>
             </Reveal>
           </div>

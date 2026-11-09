@@ -57,10 +57,29 @@ export function GetInvolvedPage() {
           <h2 className="text-halo font-serif text-2xl">With your community</h2>
           {/* A bento grid rather than a third copy of the same row list — the litter-pick entry
               carries the one concrete number here, so it gets the large, emphasised tile; the
-              other two sit stacked beside it. CornerHover wraps a plain outer layer rather than
+              other two sit stacked beside it. Below `lg` that is just three full cards stacked on
+              top of each other, so it collapses into one compact divided list there instead, and
+              only becomes the grid from `lg` up. CornerHover wraps a plain outer layer rather than
               carrying accent-panel/card itself, so its hover tint never overrides the tile's own
               solid background (see the same pattern on the homepage's "Three ways" section). */}
-          <div className="mt-6 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+          <ul className="panel-tint divide-y divide-line mt-6 overflow-hidden rounded-3xl lg:hidden">
+            {COMMUNITY.map(([icon, title, text], i) => (
+              <CornerHover as="li" key={title} className="flex items-start gap-3.5 px-5 py-4">
+                <span className="tile-icon size-10 shrink-0 rounded-lg">
+                  <Icon name={icon} className="size-4" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <p className="font-semibold">{title}</p>
+                    {i === 2 && <span className="pill pill-reported">Planned</span>}
+                  </div>
+                  <p className="mt-1 text-sm leading-relaxed text-soft">{text}</p>
+                </div>
+              </CornerHover>
+            ))}
+          </ul>
+
+          <div className="mt-6 hidden gap-5 lg:grid lg:grid-cols-[1.3fr_1fr]">
             <CornerHover className="block">
               <div className="accent-panel hover-lift flex h-full flex-col justify-center rounded-3xl p-8 sm:p-10">
                 <span className="tile-icon size-14 rounded-2xl bg-black/10">
