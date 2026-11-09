@@ -6,6 +6,10 @@ import { Logo } from './Logo'
 import { CornerHover } from '../ui/CornerHover'
 import { PageTransition } from './PageTransition'
 
+// Temporary: bump this by hand before each deploy you want to check — if the footer still shows
+// the old number after a refresh, the page/app didn't actually update.
+const PROTOTYPE_VERSION = '0.1'
+
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `nav-link rounded-lg px-3.5 py-2 transition ${isActive ? 'nav-link-active bg-surface2 text-ink' : 'text-soft hover:text-ink hover:bg-surface2/70'}`
 
@@ -225,6 +229,9 @@ function Footer() {
           <p className="mt-6 text-xs text-soft">Photo credits: being confirmed.</p>
         </div>
       </div>
+      <p className="border-t border-line px-5 py-3 text-center text-[0.7rem] text-soft sm:px-8 sm:text-left">
+        Prototype version {PROTOTYPE_VERSION}
+      </p>
     </footer>
   )
 }
