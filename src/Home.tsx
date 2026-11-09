@@ -6,6 +6,7 @@ import { GsapReveal as Reveal } from './components/ui/GsapReveal'
 import { CornerHover } from './components/ui/CornerHover'
 import { StaticCorners } from './components/ui/StaticCorners'
 import { HillsScene } from './components/ui/HillsScene'
+import { BgSwatchPicker } from './components/ui/BgSwatchPicker'
 import { gsap, reducedMotion } from './lib/gsap'
 import { useLenis } from './lib/useLenis'
 
@@ -313,6 +314,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <BgSwatchPicker />
 
       {/* ---- how it works, through the closing CTA: one continuous hill scene behind all of
           them (see HillsScene.tsx), bounded-strip fill so nothing pinches at a fixed corner ---- */}

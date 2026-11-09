@@ -6,9 +6,9 @@ import { Logo } from './Logo'
 import { CornerHover } from '../ui/CornerHover'
 import { PageTransition } from './PageTransition'
 
-// Temporary: bump this by hand before each deploy you want to check — if the footer still shows
-// the old number after a refresh, the page/app didn't actually update.
-const PROTOTYPE_VERSION = '0.1'
+// Temporary: bumped on every change, so the footer itself shows whether a refresh actually picked
+// up the latest update — if it still shows the old number, the page/app didn't update.
+const PROTOTYPE_VERSION = '1.0'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `nav-link rounded-lg px-3.5 py-2 transition ${isActive ? 'nav-link-active bg-surface2 text-ink' : 'text-soft hover:text-ink hover:bg-surface2/70'}`

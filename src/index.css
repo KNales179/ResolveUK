@@ -41,8 +41,13 @@
   --c-mint-green: #4fd1a0;
   --c-charcoal: #1f2937;
   --c-clean-white: #f7faf8;
+  /* The page background itself, not a brand colour on its own — deep-green mixed mostly with
+     black, dark but still clearly green, rather than deep-green on its own (which still read as
+     "green" enough that panels, text and the hill illustration all blended into one
+     undifferentiated green surface instead of sitting visibly on top of a dark backdrop). */
+  --c-near-black-green: color-mix(in oklab, black 55%, var(--c-deep-green));
 
-  --c-bg: var(--c-deep-green);
+  --c-bg: var(--c-near-black-green);
   --c-surface: #0f443c;
   --c-surface2: #15423a;
   --c-ink: var(--c-clean-white);
@@ -327,8 +332,9 @@
 .timeline-dot { position: relative; z-index: 1; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 999px; background: var(--c-accent-vivid); color: var(--c-accent-ink); font-family: var(--font-serif); font-size: 1.1rem; }
 
 /* The nav bar: the same vivid green as the primary button, in light mode. Dark mode already
-   reads green off --c-bg, so it keeps that. */
-.site-header { background: color-mix(in oklab, var(--c-accent-vivid) 50%, var(--c-bg)); backdrop-filter: blur(20px) saturate(140%); -webkit-backdrop-filter: blur(20px) saturate(140%); }
+   reads green off --c-bg, so it keeps that. Mixed with transparent (not just a solid fill) in
+   both themes, so the blur behind it actually shows scrolled content through, same as dark mode. */
+.site-header { background: color-mix(in oklab, color-mix(in oklab, var(--c-accent-vivid) 50%, var(--c-bg)) 80%, transparent); backdrop-filter: blur(20px) saturate(140%); -webkit-backdrop-filter: blur(20px) saturate(140%); }
 [data-theme="dark"] .site-header { background: color-mix(in oklab, var(--c-bg) 80%, transparent); }
 
 /* "Where it stands": frosted glass panels, instead of a solid colour fill — reuses the same
