@@ -14,6 +14,17 @@ export default defineConfig({
       // Content-Security-Policy can require scripts to come from this origin with no exceptions.
       injectRegister: false,
       includeAssets: ['icons/icon-192.png', 'icons/icon-512.png'],
+      // Without these, a newly-installed service worker sits "waiting" until every open tab for
+      // the site is closed before it actually takes over — which is exactly the "I have to open
+      // it again to see the update" symptom. skipWaiting activates the new worker immediately;
+      // clientsClaim hands it control of any already-open tab right away, instead of leaving that
+      // tab on the old worker until its next full reload. cleanupOutdatedCaches drops the previous
+      // deploy's cached assets once the new worker takes over, instead of leaving them around.
+      workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+      },
       manifest: {
         name: 'Resolve UK',
         short_name: 'Resolve UK',
