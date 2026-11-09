@@ -13,6 +13,7 @@
     "sample:build": "node design-preview/build-pages.mjs && npm run sample:css"
   },
   "dependencies": {
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
     "@fontsource-variable/newsreader": "^5.3.0",
     "@supabase/supabase-js": "^2.116.0",
     "gsap": "^3.15.1",
