@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { PageBackdrop } from '../components/site/SiteShell'
 import { Reveal } from '../components/ui/Reveal'
+import { CornerHover } from '../components/ui/CornerHover'
 import { useCategories } from '../lib/categories'
 import { deviceToken } from '../lib/device'
 import { preparePhoto } from '../lib/photo'
@@ -104,13 +105,13 @@ function MyReports({ reporterId }: { reporterId: string }) {
   return (
     <ul className="mt-6 space-y-3">
       {reports.map((r) => (
-        <li key={r.id} className="card flex gap-4 rounded-2xl p-4">
+        <CornerHover as="li" key={r.id} className="card flex gap-4 rounded-2xl p-4">
           <img src={photoUrl(r.photo_path)} alt="" className="size-16 shrink-0 rounded-xl object-cover" />
           <div className="min-w-0">
             <span className="pill pill-reported">{STATUS_LABELS[r.current_status]}</span>
             <p className="mt-1.5 truncate font-semibold">{r.description}</p>
           </div>
-        </li>
+        </CornerHover>
       ))}
     </ul>
   )
@@ -214,18 +215,20 @@ function AccountBody() {
   const [refreshKey, setRefreshKey] = useState(0)
 
   return (
-    <div className="max-w-xl">
-      <p className="eyebrow">Optional, for whoever wants it</p>
-      <h1 className="mt-4 text-4xl sm:text-5xl">Keep track of the reports you've sent.</h1>
-      <p className="mt-6 text-lg leading-relaxed text-soft">
-        Reporting still needs no account at all. Creating one just means a report can stay yours to follow, and, once the commercial route exists, yours to pick a quote on.
-      </p>
+    <div>
+      <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+        <div className="accent-panel rounded-3xl p-8 sm:p-10">
+          <p className="eyebrow">Optional, for whoever wants it</p>
+          <h1 className="mt-4 text-4xl sm:text-5xl">Keep track of the reports you've sent.</h1>
+          <p className="mt-6 text-lg leading-relaxed opacity-90">
+            Reporting still needs no account at all. Creating one just means a report can stay yours to follow, and, once the commercial route exists, yours to pick a quote on.
+          </p>
+        </div>
 
-      <div className="mt-10">
-        {status === 'loading' && <p className="text-soft">Loading…</p>}
-        {status === 'signedOut' && <AuthForm />}
-        {status === 'ready' && profile && (
-          <div>
+        <div>
+          {status === 'loading' && <p className="text-soft">Loading…</p>}
+          {status === 'signedOut' && <AuthForm />}
+          {status === 'ready' && profile && (
             <div className="card flex items-center justify-between gap-4 rounded-2xl p-5">
               <div>
                 <p className="font-semibold">{profile.display_name}</p>
@@ -235,12 +238,17 @@ function AccountBody() {
                 Sign out
               </button>
             </div>
-            <h2 className="mt-10 font-serif text-2xl">Your reports</h2>
-            <MyReports key={refreshKey} reporterId={profile.id} />
-            <LinkedReportForm reporterId={profile.id} onSent={() => setRefreshKey((k) => k + 1)} />
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
+      {status === 'ready' && profile && (
+        <div className="mt-14 max-w-2xl">
+          <h2 className="text-halo font-serif text-2xl">Your reports</h2>
+          <MyReports key={refreshKey} reporterId={profile.id} />
+          <LinkedReportForm reporterId={profile.id} onSent={() => setRefreshKey((k) => k + 1)} />
+        </div>
+      )}
     </div>
   )
 }
@@ -248,12 +256,14 @@ function AccountBody() {
 export function AccountPage() {
   return (
     <ReporterAuthProvider>
-      <PageBackdrop />
-      <main className="mx-auto max-w-3xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
-        <Reveal>
-          <AccountBody />
-        </Reveal>
-      </main>
+      <div className="relative">
+        <PageBackdrop />
+        <main className="cv grid-texture grid-shimmer mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
+          <Reveal>
+            <AccountBody />
+          </Reveal>
+        </main>
+      </div>
     </ReporterAuthProvider>
   )
 }

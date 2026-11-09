@@ -3,42 +3,59 @@
 @source not "../design-sample";
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-/* ---- Colour tokens. Light is a bright morning, dark is a deep night. Neither is green-tinted. ---- */
+/* ---- Colour tokens, from the Resolve brand kit. Light is Sage Green, dark is Deep Green. ---- */
 :root {
-  --c-bg: #eef1f6;
-  --c-surface: #ffffff;
-  --c-surface2: #e7ebf3;
-  --c-ink: #0b1322;
-  --c-soft: #46536b;
-  --c-line: #d9e0ec;
-  --c-accent: #0b8a5f;
-  --c-accent-display: #0f9d58;
-  --c-accent-ink: #ffffff;
+  /* The four brand colours, exactly as documented: Sage Green, Mint Green, Soft Olive, Clean Green White. */
+  --c-sage-green: #99b788;
+  --c-mint-green: #94c690;
+  --c-soft-olive: #9ebc85;
+  --c-clean-white: #f0f5ec;
+
+  --c-bg: var(--c-clean-white);
+  --c-surface: var(--c-clean-white);
+  --c-surface2: #e3ebdc;
+  --c-ink: #0b3d36;
+  --c-soft: #4f5d52;
+  --c-line: #dce5d4;
+  --c-accent: var(--c-sage-green);
+  --c-accent-display: #4c8c53;
+  --c-accent-ink: #0b3d36;
+  /* Sage on its own reads more khaki than green (its hue sits near 98°, next to yellow, at fairly
+     low saturation) — fine as a quiet background tint, but not enough "green" for the elements
+     that are meant to stand out. This is a true, more saturated green (hue ~132°) for exactly
+     those: primary buttons, active states, the icons and dots that should read as green at a
+     glance. Dark mode's own accent (mint) is already vivid, so it just reuses it there. */
+  --c-accent-vivid: #4cbd62;
+  /* A soft teal for the river in the hill scene — close enough to the brand greens to stay in
+     the same family, but distinct enough to read as water rather than another field. */
+  --c-water: #8fc9bd;
   --c-glass: rgb(255 255 255 / 0.72);
-  --c-glass-line: rgb(15 23 42 / 0.08);
-  --c-shadow: 15 23 42;
-  --c-hero-from: rgb(238 241 246 / 0.86);
-  --c-hero-mid: rgb(238 241 246 / 0.48);
-  --c-hero-to: rgb(238 241 246 / 0.05);
+  --c-glass-line: rgb(11 61 54 / 0.08);
+  --c-shadow: 11 30 26;
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --c-bg: #060a13;
-  --c-surface: #0d1424;
-  --c-surface2: #131c31;
-  --c-ink: #eef2fa;
-  --c-soft: #9ba8c0;
-  --c-line: #1f2a44;
-  --c-accent: #4fcf9d;
-  --c-accent-display: #4fcf9d;
-  --c-accent-ink: #04140d;
-  --c-glass: rgb(10 16 30 / 0.6);
-  --c-glass-line: rgb(255 255 255 / 0.1);
+  /* The four brand colours, exactly as documented: Deep Green, Mint Green, Charcoal, Clean White. */
+  --c-deep-green: #0b3d36;
+  --c-mint-green: #4fd1a0;
+  --c-charcoal: #1f2937;
+  --c-clean-white: #f7faf8;
+
+  --c-bg: var(--c-deep-green);
+  --c-surface: #0f443c;
+  --c-surface2: #15423a;
+  --c-ink: var(--c-clean-white);
+  --c-soft: #9cc2b5;
+  --c-line: #1e5349;
+  --c-accent: var(--c-mint-green);
+  --c-accent-display: color-mix(in oklab, var(--c-deep-green) 40%, var(--c-mint-green));
+  --c-accent-ink: var(--c-deep-green);
+  --c-accent-vivid: var(--c-accent);
+  --c-water: #2f7d78;
+  --c-glass: rgb(11 61 54 / 0.6);
+  --c-glass-line: rgb(247 250 248 / 0.1);
   --c-shadow: 0 0 0;
-  --c-hero-from: rgb(6 10 19 / 0.94);
-  --c-hero-mid: rgb(6 10 19 / 0.7);
-  --c-hero-to: rgb(6 10 19 / 0.12);
   color-scheme: dark;
 }
 
@@ -57,6 +74,7 @@
   --color-accent: var(--c-accent);
   --color-accent-display: var(--c-accent-display);
   --color-accent-ink: var(--c-accent-ink);
+  --color-accent-vivid: var(--c-accent-vivid);
 }
 
 /* ---- Base ---- */
@@ -67,6 +85,8 @@
     scrollbar-width: thin;
     scrollbar-color: color-mix(in oklab, var(--c-accent) 55%, transparent) transparent;
   }
+  /* Lenis drives its own smooth scroll (on the homepage only) and the two implementations fight otherwise. */
+  html.lenis { scroll-behavior: auto; }
   body {
     background: var(--c-bg);
     color: var(--c-ink);
@@ -87,7 +107,7 @@
   p { text-wrap: pretty; }
   button, input, textarea, select { font: inherit; color: inherit; }
   button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-  :focus-visible { outline: 2px solid var(--c-accent); outline-offset: 3px; border-radius: 6px; }
+  :focus-visible { outline: 2px solid var(--c-accent-vivid); outline-offset: 3px; border-radius: 6px; }
 }
 
 /* ---- Components ---- */
@@ -116,7 +136,7 @@
   }
   .btn:active { transform: scale(0.97); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-primary { color: var(--c-accent-ink); background: var(--c-accent); }
+  .btn-primary { color: var(--c-accent-ink); background: var(--c-accent-vivid); }
   .btn-primary:hover { filter: brightness(1.07); }
   .btn-ghost { border: 1px solid color-mix(in oklab, var(--c-ink) 22%, var(--c-line)); background: transparent; }
   .btn-ghost:hover { border-color: var(--c-ink); }
@@ -164,7 +184,7 @@
   .tile:has(input:checked) { border-color: var(--c-accent); background: color-mix(in oklab, var(--c-accent) 11%, var(--c-surface)); box-shadow: 0 0 0 1px var(--c-accent); }
   .tile:has(input:focus-visible) { outline: 2px solid var(--c-accent); outline-offset: 3px; }
   .tile-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 0.6rem; background: var(--c-surface2); color: var(--c-accent); transition: background-color 0.2s, color 0.2s; }
-  .tile:has(input:checked) .tile-icon { background: var(--c-accent); color: var(--c-accent-ink); }
+  .tile:has(input:checked) .tile-icon { background: var(--c-accent-vivid); color: var(--c-accent-ink); }
 
   .dropzone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; text-align: center; min-height: 11rem; padding: 1.5rem; border-radius: 0.8rem; border: 1.5px dashed color-mix(in oklab, var(--c-accent) 45%, var(--c-line)); background: color-mix(in oklab, var(--c-surface) 60%, transparent); cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
   .dropzone:hover, .dropzone[data-over="true"] { background: color-mix(in oklab, var(--c-accent) 9%, var(--c-surface)); border-color: var(--c-accent); }
@@ -187,23 +207,29 @@
 }
 
 /* ---- Pictures as backgrounds: a bright morning by day, a deep night after dark ---- */
-.hero-bg, .cta-bg { background-size: cover; background-position: center; }
-.hero-bg { background-image: image-set(url(/img/hero-morning-1280.avif) type("image/avif"), url(/img/hero-morning-1280.webp) type("image/webp")); }
-.cta-bg { background-image: image-set(url(/img/cta-morning-1280.avif) type("image/avif"), url(/img/cta-morning-1280.webp) type("image/webp")); }
-[data-theme="dark"] .hero-bg { background-image: image-set(url(/img/hero-night-1280.avif) type("image/avif"), url(/img/hero-night-1280.webp) type("image/webp")); }
-[data-theme="dark"] .cta-bg { background-image: image-set(url(/img/cta-dusk-1280.avif) type("image/avif"), url(/img/cta-dusk-1280.webp) type("image/webp")); }
-@media (min-width: 1300px) {
-  .hero-bg { background-image: image-set(url(/img/hero-morning-1920.avif) type("image/avif"), url(/img/hero-morning-1920.webp) type("image/webp")); }
-  [data-theme="dark"] .hero-bg { background-image: image-set(url(/img/hero-night-1620.avif) type("image/avif"), url(/img/hero-night-1620.webp) type("image/webp")); }
+/* The closing CTA reuses the hero's own landscape photo, mirrored, instead of a separate
+   unrelated city shot — keeps the "real place" photography consistent across the page. */
+.cta-bg { background-size: cover; background-position: center; transform: scaleX(-1); }
+.cta-bg { background-image: image-set(url(/img/somerset-levels-1093.avif) type("image/avif"), url(/img/somerset-levels-1093.webp) type("image/webp")); }
+
+/* The homepage hero's background stays plain (--c-bg) behind the text. A real photo (the Somerset
+   Levels landscape) sits behind it, masked so it is invisible behind the headline and only fades
+   up — never to full strength — toward the right, behind the card stack. Not a flat colour wash,
+   not a gradient fill; the gradient here is a mask controlling where a photo is allowed to show. */
+.hero-motion-bg { overflow: hidden; }
+.hero-photo {
+  position: absolute; inset: 0;
+  background-image: image-set(url(/img/somerset-levels-1093.avif) type("image/avif"), url(/img/somerset-levels-1093.webp) type("image/webp"));
+  background-size: cover; background-position: center;
+  opacity: 0.7;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 40%, black 95%);
+  mask-image: linear-gradient(to right, transparent 0%, transparent 40%, black 95%);
 }
-@media (max-width: 720px) {
-  .hero-bg { background-image: image-set(url(/img/hero-morning-720.avif) type("image/avif"), url(/img/hero-morning-720.webp) type("image/webp")); }
-  [data-theme="dark"] .hero-bg { background-image: image-set(url(/img/hero-night-720.avif) type("image/avif"), url(/img/hero-night-720.webp) type("image/webp")); }
-}
-.hero-veil { background: linear-gradient(90deg, var(--c-hero-from) 0%, var(--c-hero-mid) 42%, var(--c-hero-to) 78%), linear-gradient(0deg, var(--c-bg) 0%, transparent 28%); }
-@media (max-width: 1023px) { .hero-veil { background: linear-gradient(180deg, var(--c-hero-mid) 0%, var(--c-hero-mid) 55%, var(--c-hero-from) 100%); } }
-.page-bg { background-image: image-set(url(/img/hero-morning-720.avif) type("image/avif"), url(/img/hero-morning-720.webp) type("image/webp")); background-size: cover; background-position: center; }
-[data-theme="dark"] .page-bg { background-image: image-set(url(/img/hero-night-720.avif) type("image/avif"), url(/img/hero-night-720.webp) type("image/webp")); }
+/* A tall, portrait photo instead of a wide landscape one stretched to fill a tall backdrop, sized
+   by width and repeated down the page rather than forced to cover the full scroll height (which
+   would zoom it in). Shared by both themes for now — dark mode gets its own photo later. */
+.page-bg { background-image: image-set(url(/img/longimg-768.avif) type("image/avif"), url(/img/longimg-768.webp) type("image/webp")); background-size: 100% auto; background-position: top center; background-repeat: repeat-y; }
+[data-theme="dark"] .page-bg { background-image: image-set(url(/img/longimg-768.avif) type("image/avif"), url(/img/longimg-768.webp) type("image/webp")); }
 
 /* ---- Motion, always switched off for anyone who asks ---- */
 @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
@@ -216,6 +242,173 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* The theme toggle's circular reveal: suppress the browser's own cross-fade on the root so only the
+   clip-path circle grown from the clicked button (see toggleTheme) is visible. Page-to-page
+   navigation is a separate GSAP crossfade (see PageTransition.tsx), not a view transition. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* Colour on the homepage is a zoned, solid panel next to plain ground — never a gradient wash
+   across a whole section. Light mode stays mostly white/plain; dark mode's plain ground is already
+   the brand's deep green, so it needs no extra colour layered on top. */
+/* A shadow, not just a fill colour, so the panel's own edge still reads when the hills behind it
+   (see HillsScene.tsx) happen to use this same accent colour for one of their bands — without it,
+   a same-colour hill butting up against the panel leaves no visible boundary at all. */
+.accent-panel { background: color-mix(in oklab, var(--c-accent) 75%, transparent); color: var(--c-accent-ink); box-shadow: 0 1px 3px rgb(var(--c-shadow) / 0.16), 0 10px 26px -14px rgb(var(--c-shadow) / 0.4); }
+
+/* A soft halo behind text that sits directly on the hills with no card of its own (headings,
+   the step list, the timeline) — using the section's own surface tone, which is always the
+   readable "paper" colour opposite the text in both themes, so it lifts the text clear of
+   whatever hill colour happens to be behind it instead of only working against one hue. */
+.text-halo { text-shadow: 0 0 10px var(--c-surface), 0 0 10px var(--c-surface), 0 1px 2px var(--c-surface); }
+
+/* A half-opaque backing for the handful of content blocks (the step list, the "what you can
+   report" list, the journey timeline) that are just rows of text with no card of their own —
+   .text-halo alone was carrying all of the contrast there; this gives them an actual surface to
+   sit on, at 50% rather than the fully solid cards elsewhere. */
+.panel-tint { background: color-mix(in oklab, var(--c-surface) 50%, transparent); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border: 1px solid var(--c-glass-line); }
+/* In dark mode, the deep bluish-charcoal card tone (already used for the hero's "Sample" tag etc.)
+   reads better here than a green-on-green mix of the panel against the hill scene behind it. */
+[data-theme="dark"] .panel-tint { background: color-mix(in oklab, var(--c-charcoal) 55%, transparent); }
+
+/* Three distinct identities for the hero's stacked sample cards, so they read as a stack of
+   different cards rather than near-identical shapes blending into the page background. */
+.stack-tint-1 { background: color-mix(in oklab, var(--c-accent) 48%, var(--c-surface)); }
+.stack-tint-2 { background: color-mix(in oklab, var(--c-soft) 45%, var(--c-surface)); }
+.stack-tint-3 { background: color-mix(in oklab, var(--c-accent-display) 55%, var(--c-surface)); }
+
+/* A gentle, continuous float on the whole card stack, so there is always some visible motion
+   rather than only a swap every few seconds that is easy to miss. */
+.stack-idle { animation: stack-float 5s ease-in-out infinite; }
+@keyframes stack-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+.accent-panel .eyebrow { color: var(--c-accent-ink); opacity: 0.75; }
+.accent-panel .eyebrow::before { background: var(--c-accent-ink); opacity: 0.55; }
+
+/* ---- One consistent treatment for every section below the hero: the plain grid
+   (.grid-texture), the cursor shimmer on top of that (.grid-shimmer), and one continuous hill
+   scene running behind all of them (.hills-layer, see HillsScene.tsx) carrying each section's
+   own colour identity as a smooth transition rather than a hard per-section tint. ---- */
+
+/* Static corner brackets framing a card, always on, not just on hover — a small "specimen"
+   flourish instead of a plain rounded rectangle. */
+.static-corners { position: relative; }
+.sc-corner { position: absolute; width: 22px; height: 22px; border-color: var(--c-accent); opacity: 0.55; pointer-events: none; }
+.sc-tl { top: -11px; left: -11px; border-top: 2px solid; border-left: 2px solid; border-top-left-radius: 0.5rem; }
+.sc-tr { top: -11px; right: -11px; border-top: 2px solid; border-right: 2px solid; border-top-right-radius: 0.5rem; }
+.sc-bl { bottom: -11px; left: -11px; border-bottom: 2px solid; border-left: 2px solid; border-bottom-left-radius: 0.5rem; }
+.sc-br { bottom: -11px; right: -11px; border-bottom: 2px solid; border-right: 2px solid; border-bottom-right-radius: 0.5rem; }
+
+/* "What you can report": photos scattered like prints on a desk, not a strict grid — a thick
+   print-style border, a resting tilt, straightening and lifting on hover. */
+.photo-print { background: var(--c-surface); border: 6px solid var(--c-surface); box-shadow: 0 12px 30px -10px rgb(var(--c-shadow) / 0.45); transition: rotate 0.35s ease, scale 0.35s ease, box-shadow 0.35s ease; }
+.photo-print:hover { rotate: 0deg; scale: 1.03; box-shadow: 0 20px 40px -12px rgb(var(--c-shadow) / 0.55); }
+
+/* "The journey": a connecting rail behind the stage numbers, each one a filled circle sitting
+   on the line, instead of plain numerals — reads as a route rather than a list. */
+.timeline-rail { position: relative; }
+.timeline-rail::before { content: ''; position: absolute; top: 1.125rem; left: 0; right: 0; height: 2px; background: var(--c-line); }
+.timeline-dot { position: relative; z-index: 1; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 999px; background: var(--c-accent-vivid); color: var(--c-accent-ink); font-family: var(--font-serif); font-size: 1.1rem; }
+
+/* The nav bar: the same vivid green as the primary button, in light mode. Dark mode already
+   reads green off --c-bg, so it keeps that. */
+.site-header { background: color-mix(in oklab, var(--c-accent-vivid) 50%, var(--c-bg)); backdrop-filter: blur(20px) saturate(140%); -webkit-backdrop-filter: blur(20px) saturate(140%); }
+[data-theme="dark"] .site-header { background: color-mix(in oklab, var(--c-bg) 80%, transparent); }
+
+/* "Where it stands": frosted glass panels, instead of a solid colour fill — reuses the same
+   glass tokens the nav bar already uses, so it still feels native to the site. */
+.glass-panel { background: var(--c-glass); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); border: 1px solid var(--c-glass-line); }
+/* In dark mode, the same deep bluish-charcoal as .panel-tint — kept separate from --c-glass
+   itself, which the nav bar and map attribution still use their own green-tinted version of. */
+[data-theme="dark"] .glass-panel { background: color-mix(in oklab, var(--c-charcoal) 55%, transparent); }
+
+/* The base grid, used on every section below the hero. `background-attachment: fixed` ties the
+   pattern to the viewport instead of to each section's own box, so the 40px cells line up
+   continuously across every section boundary rather than each section starting its own grid
+   from (0,0) and drifting out of phase with its neighbours. */
+.grid-texture { position: relative; isolation: isolate; }
+.grid-texture::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--c-ink) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--c-ink) 3%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-attachment: fixed;
+}
+
+/* The shimmer: only the grid LINES near the cursor brighten, nothing else — not a soft glow blob
+   over the whole area. A second grid layer, in the accent colour, masked down to a small circle
+   around the cursor's position *local to this element*. It shares the same `background-attachment:
+   fixed` as the dim base grid in `.grid-texture::before`, so the two stay on the same viewport-wide
+   set of lines — the mask (built from the local cursor position) just carves the small spotlight
+   out of that shared pattern, rather than each needing its own matching offset. */
+.grid-shimmer::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--c-accent) 75%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--c-accent) 75%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-attachment: fixed;
+  -webkit-mask-image: radial-gradient(circle 150px at var(--spot-x, -999px) var(--spot-y, -999px), black 0%, transparent 100%);
+  mask-image: radial-gradient(circle 150px at var(--spot-x, -999px) var(--spot-y, -999px), black 0%, transparent 100%);
+}
+
+/* The hills: one low, continuous illustration running behind every section from "How it works"
+   to the closing CTA (see HillsScene.tsx) — a single <canvas> spanning the whole scene, coloured
+   with full-strength accent tones that blend smoothly from section to section, never the diluted
+   tint a section's own background would otherwise use, so the hills never blend into the ground
+   they sit on. */
+.hills-layer { position: absolute; inset: 0; z-index: -1; pointer-events: none; display: block; width: 100%; height: 100%; }
+
+/* Hero: the same fine line grid as every other section, confined to the empty text side so it
+   doesn't fight the photo. No sweep/shimmer — grid only. */
+/* No position here: this sits on .hero-motion-bg, which already needs the Tailwind `absolute`
+   utility it's given in JSX — setting position here would silently override that (same
+   specificity, later in the cascade) and collapse the whole layer, photo included. */
+.shimmer-grid { isolation: isolate; }
+.shimmer-grid::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--c-ink) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--c-ink) 3%, transparent) 1px, transparent 1px);
+  background-size: 40px 40px;
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 48%, transparent 68%);
+  mask-image: linear-gradient(to right, black 0%, black 48%, transparent 68%);
+}
+
+/* Main nav links: a sliding underline on hover, plus a permanent one for the active page. */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: ''; position: absolute; left: 14px; right: 14px; bottom: 3px; height: 2px; border-radius: 1px;
+  background: var(--c-accent); transform: scaleX(0); transform-origin: center; transition: transform 0.25s ease;
+}
+.nav-link:hover::after, .nav-link-active::after { transform: scaleX(1); }
+
+/* Small hover polish shared across homepage cards/rows/links. */
+.hover-lift { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.hover-lift:hover { transform: translateY(-4px); }
+.link-nudge { display: inline-flex; align-items: center; gap: 0.375rem; }
+.link-nudge svg { transition: transform 0.2s ease; }
+.link-nudge:hover svg { transform: translateX(3px); }
+
+/* A real hover: a tinted background plus four corner brackets sliding in from outside the row,
+   framing it. Used on list rows across the homepage so hovering actually reads as interactive.
+   --ch-color/--ch-tint let a row sitting on a coloured (.accent-panel) surface swap in a colour
+   that still shows up, instead of accent-coloured brackets vanishing onto an accent background. */
+.corner-hover {
+  position: relative; border-radius: 0.85rem; transition: background-color 0.25s ease;
+  --ch-color: var(--c-accent); --ch-tint: color-mix(in oklab, var(--c-accent) 14%, transparent);
+}
+.accent-panel .corner-hover { --ch-color: var(--c-accent-ink); --ch-tint: color-mix(in oklab, var(--c-accent-ink) 16%, transparent); }
+.corner-hover:hover, .corner-hover:focus-within { background: var(--ch-tint); }
+.ch-corner { position: absolute; width: 18px; height: 18px; border-color: var(--ch-color); border-style: solid; border-width: 0; opacity: 0; transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none; }
+.ch-tl { top: 2px; left: 2px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 0.5rem; transform: translate(9px, 9px); }
+.ch-tr { top: 2px; right: 2px; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 0.5rem; transform: translate(-9px, 9px); }
+.ch-bl { bottom: 2px; left: 2px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 0.5rem; transform: translate(9px, -9px); }
+.ch-br { bottom: 2px; right: 2px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 0.5rem; transform: translate(-9px, -9px); }
+.corner-hover:hover .ch-corner, .corner-hover:focus-within .ch-corner { opacity: 1; transform: translate(0, 0); }
 
 /* ---- Messages ---- */
 @layer components {

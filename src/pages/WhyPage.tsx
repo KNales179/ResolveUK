@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { PageBackdrop } from '../components/site/SiteShell'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Reveal } from '../components/ui/Reveal'
+import { CornerHover } from '../components/ui/CornerHover'
 
 const STATS: Array<[IconName, string, string, string, string, string]> = [
   ['trash', 'Fly-tipping', '1.26 million', 'incidents dealt with by English councils in 2024/25, up 9% on the year before. Over a third happened on pavements and roads.', 'DEFRA, official statistics, 2025', 'https://www.gov.uk/government/statistics/fly-tipping-statistics-for-england/fly-tipping-statistics-for-england-2024-to-2025'],
@@ -19,51 +20,74 @@ const HEADLINES: Array<[string, string, string]> = [
 
 export function WhyPage() {
   return (
-    <>
+    <div className="relative">
       <PageBackdrop />
-      <main className="mx-auto max-w-4xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
-        <Reveal className="max-w-2xl">
+      <main className="cv grid-texture grid-shimmer mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
+        <Reveal className="accent-panel rounded-3xl p-8 sm:p-12">
           <p className="eyebrow">Why Resolve UK exists</p>
-          <h1 className="mt-4 text-4xl sm:text-5xl">Reported isn't the same as fixed.</h1>
-          <p className="mt-6 text-lg leading-relaxed text-soft">
+          <h1 className="mt-4 max-w-2xl text-4xl sm:text-5xl">Reported isn't the same as fixed.</h1>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed opacity-90">
             Fly-tipping, potholes, litter and abandoned vehicles aren't rare. They're some of the most reported problems in the country, and some of the hardest to see through to the end. Resolve UK exists to close that gap: not just to collect a report, but to show what happened to it.
           </p>
         </Reveal>
 
         <Reveal className="mt-14">
           <h2 className="font-serif text-2xl">The scale of it</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {STATS.map(([icon, title, stat, detail, source, url]) => (
-              <div key={title} className="card rounded-2xl p-6">
-                <span className="tile-icon size-11 rounded-xl">
-                  <Icon name={icon} className="size-5" />
+          {/* A bento rather than four equal cards: fly-tipping carries the headline number (and is
+              the site's main use case), so it gets one large tile on top; the other three stay
+              smaller underneath. CornerHover wraps a plain outer layer here, not accent-panel/card
+              itself, so its hover tint can't override the tile's own solid background. */}
+          <div className="mt-6 grid gap-4">
+            <CornerHover className="block">
+              <div className="accent-panel hover-lift grid gap-5 rounded-3xl p-7 sm:p-9 lg:grid-cols-[auto_1fr] lg:items-center">
+                <span className="tile-icon size-16 shrink-0 rounded-2xl bg-black/10">
+                  <Icon name={STATS[0][0]} className="size-8" />
                 </span>
-                <p className="mt-4 text-xs font-bold uppercase tracking-widest text-soft">{title}</p>
-                <p className="mt-1 font-serif text-3xl">{stat}</p>
-                <p className="mt-2 leading-relaxed text-soft">{detail}</p>
-                <a href={url} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs font-semibold text-accent hover:underline">
-                  {source} ↗
-                </a>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest opacity-75">{STATS[0][1]}</p>
+                  <p className="mt-1 font-serif text-5xl">{STATS[0][2]}</p>
+                  <p className="mt-2 max-w-2xl leading-relaxed opacity-85">{STATS[0][3]}</p>
+                  <a href={STATS[0][5]} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs font-semibold hover:underline">
+                    {STATS[0][4]} ↗
+                  </a>
+                </div>
               </div>
-            ))}
+            </CornerHover>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {STATS.slice(1).map(([icon, title, stat, detail, source, url]) => (
+                <CornerHover key={title} className="block">
+                  <div className="card hover-lift h-full rounded-2xl p-6">
+                    <span className="tile-icon size-11 rounded-xl">
+                      <Icon name={icon} className="size-5" />
+                    </span>
+                    <p className="mt-4 text-xs font-bold uppercase tracking-widest text-soft">{title}</p>
+                    <p className="mt-1 font-serif text-3xl">{stat}</p>
+                    <p className="mt-2 leading-relaxed text-soft">{detail}</p>
+                    <a href={url} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs font-semibold text-accent hover:underline">
+                      {source} ↗
+                    </a>
+                  </div>
+                </CornerHover>
+              ))}
+            </div>
           </div>
         </Reveal>
 
         <Reveal className="mt-14">
           <h2 className="font-serif text-2xl">In the news</h2>
-          <ul className="mt-6 divide-y divide-line border-y border-line">
+          <ul className="text-halo panel-tint mt-6 divide-y divide-line overflow-hidden rounded-3xl">
             {HEADLINES.map(([headline, source, url]) => (
-              <li key={headline} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-4">
+              <CornerHover as="li" key={headline} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-4 sm:px-7">
                 <a href={url} target="_blank" rel="noreferrer" className="font-semibold hover:underline">
                   {headline}
                 </a>
                 <span className="text-sm text-soft">{source}</span>
-              </li>
+              </CornerHover>
             ))}
           </ul>
         </Reveal>
 
-        <Reveal className="mt-14 border-l-2 border-accent pl-6">
+        <Reveal className="glass-panel mt-14 rounded-3xl border-l-4 border-accent p-6 sm:p-8">
           <p className="text-lg leading-relaxed">
             In a 2024 survey of more than 71,000 residents, over a third of English council areas scored 10% or lower for satisfaction with how often potholes are dealt with locally. Three areas scored as low as 5%.
           </p>
@@ -81,6 +105,6 @@ export function WhyPage() {
           </Link>
         </Reveal>
       </main>
-    </>
+    </div>
   )
 }

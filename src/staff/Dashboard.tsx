@@ -59,11 +59,11 @@ export function StaffDashboard() {
   const section = (id: string, title: string, hint: string, list: StaffReport[]) =>
     list.length === 0 ? null : (
       <section className="staff-section" id={id}>
-        <h2 className="flex items-center gap-3 text-xl font-bold">
+        <h2 className="text-halo flex items-center gap-3 text-xl font-bold">
           {title}
           <span className="rounded-full bg-surface2 px-3 py-0.5 text-sm font-semibold text-soft">{list.length}</span>
         </h2>
-        <p className="mt-1 text-sm text-soft">{hint}</p>
+        <p className="text-halo mt-1 text-sm text-soft">{hint}</p>
         <ul className="mt-5 grid gap-4">
           {list.map((r) => (
             <ReportRow key={r.id} report={r} me={me} categories={FALLBACK_CATEGORIES} bodies={bodies} onAction={act} busy={busy} />

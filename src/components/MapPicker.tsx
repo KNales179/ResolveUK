@@ -8,9 +8,12 @@ import { Icon } from './ui/Icon'
 
 // Detailed vector maps from OpenFreeMap: free, no key, and made from OpenStreetMap data.
 // Vector tiles stay sharp and can be zoomed in much closer than the standard picture tiles.
+// OpenFreeMap's own "dark" style is barely legible (near-black roads/labels on a near-black
+// background); "fiord" is their other dark-toned style, a muted navy with much lighter,
+// actually-readable labels and roads, so it's used here instead.
 const STYLES: Record<ThemeName, string> = {
   light: 'https://tiles.openfreemap.org/styles/liberty',
-  dark: 'https://tiles.openfreemap.org/styles/dark',
+  dark: 'https://tiles.openfreemap.org/styles/fiord',
 }
 
 // Only where the map starts before a spot is known. It is not a statement about where the service runs.
@@ -71,7 +74,7 @@ export function MapPicker({ position, onChange, onLocate, locating }: Props) {
       existing.setData(data)
       return
     }
-    const accent = getComputedStyle(document.documentElement).getPropertyValue('--c-accent').trim() || '#0b8a5f'
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--c-accent').trim() || '#99b788'
     m.addSource(ACCURACY, { type: 'geojson', data })
     m.addLayer({ id: 'accuracy-fill', type: 'fill', source: ACCURACY, paint: { 'fill-color': accent, 'fill-opacity': 0.16 } })
     m.addLayer({ id: 'accuracy-line', type: 'line', source: ACCURACY, paint: { 'line-color': accent, 'line-width': 1.5, 'line-opacity': 0.7 } })

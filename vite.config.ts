@@ -18,8 +18,8 @@ export default defineConfig({
         name: 'Resolve UK',
         short_name: 'Resolve UK',
         description: 'Report environmental issues in your area and track their resolution.',
-        theme_color: '#0b8a5f',
-        background_color: '#060a13',
+        theme_color: '#99b788',
+        background_color: '#0b3d36',
         display: 'standalone',
         start_url: '/report',
         icons: [
