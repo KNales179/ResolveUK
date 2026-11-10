@@ -12,6 +12,7 @@ const GetInvolvedPage = lazy(() => import('./pages/GetInvolvedPage').then((m) =>
 const CommunityPage = lazy(() => import('./pages/CommunityPage').then((m) => ({ default: m.CommunityPage })))
 const CommercialPage = lazy(() => import('./pages/CommercialPage').then((m) => ({ default: m.CommercialPage })))
 const AccountPage = lazy(() => import('./pages/AccountPage').then((m) => ({ default: m.AccountPage })))
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })))
 const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m.StaffApp })))
 
 const Blank = <div className="min-h-svh" aria-busy="true" />
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="community" element={<CommunityPage />} />
             <Route path="commercial" element={<CommercialPage />} />
             <Route path="account" element={<AccountPage />} />
+            <Route path="reset-password" element={<ResetPasswordPage />} />
           </Route>
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />

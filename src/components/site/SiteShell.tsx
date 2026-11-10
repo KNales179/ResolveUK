@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Icon } from '../ui/Icon'
-import { toggleTheme } from '../../lib/theme'
+import { toggleTheme, useThemeName } from '../../lib/theme'
+import { applyBgForTheme } from '../../lib/bgPreview'
 import { Logo } from './Logo'
 import { CornerHover } from '../ui/CornerHover'
 import { PageTransition } from './PageTransition'
 
 // Temporary: bumped on every change, so the footer itself shows whether a refresh actually picked
 // up the latest update — if it still shows the old number, the page/app didn't update.
-const PROTOTYPE_VERSION = '1.0'
+const PROTOTYPE_VERSION = '1.4'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `nav-link rounded-lg px-3.5 py-2 transition ${isActive ? 'nav-link-active bg-surface2 text-ink' : 'text-soft hover:text-ink hover:bg-surface2/70'}`
@@ -266,10 +267,25 @@ function CursorGlow() {
   return null
 }
 
+// TEMPORARY — part of the BgSwatchPicker comparison tool (see BgSwatchPicker.tsx and
+// lib/bgPreview.ts). Delete alongside them once a background colour is picked for each theme.
+// Unlike the picker itself, this is mounted on every page, so a theme toggle anywhere re-syncs
+// --c-bg to that theme's remembered pick (or clears it) no matter which page you're on — without
+// this, toggling theme on a page other than Home left the colour stuck on the previous theme's
+// value until you navigated back to Home and the picker remounted.
+function BgPreviewSync() {
+  const theme = useThemeName()
+  useEffect(() => {
+    applyBgForTheme(theme)
+  }, [theme])
+  return null
+}
+
 export function SiteShell() {
   return (
     <>
       <CursorGlow />
+      <BgPreviewSync />
       <Nav />
       <PageTransition />
       <Footer />

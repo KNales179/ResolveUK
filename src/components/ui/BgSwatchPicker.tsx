@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { gsap } from '../../lib/gsap'
 import { useThemeName } from '../../lib/theme'
+import { pickedBg } from '../../lib/bgPreview'
 
-// TEMPORARY — a quick comparison tool, not meant to ship. Delete this file and its one usage in
-// Home.tsx once a background colour is picked for each theme; nothing else in the app reads from
-// it. Shows only the swatch set for whichever theme is currently active (switch with the site's
-// own theme toggle to see the other set) — clicking one animates --c-bg to that exact colour with
-// GSAP. Each swatch is a step between "close to black" and the original, un-mixed green background
-// from before the darkening request.
+// TEMPORARY — a quick comparison tool, not meant to ship. Delete this file, its one usage in
+// Home.tsx, and lib/bgPreview.ts once a background colour is picked for each theme; nothing else
+// in the app reads from them. Shows only the swatch set for whichever theme is currently active
+// (switch with the site's own theme toggle to see the other set) — clicking one animates --c-bg to
+// that exact colour with GSAP, and is remembered per theme (see lib/bgPreview.ts, which also keeps
+// that pick in sync if you navigate to another page and toggle the theme there, since this picker
+// itself only lives on Home). Each swatch is a step between "close to black" and the original,
+// un-mixed green background from before the darkening request.
 const DARK_SWATCHES: Array<[string, string]> = [
   ['Darkest', '#020c0b'],
   ['Darker', '#041513'],
@@ -40,21 +43,19 @@ function Swatch({ label, hex, active, onClick }: { label: string; hex: string; a
 
 export function BgSwatchPicker() {
   const theme = useThemeName()
-  const [activeHex, setActiveHex] = useState<string | null>(null)
+  const [activeHex, setActiveHex] = useState<string | null>(pickedBg[theme])
   const swatches = theme === 'dark' ? DARK_SWATCHES : LIGHT_SWATCHES
 
-  // A picked swatch sets --c-bg as an inline style (that's what GSAP animates), which otherwise
-  // outranks either theme's own stylesheet value forever — switch themes with the real toggle
-  // and the previous pick kept showing through instead of that theme's default. Clearing it (and
-  // the ring highlight) every time the theme changes means each theme always starts from its own
-  // real colour again; pick a swatch to preview that theme specifically.
+  // The actual --c-bg syncing on a theme change is handled globally (SiteShell's BgPreviewSync,
+  // backed by the same pickedBg object) so it still works on pages other than this one — this
+  // effect only needs to keep the ring highlight here in step with whichever pick that already
+  // applied, including if this picker remounts (e.g. navigating back to Home) after it changed.
   useEffect(() => {
-    gsap.killTweensOf(document.documentElement, '--c-bg')
-    document.documentElement.style.removeProperty('--c-bg')
-    setActiveHex(null)
+    setActiveHex(pickedBg[theme])
   }, [theme])
 
   const pick = (hex: string) => {
+    pickedBg[theme] = hex
     gsap.to(document.documentElement, { '--c-bg': hex, duration: 0.6, ease: 'power2.out' })
     setActiveHex(hex)
   }

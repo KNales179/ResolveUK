@@ -67,6 +67,8 @@ export interface StaffProfile {
   body_id: string | null
   role: StaffRole
   display_name: string
+  bio: string | null
+  avatar_path: string | null
   active: boolean
   must_change_password: boolean
 }

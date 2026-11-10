@@ -1,8 +1,12 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { addBody, listBodies, listStaff, linkStaff, setStaffActive } from './api'
 import { useStaffMe } from './auth'
+import { Icon, type IconName } from '../components/ui/Icon'
 import { Select } from '../components/ui/Select'
+import { photoUrl } from '../lib/photos'
 import type { ResponsibleBody, StaffProfile, StaffRole } from '../types'
+
+const ROLE_ICON: Record<StaffRole, IconName> = { staff: 'user', reviewer: 'shield', resolve_admin: 'shield' }
 
 const ROLE_LABEL: Record<StaffRole, string> = { staff: 'Council or contractor staff', reviewer: 'Resolve reviewer', resolve_admin: 'Resolve admin' }
 const ROLE_CHOICES = (Object.keys(ROLE_LABEL) as StaffRole[]).map((value) => ({ value, label: ROLE_LABEL[value] }))
@@ -187,39 +191,56 @@ export function StaffManage() {
 
       <section className="staff-section card rounded-3xl p-6 sm:p-8">
         <h2 className="text-xl font-bold">Councils and contractors</h2>
-        <ul className="staff-list mt-4 divide-y divide-line">
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
           {bodies.map((b) => (
-            <li key={b.id} className="py-3">
-              <b>{b.name}</b>
-              <span className="ml-2 text-sm text-soft">
-                {b.kind === 'council' ? b.tier : b.kind === 'contractor' ? `contractor for ${bodies.find((c) => c.id === b.works_for_id)?.name ?? '—'}` : 'other, handled manually'}
-                {!b.active && ' · retired'}
+            <li key={b.id} className="card flex items-start gap-3 rounded-2xl p-4">
+              <span className="tile-icon size-10 shrink-0 rounded-xl">
+                <Icon name="building" className="size-5" />
               </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold">{b.name}</p>
+                <p className="mt-0.5 text-sm text-soft">
+                  {b.kind === 'council' ? b.tier : b.kind === 'contractor' ? `Contractor for ${bodies.find((c) => c.id === b.works_for_id)?.name ?? '—'}` : 'Other, handled manually'}
+                </p>
+                {!b.active && <span className="pill pill-closed mt-2">Retired</span>}
+              </div>
             </li>
           ))}
-          {bodies.length === 0 && <li className="py-3 text-soft">None yet.</li>}
+          {bodies.length === 0 && <li className="text-soft">None yet.</li>}
         </ul>
         <AddBody bodies={bodies} onAdded={reload} />
       </section>
 
       <section className="staff-section card rounded-3xl p-6 sm:p-8">
         <h2 className="text-xl font-bold">Staff</h2>
-        <ul className="staff-list mt-4 divide-y divide-line">
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
           {staff.map((s) => (
-            <li key={s.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3">
-              <b>{s.display_name}</b>
-              <span className="text-sm text-soft">
-                {ROLE_LABEL[s.role]}
-                {s.body_id && ` · ${bodies.find((b) => b.id === s.body_id)?.name ?? ''}`}
-                {!s.active && ' · switched off'}
-              </span>
-              {s.id !== me.id && (
-                <button type="button" className="btn btn-ghost btn-sm ml-auto" onClick={() => toggle(s.id, !s.active)}>
-                  {s.active ? 'Switch off' : 'Switch back on'}
-                </button>
+            <li key={s.id} className="card flex items-start gap-3 rounded-2xl p-4">
+              {s.avatar_path ? (
+                <img src={photoUrl(s.avatar_path)} alt="" className="size-10 shrink-0 rounded-full object-cover" />
+              ) : (
+                <span className="tile-icon size-10 shrink-0 rounded-full">
+                  <Icon name={ROLE_ICON[s.role]} className="size-5" />
+                </span>
               )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold">{s.display_name}</p>
+                <p className="mt-0.5 text-sm text-soft">
+                  {ROLE_LABEL[s.role]}
+                  {s.body_id && ` · ${bodies.find((b) => b.id === s.body_id)?.name ?? ''}`}
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  {!s.active && <span className="pill pill-closed">Switched off</span>}
+                  {s.id !== me.id && (
+                    <button type="button" className="btn btn-ghost btn-sm" onClick={() => toggle(s.id, !s.active)}>
+                      {s.active ? 'Switch off' : 'Switch back on'}
+                    </button>
+                  )}
+                </div>
+              </div>
             </li>
           ))}
+          {staff.length === 0 && <li className="text-soft">None yet.</li>}
         </ul>
         <AddStaff bodies={bodies.filter((b) => b.active)} onAdded={reload} />
       </section>

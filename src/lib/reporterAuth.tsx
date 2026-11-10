@@ -5,6 +5,8 @@ import { supabase } from './supabase'
 export interface ReporterProfile {
   id: string
   display_name: string
+  bio: string | null
+  avatar_path: string | null
 }
 
 type Status = 'loading' | 'signedOut' | 'ready'
@@ -15,7 +17,10 @@ interface ReporterAuth {
   profile: ReporterProfile | null
   signUp: (email: string, password: string, displayName: string) => Promise<string | null>
   signIn: (email: string, password: string) => Promise<string | null>
+  signInWithGoogle: () => Promise<string | null>
+  resetPassword: (email: string) => Promise<string | null>
   signOut: () => Promise<void>
+  updateProfile: (fields: { display_name?: string; bio?: string | null; avatar_path?: string | null }) => Promise<string | null>
 }
 
 const Ctx = createContext<ReporterAuth | null>(null)
@@ -50,7 +55,7 @@ export function ReporterAuthProvider({ children }: { children: ReactNode }) {
     let alive = true
     setProfile(undefined)
     ;(async () => {
-      const { data } = await supabase.from('reporter_profiles').select('id, display_name').eq('id', userId).maybeSingle()
+      const { data } = await supabase.from('reporter_profiles').select('id, display_name, bio, avatar_path').eq('id', userId).maybeSingle()
       if (!alive) return
       if (data) {
         setProfile(data as ReporterProfile)
@@ -58,10 +63,12 @@ export function ReporterAuthProvider({ children }: { children: ReactNode }) {
       }
       // First sign-in after confirming an email: the account exists in auth, but the profile
       // row was never written (sign-up may have needed email confirmation first). Create it now
-      // from the name given at sign-up, which Supabase kept on the account the whole time.
-      const name = (session?.user.user_metadata?.display_name as string | undefined)?.trim() || 'Reporter'
-      const { data: created } = await supabase.from('reporter_profiles').insert({ id: userId, display_name: name }).select('id, display_name').maybeSingle()
-      if (alive) setProfile((created as ReporterProfile | null) ?? { id: userId, display_name: name })
+      // from the name given at sign-up, which Supabase kept on the account the whole time. A
+      // Google sign-in carries its own name under a different metadata key instead.
+      const meta = session?.user.user_metadata
+      const name = ((meta?.display_name || meta?.full_name || meta?.name) as string | undefined)?.trim() || 'Reporter'
+      const { data: created } = await supabase.from('reporter_profiles').insert({ id: userId, display_name: name }).select('id, display_name, bio, avatar_path').maybeSingle()
+      if (alive) setProfile((created as ReporterProfile | null) ?? { id: userId, display_name: name, bio: null, avatar_path: null })
     })()
     return () => {
       alive = false
@@ -90,8 +97,26 @@ export function ReporterAuthProvider({ children }: { children: ReactNode }) {
         if (!error) return null
         return /invalid login/i.test(error.message) ? 'That email and password do not match.' : error.message
       },
+      async signInWithGoogle() {
+        // Navigates away to Google and back, so this only ever resolves with an error — a request
+        // that never even started (e.g. the Google provider is not switched on for this Supabase
+        // project yet). There is nothing to await on success; the page leaves first.
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/account` } })
+        return error ? error.message : null
+      },
+      async resetPassword(email) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/reset-password` })
+        return error ? error.message : null
+      },
       async signOut() {
         await supabase.auth.signOut()
+      },
+      async updateProfile(fields) {
+        if (!userId) return 'Not signed in.'
+        const { data, error } = await supabase.from('reporter_profiles').update(fields).eq('id', userId).select('id, display_name, bio, avatar_path').maybeSingle()
+        if (error) return error.message
+        if (data) setProfile(data as ReporterProfile)
+        return null
       },
     }
   }, [known, userId, profile, session])

@@ -1,25 +1,86 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import { PageBackdrop } from '../components/site/SiteShell'
 import { Reveal } from '../components/ui/Reveal'
-import { CornerHover } from '../components/ui/CornerHover'
+import { Icon, type IconName } from '../components/ui/Icon'
+import { GoogleIcon } from '../components/ui/GoogleIcon'
+import { PasswordField } from '../components/ui/PasswordField'
 import { useCategories } from '../lib/categories'
 import { deviceToken } from '../lib/device'
+import { timeAgo } from '../lib/format'
 import { preparePhoto } from '../lib/photo'
 import { photoUrl } from '../lib/photos'
 import { ReporterAuthProvider, useReporterAuth } from '../lib/reporterAuth'
-import { STATUS_LABELS } from '../lib/status'
+import { STATUS_LABELS, statusGroup } from '../lib/status'
 import { supabase } from '../lib/supabase'
 import type { Report } from '../types'
 
+const TYPE_ICON: Record<string, IconName> = { 'fly-tipping': 'trash', pothole: 'road', graffiti: 'spray', 'abandoned-vehicle': 'car', 'damaged-infrastructure': 'lamp', other: 'more' }
+
+function ForgotPasswordForm({ onBack }: { onBack: () => void }) {
+  const { resetPassword } = useReporterAuth()
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [sent, setSent] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  async function submit(e: FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setBusy(true)
+    const problem = await resetPassword(email)
+    setBusy(false)
+    if (problem) setError(problem)
+    else setSent(true)
+  }
+
+  if (sent) {
+    return (
+      <div className="card max-w-md rounded-2xl p-6 sm:p-7">
+        <p className="msg msg-ok" role="status">
+          If an account exists for {email}, a reset link is on its way.
+        </p>
+        <button type="button" className="btn btn-ghost mt-4 w-full" onClick={onBack}>
+          Back to sign in
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={submit} className="card max-w-md space-y-4 rounded-2xl p-6 sm:p-7">
+      <h3 className="font-semibold">Reset your password</h3>
+      <div>
+        <label htmlFor="forgot-email" className="mb-1.5 block text-sm font-semibold">
+          Email
+        </label>
+        <input id="forgot-email" className="input" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+      </div>
+      {error && (
+        <p className="msg msg-error" role="alert">
+          {error}
+        </p>
+      )}
+      <button type="submit" className="btn btn-primary w-full" disabled={busy}>
+        {busy ? 'Sending…' : 'Send reset link'}
+      </button>
+      <button type="button" className="block w-full text-center text-sm font-semibold text-soft hover:text-ink" onClick={onBack}>
+        Back to sign in
+      </button>
+    </form>
+  )
+}
+
 function AuthForm() {
-  const { signIn, signUp } = useReporterAuth()
-  const [mode, setMode] = useState<'signIn' | 'signUp'>('signUp')
+  const { signIn, signUp, signInWithGoogle } = useReporterAuth()
+  const [mode, setMode] = useState<'signIn' | 'signUp' | 'forgot'>('signUp')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [googleBusy, setGoogleBusy] = useState(false)
 
   async function submit(e: FormEvent) {
     e.preventDefault()
@@ -32,6 +93,19 @@ function AuthForm() {
     setBusy(false)
   }
 
+  async function withGoogle() {
+    setError(null)
+    setGoogleBusy(true)
+    const problem = await signInWithGoogle()
+    if (problem) {
+      setError(problem)
+      setGoogleBusy(false)
+    }
+    // No else: the page is about to navigate to Google, so there is nothing further to do here.
+  }
+
+  if (mode === 'forgot') return <ForgotPasswordForm onBack={() => setMode('signIn')} />
+
   return (
     <div className="card max-w-md rounded-2xl p-6 sm:p-7">
       <div className="dd flex gap-1 rounded-lg border border-line p-1">
@@ -42,7 +116,17 @@ function AuthForm() {
           Sign in
         </button>
       </div>
-      <form onSubmit={submit} className="mt-6 space-y-4">
+
+      <button type="button" className="btn btn-ghost mt-6 w-full gap-2.5" onClick={() => void withGoogle()} disabled={googleBusy}>
+        <GoogleIcon /> {googleBusy ? 'Redirecting…' : `Continue with Google`}
+      </button>
+      <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-soft">
+        <span className="h-px flex-1 bg-line" />
+        or
+        <span className="h-px flex-1 bg-line" />
+      </div>
+
+      <form onSubmit={submit} className="space-y-4">
         {mode === 'signUp' && (
           <div>
             <label htmlFor="account-name" className="mb-1.5 block text-sm font-semibold">
@@ -57,12 +141,12 @@ function AuthForm() {
           </label>
           <input id="account-email" className="input" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
-        <div>
-          <label htmlFor="account-password" className="mb-1.5 block text-sm font-semibold">
-            Password
-          </label>
-          <input id="account-password" className="input" type="password" autoComplete={mode === 'signUp' ? 'new-password' : 'current-password'} required value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
+        <PasswordField id="account-password" label="Password" autoComplete={mode === 'signUp' ? 'new-password' : 'current-password'} value={password} onChange={setPassword} />
+        {mode === 'signIn' && (
+          <button type="button" className="-mt-2 block text-sm font-semibold text-accent hover:underline" onClick={() => setMode('forgot')}>
+            Forgot your password?
+          </button>
+        )}
         {error && (
           <p className="msg msg-error" role="alert">
             {error}
@@ -82,7 +166,9 @@ function AuthForm() {
 }
 
 function MyReports({ reporterId }: { reporterId: string }) {
+  const categories = useCategories()
   const [reports, setReports] = useState<Report[] | null>(null)
+  const labelOf = (code: string) => categories.find((c) => c.code === code)?.label ?? code
 
   useEffect(() => {
     let alive = true
@@ -100,18 +186,38 @@ function MyReports({ reporterId }: { reporterId: string }) {
   }, [reporterId])
 
   if (!reports) return <p className="mt-6 text-soft">Loading your reports…</p>
-  if (reports.length === 0) return <p className="mt-6 text-soft">Nothing linked to your account yet. Send one below.</p>
+  if (reports.length === 0)
+    return (
+      <div className="card mt-6 rounded-3xl p-10 text-center">
+        <span className="tile-icon mx-auto size-14 rounded-2xl">
+          <Icon name="search" className="size-6" />
+        </span>
+        <p className="mt-4 font-serif text-xl">Nothing linked to your account yet</p>
+        <p className="mt-1 text-soft">Send one below and it shows up here.</p>
+      </div>
+    )
 
   return (
-    <ul className="mt-6 space-y-3">
+    <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {reports.map((r) => (
-        <CornerHover as="li" key={r.id} className="card flex gap-4 rounded-2xl p-4">
-          <img src={photoUrl(r.photo_path)} alt="" className="size-16 shrink-0 rounded-xl object-cover" />
-          <div className="min-w-0">
-            <span className="pill pill-reported">{STATUS_LABELS[r.current_status]}</span>
-            <p className="mt-1.5 truncate font-semibold">{r.description}</p>
-          </div>
-        </CornerHover>
+        <li key={r.id}>
+          <Link to={`/reports/${r.id}`} className="card group flex h-full flex-col overflow-hidden rounded-3xl text-left transition hover:border-ink/40">
+            <span className="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
+              <img src={photoUrl(r.photo_path)} alt="" loading="lazy" className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" />
+              <span className="absolute left-3 top-3">
+                <span className={`pill pill-${statusGroup(r.current_status)}`}>{STATUS_LABELS[r.current_status]}</span>
+              </span>
+            </span>
+            <span className="flex flex-1 flex-col gap-2 p-5">
+              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-soft">
+                <Icon name={TYPE_ICON[r.category_code] ?? 'more'} className="size-4" />
+                {labelOf(r.category_code)}
+              </span>
+              <span className="line-clamp-2 font-semibold leading-snug">{r.description}</span>
+              <span className="mt-auto pt-2 text-sm text-soft">{timeAgo(r.created_at)}</span>
+            </span>
+          </Link>
+        </li>
       ))}
     </ul>
   )
@@ -210,8 +316,138 @@ function LinkedReportForm({ reporterId, onSent }: { reporterId: string; onSent: 
   )
 }
 
+function ProfileCard() {
+  const { profile, email, signOut, updateProfile } = useReporterAuth()
+  const [editing, setEditing] = useState(false)
+  const [name, setName] = useState(profile?.display_name ?? '')
+  const [bio, setBio] = useState(profile?.bio ?? '')
+  const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  if (!profile) return null
+
+  async function save(e: FormEvent) {
+    e.preventDefault()
+    if (!name.trim()) return setError('Please add a name.')
+    setError(null)
+    setSaving(true)
+    const problem = await updateProfile({ display_name: name.trim(), bio: bio.trim() || null })
+    setSaving(false)
+    if (problem) setError(problem)
+    else setEditing(false)
+  }
+
+  async function changeAvatar(file: File) {
+    setError(null)
+    setUploading(true)
+    try {
+      const { blob, ext } = await preparePhoto(file)
+      // A fixed, user-scoped filename (not a random one), so a new avatar always overwrites the
+      // old one at the same storage path instead of leaving the previous upload behind unused.
+      const path = `avatars/${profile!.id}.${ext}`
+      const { error: uploadError } = await supabase.storage.from('report-photos').upload(path, blob, { contentType: blob.type || undefined, upsert: true })
+      if (uploadError) throw uploadError
+      const problem = await updateProfile({ avatar_path: path })
+      if (problem) throw new Error(problem)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not update your photo.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  return (
+    <div className="card rounded-2xl p-6">
+      <div className="flex items-start gap-4">
+        <label className="group relative size-16 shrink-0 cursor-pointer overflow-hidden rounded-full">
+          {profile.avatar_path ? (
+            <img src={photoUrl(profile.avatar_path)} alt="" className="size-full object-cover" />
+          ) : (
+            <span className="tile-icon size-16 rounded-full">
+              <Icon name="user" className="size-7" />
+            </span>
+          )}
+          <span className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition group-hover:opacity-100">
+            <Icon name="camera" className="size-5 text-white" />
+          </span>
+          <input
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) void changeAvatar(file)
+              e.target.value = ''
+            }}
+          />
+        </label>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-semibold">{profile.display_name}</p>
+          <p className="truncate text-sm text-soft">{email}</p>
+          {profile.bio && <p className="mt-1.5 text-sm leading-relaxed text-soft">{profile.bio}</p>}
+        </div>
+      </div>
+      {uploading && <p className="mt-3 text-xs text-soft">Updating your photo…</p>}
+
+      {editing ? (
+        <form onSubmit={save} className="mt-4 space-y-3 border-t border-line pt-4">
+          <div>
+            <label htmlFor="profile-name" className="mb-1.5 block text-sm font-semibold">
+              Name
+            </label>
+            <input id="profile-name" className="input" value={name} onChange={(e) => setName(e.target.value)} required />
+          </div>
+          <div>
+            <label htmlFor="profile-bio" className="mb-1.5 block text-sm font-semibold">
+              About
+            </label>
+            <textarea id="profile-bio" className="input" maxLength={280} value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Say a little about yourself (optional)" />
+          </div>
+          {error && (
+            <p className="msg msg-error" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="flex gap-2">
+            <button type="submit" className="btn btn-primary flex-1" disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost flex-1"
+              onClick={() => {
+                setEditing(false)
+                setName(profile.display_name)
+                setBio(profile.bio ?? '')
+                setError(null)
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="mt-4 flex gap-2 border-t border-line pt-4">
+          {error && (
+            <p className="msg msg-error w-full" role="alert">
+              {error}
+            </p>
+          )}
+          <button type="button" className="btn btn-ghost btn-sm flex-1" onClick={() => setEditing(true)}>
+            Edit profile
+          </button>
+          <button type="button" className="btn btn-ghost btn-sm flex-1" onClick={() => void signOut()}>
+            Sign out
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function AccountBody() {
-  const { status, profile, email, signOut } = useReporterAuth()
+  const { status, profile } = useReporterAuth()
   const [refreshKey, setRefreshKey] = useState(0)
 
   return (
@@ -228,25 +464,17 @@ function AccountBody() {
         <div>
           {status === 'loading' && <p className="text-soft">Loading…</p>}
           {status === 'signedOut' && <AuthForm />}
-          {status === 'ready' && profile && (
-            <div className="card flex items-center justify-between gap-4 rounded-2xl p-5">
-              <div>
-                <p className="font-semibold">{profile.display_name}</p>
-                <p className="text-sm text-soft">{email}</p>
-              </div>
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => void signOut()}>
-                Sign out
-              </button>
-            </div>
-          )}
+          {status === 'ready' && profile && <ProfileCard />}
         </div>
       </div>
 
       {status === 'ready' && profile && (
-        <div className="mt-14 max-w-2xl">
+        <div className="mt-14 max-w-5xl">
           <h2 className="text-halo font-serif text-2xl">Your reports</h2>
           <MyReports key={refreshKey} reporterId={profile.id} />
-          <LinkedReportForm reporterId={profile.id} onSent={() => setRefreshKey((k) => k + 1)} />
+          <div className="max-w-2xl">
+            <LinkedReportForm reporterId={profile.id} onSent={() => setRefreshKey((k) => k + 1)} />
+          </div>
         </div>
       )}
     </div>

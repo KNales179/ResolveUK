@@ -13,6 +13,9 @@ interface StaffAuth {
   isReviewer: boolean
   isStaff: boolean
   signIn: (email: string, password: string) => Promise<string | null>
+  signInWithGoogle: () => Promise<string | null>
+  resetPassword: (email: string) => Promise<string | null>
+  updateProfile: (fields: { bio?: string | null; avatar_path?: string | null }) => Promise<string | null>
   signOut: () => Promise<void>
   refresh: () => Promise<void>
 }
@@ -81,6 +84,24 @@ export function StaffAuthProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
         if (!error) return null
         return /invalid login/i.test(error.message) ? 'That email and password do not match.' : error.message
+      },
+      async signInWithGoogle() {
+        // Staff accounts are still only ever provisioned by an admin in staff_profiles, never
+        // created by signing in — this is just another way to authenticate into one that already
+        // exists. Navigates away to Google and back, so this only ever resolves with an error.
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/staff` } })
+        return error ? error.message : null
+      },
+      async resetPassword(email) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/reset-password` })
+        return error ? error.message : null
+      },
+      async updateProfile(fields) {
+        if (!userId) return 'Not signed in.'
+        const { data, error } = await supabase.from('staff_profiles').update(fields).eq('id', userId).select('*').maybeSingle()
+        if (error) return error.message
+        if (data) setProfile(data as StaffProfile)
+        return null
       },
       async signOut() {
         await supabase.auth.signOut()

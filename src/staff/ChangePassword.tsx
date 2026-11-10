@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { PasswordField } from '../components/ui/PasswordField'
 import { supabase } from '../lib/supabase'
 import { useStaffAuth } from './auth'
 
@@ -48,18 +49,8 @@ export function ChangePasswordForm({ onDone }: { onDone: () => void }) {
 
   return (
     <form onSubmit={submit} className="space-y-5">
-      <div>
-        <label htmlFor="new-password" className="mb-1.5 block text-sm font-semibold">
-          New password
-        </label>
-        <input id="new-password" className="input" type="password" autoComplete="new-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-      </div>
-      <div>
-        <label htmlFor="confirm-password" className="mb-1.5 block text-sm font-semibold">
-          Confirm it
-        </label>
-        <input id="confirm-password" className="input" type="password" autoComplete="new-password" required value={confirm} onChange={(e) => setConfirm(e.target.value)} />
-      </div>
+      <PasswordField id="new-password" label="New password" autoComplete="new-password" value={password} onChange={setPassword} />
+      <PasswordField id="confirm-password" label="Confirm it" autoComplete="new-password" value={confirm} onChange={setConfirm} />
       {error && (
         <p className="msg msg-error" role="alert">
           {error}
