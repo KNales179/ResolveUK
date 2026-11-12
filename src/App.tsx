@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Home from './Home'
 import { SiteShell } from './components/site/SiteShell'
+import { CursorTag } from './components/ui/CursorTag'
 
 // Each page loads only when it is visited, so the landing page does not download the map or the database code.
 const ReportPage = lazy(() => import('./pages/ReportPage').then((m) => ({ default: m.ReportPage })))
@@ -18,8 +19,9 @@ const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m
 const Blank = <div className="min-h-svh" aria-busy="true" />
 
 export default function App() {
-  return ( 
+  return (
     <BrowserRouter>
+      <CursorTag />
       <Suspense fallback={Blank}>
         <Routes>
           <Route element={<SiteShell />}>

@@ -269,7 +269,7 @@ export function ReportForm() {
             <StepTitle n={1}>What is the problem?</StepTitle>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3" role="radiogroup" aria-label="Type of problem">
               {categories.map((c) => (
-                <label key={c.code} className="tile">
+                <label key={c.code} className="tile" data-tag={`Select ${c.label}`}>
                   <input type="radio" name="type" value={c.code} checked={category === c.code} onChange={() => setCategory(c.code)} />
                   <span className="tile-icon">
                     <Icon name={TYPE_ICON[c.code] ?? 'more'} />
@@ -306,6 +306,7 @@ export function ReportForm() {
             <label
               className="dropzone mt-5"
               data-over={dragging}
+              data-tag={photo ? 'Change photo' : 'Choose a photo'}
               onDragOver={(e) => {
                 e.preventDefault()
                 setDragging(true)

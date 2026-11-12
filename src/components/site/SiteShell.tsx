@@ -9,7 +9,7 @@ import { PageTransition } from './PageTransition'
 
 // Temporary: bumped on every change, so the footer itself shows whether a refresh actually picked
 // up the latest update — if it still shows the old number, the page/app didn't update.
-const PROTOTYPE_VERSION = '1.4'
+const PROTOTYPE_VERSION = '2.9'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `nav-link rounded-lg px-3.5 py-2 transition ${isActive ? 'nav-link-active bg-surface2 text-ink' : 'text-soft hover:text-ink hover:bg-surface2/70'}`

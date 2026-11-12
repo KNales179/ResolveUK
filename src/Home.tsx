@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, type IconName } from './components/ui/Icon'
 import { Pic } from './components/ui/Pic'
@@ -8,7 +8,15 @@ import { StaticCorners } from './components/ui/StaticCorners'
 import { HillsScene } from './components/ui/HillsScene'
 import { BgSwatchPicker } from './components/ui/BgSwatchPicker'
 import { gsap, reducedMotion } from './lib/gsap'
+import { backedReportIds, rememberBacked } from './lib/device'
+import { timeAgo } from './lib/format'
+import { backReport } from './lib/nearby'
+import { photoUrl } from './lib/photos'
+import { SAMPLE_REPORTS } from './lib/sampleReports'
+import { backersOf, OPEN_STATUSES, STATUS_LABELS, statusGroup, type StatusGroup } from './lib/status'
+import { supabase } from './lib/supabase'
 import { useLenis } from './lib/useLenis'
+import type { Report } from './types'
 
 const STAGES: Array<[string, string]> = [
   ['Reported', 'A resident sends it in with a photo and a place.'],
@@ -61,35 +69,110 @@ const NEXT = [
 // Only the front card's text is ever legible. Cards behind it keep their photo visible (dimmed, so
 // the stack still looks like a stack of real cards, not blank shapes) while their text fades to 0,
 // so a rotated/shifted card peeking out behind the front one never reads as overlapping text.
+// `tilt` scales how far each depth leans toward the cursor (see the mousemove handler below) — the
+// front card leans the most, the one behind leans less and slightly the other way, so the stack
+// reads as sitting at different depths instead of moving as one flat unit.
 const STACK_POSITIONS = [
-  { card: { scale: 1, y: 0, rotate: 0, zIndex: 3 }, textOpacity: 1, imgOpacity: 1 },
-  { card: { scale: 0.95, y: 14, rotate: -3, zIndex: 2 }, textOpacity: 0, imgOpacity: 0.55 },
-  { card: { scale: 0.9, y: 26, rotate: 4, zIndex: 1 }, textOpacity: 0, imgOpacity: 0.3 },
+  { card: { scale: 1, y: 0, rotate: 0, zIndex: 3, opacity: 1 }, textOpacity: 1, imgOpacity: 1, tilt: 1 },
+  { card: { scale: 0.95, y: 14, rotate: -3, zIndex: 2, opacity: 1 }, textOpacity: 0, imgOpacity: 0.55, tilt: 0.7 },
+  { card: { scale: 0.9, y: 26, rotate: 4, zIndex: 1, opacity: 1 }, textOpacity: 0, imgOpacity: 0.3, tilt: -0.55 },
 ]
+// Where a card sits while it isn't one of the 3 visible depth slots above — fully invisible and
+// beneath all of them, waiting its turn. Lets the pool of reports behind the stack be bigger than
+// 3 (cycling every one of them through, a few at a time) without the stack itself showing more
+// than 3 at once.
+const PARKED = { card: { scale: 0.85, y: 26, rotate: 0, zIndex: 0, opacity: 0 }, textOpacity: 0, imgOpacity: 0, tilt: 0 }
 const STACK_INTERVAL = 5500
+const STACK_TILT_DEG = 8
 
-const SAMPLES = [
-  { img: 'rubbish-street', alt: 'Rubbish bags piled on a residential street', group: 'progress', label: 'Acknowledged', title: 'Rubbish bags piled on a residential street', time: 'Reported 2 hours ago', backers: 12, step: 2 },
-  { img: 'litter-picking-cumbria', alt: 'Litter spread along a riverside path', group: 'reported', label: 'Reported', title: 'Litter spreading along a riverside path', time: 'Reported 40 minutes ago', backers: 6, step: 1 },
-  { img: 'trash-picking', alt: 'Fly-tipped waste behind a row of shops', group: 'cleared', label: 'Cleared', title: 'Fly-tipped waste behind a row of shops', time: 'Reported 3 days ago', backers: 18, step: 3 },
-]
+// Collapses the full status enum down to the stack card's simple 4-stop progress bar.
+const GROUP_STEP: Record<StatusGroup, number> = { reported: 1, progress: 2, cleared: 3, verified: 4, closed: 2 }
+
+function toStackCard(r: Report) {
+  const group = statusGroup(r.current_status)
+  return {
+    id: r.id,
+    status: r.current_status,
+    img: photoUrl(r.photo_path),
+    alt: r.description,
+    group,
+    label: STATUS_LABELS[r.current_status],
+    title: r.description,
+    time: `Reported ${timeAgo(r.created_at)}`,
+    backers: backersOf(r),
+    step: GROUP_STEP[group],
+  }
+}
 
 // The hero's one real photo lives in a small stack of sample report cards that auto-advance,
-// front card to back, like a deck being cycled. Click anywhere on the stack to advance it right
-// away; it is static for reduced motion. Each card keeps its own colour, so the stack reads as
-// three distinct cards rather than one shape blending into the page.
-function HeroCardStack() {
+// front card to back, like a deck being cycled. Every card leans a little toward the cursor in 3D
+// — the front one most, the one behind less and slightly the other way — all the time, tracking
+// the pointer across the whole page rather than only while the cursor is directly over the stack,
+// so it reads as a figure quietly facing you rather than a hover effect. Hovering a card shows a
+// small tag near the pointer that says what a click does: "Next" anywhere on the card itself, or
+// something more specific ("Open <report>", "Back this report") while over one of its two
+// buttons — each of which also gets its own corner-bracket hover, scoped to just that button, not
+// the whole card. Static for reduced motion; the stack is still clickable then, just without the
+// tilt, the tag, or the animated transition between positions.
+// `reports` is always exactly 3: real reports when there are at least 3 of them, the shared
+// sample set otherwise (see Home()'s own fetch below) — `usingSamples` is only for the "Sample"
+// badge, every other mechanic here is identical either way.
+function HeroCardStack({ reports, usingSamples }: { reports: Report[]; usingSamples: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null)
-  const orderRef = useRef<number[]>(SAMPLES.map((_, i) => i))
+  const tagRef = useRef<HTMLDivElement>(null)
+  const orderRef = useRef<number[]>(reports.map((_, i) => i))
+  const display = reports.map(toStackCard)
+
+  // Backing reuses the exact same device-local "already backed" bookkeeping the real report
+  // drawer uses (lib/device.ts), so it stays consistent across a reload and across both this
+  // stack and the real reports page. A sample id has no real row to back in the database, so it
+  // just remembers the backing locally instead of calling the real API for it.
+  const [backedIds, setBackedIds] = useState(backedReportIds)
+  const [busyId, setBusyId] = useState<string | null>(null)
+  // Samples' backer counts are a fixed number written into the sample data, which never counted
+  // a locally-remembered backing from an earlier visit — bumped by 1 here to compensate. A real
+  // report's count comes fresh from the database and already includes any earlier backing, so
+  // only a backing added just now (this render) gets bumped for it.
+  const [bumpIds, setBumpIds] = useState<Set<string>>(
+    () => new Set(usingSamples ? reports.filter((r) => backedReportIds().has(r.id)).map((r) => r.id) : []),
+  )
+  // Read inside the hover-tag handlers below (set up once, on mount) so they reflect whichever
+  // card is currently in that slot and its current backed state, not whatever was true when the
+  // handler was first attached.
+  const canBackRef = useRef<boolean[]>([])
+  canBackRef.current = display.map((s) => OPEN_STATUSES.includes(s.status) && !backedIds.has(s.id))
+
+  async function handleBack(id: string) {
+    if (backedIds.has(id) || busyId) return
+    setBusyId(id)
+    try {
+      if (usingSamples) {
+        rememberBacked(id)
+      } else {
+        await backReport(id)
+      }
+      setBackedIds(backedReportIds())
+      setBumpIds((prev) => new Set(prev).add(id))
+    } catch {
+      // A decorative hero affordance, not a form — quietly leave it clickable to try again.
+    } finally {
+      setBusyId(null)
+    }
+  }
 
   useEffect(() => {
     const root = rootRef.current
-    if (!root) return
+    const tagEl = tagRef.current
+    if (!root || !tagEl) return
     const cards = gsap.utils.toArray<HTMLElement>('.stack-card', root)
+    const tagTextEl = tagEl.querySelector<HTMLElement>('.stack-tag-text')
+    const setTagText = (text: string) => {
+      if (tagTextEl) tagTextEl.textContent = text
+    }
 
     const apply = (immediate: boolean) => {
       orderRef.current.forEach((cardIdx, rank) => {
-        const { card, textOpacity, imgOpacity } = STACK_POSITIONS[rank]
+        const { card, textOpacity, imgOpacity } = STACK_POSITIONS[rank] ?? PARKED
         const cardEl = cards[cardIdx]
         const media = cardEl.querySelector<HTMLElement>('.stack-card-media')
         const text = cardEl.querySelectorAll<HTMLElement>('.stack-card-text')
@@ -105,12 +188,94 @@ function HeroCardStack() {
       })
     }
     apply(true)
-    if (reducedMotion()) return
 
+    // Clicking anywhere on the stack always means the same thing: bring the next one forward.
     const advance = () => {
       orderRef.current = [...orderRef.current.slice(1), orderRef.current[0]]
-      apply(false)
+      apply(reducedMotion())
     }
+    // A plain `addEventListener` here fires during the real native bubble phase, which reaches
+    // this element before React's own delegated listener (wherever it is attached) ever gets a
+    // chance to run a React onClick's stopPropagation — so the "View report" / "I have seen this
+    // too" buttons opt out by target, not by stopping propagation from inside React.
+    const onClick = (e: MouseEvent) => {
+      if ((e.target as HTMLElement).closest('.stack-card-action')) return
+      advance()
+    }
+    root.addEventListener('click', onClick)
+
+    if (reducedMotion()) {
+      return () => root.removeEventListener('click', onClick)
+    }
+
+    gsap.set(cards, { transformPerspective: 900 })
+    gsap.set(tagEl, { x: 0, y: 0, rotation: -3, scale: 0.85, opacity: 0 })
+    const tiltFns = cards.map((cardEl) => ({
+      ry: gsap.quickTo(cardEl, 'rotationY', { duration: 0.6, ease: 'power3.out' }),
+      rx: gsap.quickTo(cardEl, 'rotationX', { duration: 0.6, ease: 'power3.out' }),
+    }))
+    const tagX = gsap.quickTo(tagEl, 'x', { duration: 0.25, ease: 'power3.out' })
+    const tagY = gsap.quickTo(tagEl, 'y', { duration: 0.25, ease: 'power3.out' })
+
+    // Tracks the pointer across the whole page (not just while it is over the stack), so the
+    // cards keep leaning toward it like a figure quietly facing the cursor around the room,
+    // rather than only reacting once the mouse happens to land on the stack itself.
+    const onMove = (e: MouseEvent) => {
+      const r = root.getBoundingClientRect()
+      const nx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2))
+      const ny = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2))
+      orderRef.current.forEach((cardIdx, rank) => {
+        const tilt = (STACK_POSITIONS[rank] ?? PARKED).tilt
+        tiltFns[cardIdx].ry(nx * STACK_TILT_DEG * tilt)
+        tiltFns[cardIdx].rx(-ny * STACK_TILT_DEG * tilt)
+      })
+      const localX = e.clientX - r.left
+      const localY = e.clientY - r.top
+      if (localX >= 0 && localX <= r.width && localY >= 0 && localY <= r.height) {
+        tagX(localX + 18)
+        tagY(localY + 18)
+      }
+    }
+    window.addEventListener('mousemove', onMove)
+
+    // The tag itself only makes sense while the pointer is actually over the stack (unlike the
+    // tilt, which keeps tracking the cursor everywhere) — hide it once the mouse leaves.
+    const onStackLeave = () => gsap.to(tagEl, { opacity: 0, scale: 0.85, duration: 0.18 })
+    root.addEventListener('mouseleave', onStackLeave)
+
+    // Each card gets one pair of listeners for the generic "Next" tag, plus its own two buttons
+    // each getting a pair that override the tag's text while the pointer is specifically over
+    // them. The two buttons' corner brackets need no JS at all — CornerHover already shows them
+    // on nothing but that button's own native :hover.
+    const cardHandlers = cards.map((cardEl, cardIdx) => {
+      const onEnter = () => {
+        setTagText('Next')
+        gsap.to(tagEl, { opacity: 1, scale: 1, duration: 0.22, ease: 'back.out(1.7)' })
+      }
+      cardEl.addEventListener('mouseenter', onEnter)
+
+      // Looked up by their own class, not by position in the row — the two can be reordered in
+      // the JSX below without this silently swapping which hover text/listener goes with which.
+      const viewBtn = cardEl.querySelector<HTMLElement>('.stack-card-action--view')
+      const seenBtn = cardEl.querySelector<HTMLElement>('.stack-card-action--seen')
+      const onViewEnter = () => setTagText('View report')
+      const onViewLeave = () => setTagText('Next')
+      const onSeenEnter = () => setTagText(canBackRef.current[cardIdx] ? 'Back this report' : 'Next')
+      const onSeenLeave = () => setTagText('Next')
+      viewBtn?.addEventListener('mouseenter', onViewEnter)
+      viewBtn?.addEventListener('mouseleave', onViewLeave)
+      seenBtn?.addEventListener('mouseenter', onSeenEnter)
+      seenBtn?.addEventListener('mouseleave', onSeenLeave)
+
+      return () => {
+        cardEl.removeEventListener('mouseenter', onEnter)
+        viewBtn?.removeEventListener('mouseenter', onViewEnter)
+        viewBtn?.removeEventListener('mouseleave', onViewLeave)
+        seenBtn?.removeEventListener('mouseenter', onSeenEnter)
+        seenBtn?.removeEventListener('mouseleave', onSeenLeave)
+      }
+    })
+
     // A self-rescheduling timeout rather than setInterval, so a slow tab or a background pause
     // can never pile up or silently die — each cycle only ever books the next one once it is done.
     let timeoutId = 0
@@ -119,20 +284,23 @@ function HeroCardStack() {
       timeoutId = window.setTimeout(tick, STACK_INTERVAL)
     }
     timeoutId = window.setTimeout(tick, STACK_INTERVAL)
-    root.addEventListener('click', advance)
+
     return () => {
       window.clearTimeout(timeoutId)
-      root.removeEventListener('click', advance)
+      root.removeEventListener('click', onClick)
+      window.removeEventListener('mousemove', onMove)
+      root.removeEventListener('mouseleave', onStackLeave)
+      cardHandlers.forEach((cleanup) => cleanup())
     }
   }, [])
 
   return (
-    <div ref={rootRef} className="stack-idle relative h-[18rem] cursor-pointer sm:h-[16.5rem]">
-      {SAMPLES.map((s, i) => (
-        <div key={s.title} className={`stack-card card stack-tint-${i + 1} absolute inset-0 rounded-2xl p-4 shadow-xl`}>
-          <span className="absolute -top-3 right-5 z-10 rounded-md bg-ink px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-bg">Sample</span>
+    <div ref={rootRef} className="relative h-[19.5rem] sm:h-[18rem]">
+      {display.map((s, i) => (
+        <div key={s.id} className={`stack-card card stack-tint-${(i % 3) + 1} absolute inset-0 cursor-pointer rounded-2xl px-4 pb-6 pt-4 shadow-xl`}>
+          {usingSamples && <span className="absolute -top-3 right-5 z-10 rounded-md bg-ink px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-bg">Sample</span>}
           <div className="flex gap-3.5">
-            <Pic name={s.img} widths={[400]} width={400} height={267} alt={s.alt} className="stack-card-media size-24 shrink-0 rounded-xl object-cover" sizes="96px" eager />
+            <img src={s.img} alt={s.alt} loading="lazy" decoding="async" className="stack-card-media size-24 shrink-0 rounded-xl object-cover" />
             <div className="stack-card-text min-w-0">
               <span className={`pill pill-${s.group}`}>{s.label}</span>
               <h3 className="mt-2 text-base font-semibold leading-snug">{s.title}</h3>
@@ -147,12 +315,79 @@ function HeroCardStack() {
               </li>
             ))}
           </ol>
-          <div className="stack-card-text mt-4 flex items-center justify-between border-t border-line pt-4">
-            <p className="text-sm font-medium">{s.backers} people back this</p>
-            <span className="btn btn-ghost btn-sm">I have seen this too</span>
-          </div>
+          {(() => {
+            const alreadyBacked = backedIds.has(s.id)
+            const canBack = OPEN_STATUSES.includes(s.status) && !alreadyBacked
+            const displayBackers = s.backers + (bumpIds.has(s.id) ? 1 : 0)
+            return (
+              // The backer count sits on its own line, above the two buttons, rather than
+              // sharing one row with them — "You have backed this" (with its icon) is wider than
+              // "I have seen this too", and squeezed onto the same row as the count, that extra
+              // width was enough to push the row over and visibly reflow the layout right as you
+              // clicked. On their own row, the two buttons have the card's full width to work
+              // with, so swapping label never shifts anything.
+              <div className="stack-card-text mt-4 border-t border-line pt-4">
+                <p className="text-sm font-medium">{displayBackers} people back this</p>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
+                  {/* Both wrappers stay the same element across re-renders (only their inner
+                      content swaps between a real control and a plain label) — the GSAP effect
+                      below attaches its hover listeners to these wrappers once, on mount, and
+                      they'd go stale if the wrapper itself were ever replaced instead of just its
+                      children. "stack-card-action" is how the card's own click-to-advance handler
+                      recognises and skips a click that started on either one; the --view/--seen
+                      modifier is how that same effect tells the two apart regardless of order. */}
+                  <div className={`stack-card-action stack-card-action--seen relative rounded-[0.85rem] ${canBack ? 'corner-hover' : ''}`}>
+                    {canBack && (
+                      <>
+                        <span className="ch-corner ch-tl" aria-hidden="true" />
+                        <span className="ch-corner ch-tr" aria-hidden="true" />
+                        <span className="ch-corner ch-bl" aria-hidden="true" />
+                        <span className="ch-corner ch-br" aria-hidden="true" />
+                      </>
+                    )}
+                    {alreadyBacked ? (
+                      <span className="btn btn-ghost btn-sm cursor-default">
+                        <Icon name="check" className="size-4 text-accent" />
+                        You have backed this
+                      </span>
+                    ) : canBack ? (
+                      <button type="button" className="btn btn-ghost btn-sm" onClick={() => void handleBack(s.id)} disabled={busyId === s.id}>
+                        {busyId === s.id ? 'Saving…' : 'I have seen this too'}
+                      </button>
+                    ) : (
+                      <span className="btn btn-ghost btn-sm">I have seen this too</span>
+                    )}
+                  </div>
+                  <div className={`stack-card-action stack-card-action--view relative rounded-[0.85rem] ${usingSamples ? 'corner-hover' : ''}`}>
+                    {usingSamples && (
+                      <>
+                        <span className="ch-corner ch-tl" aria-hidden="true" />
+                        <span className="ch-corner ch-tr" aria-hidden="true" />
+                        <span className="ch-corner ch-bl" aria-hidden="true" />
+                        <span className="ch-corner ch-br" aria-hidden="true" />
+                      </>
+                    )}
+                    {usingSamples ? (
+                      <Link to={`/reports/${s.id}`} className="btn btn-ghost btn-sm">
+                        View report
+                      </Link>
+                    ) : (
+                      <span className="btn btn-ghost btn-sm">View report</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
         </div>
       ))}
+      <div ref={tagRef} className="pointer-events-none absolute left-0 top-0 z-50 opacity-0">
+        <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent-vivid px-3.5 py-1.5 text-xs font-bold text-accent-ink shadow-lg">
+          <span className="size-1.5 shrink-0 rounded-full bg-accent-ink" />
+          <span className="stack-tag-text">Next</span>
+          <Icon name="arrow" className="size-3 shrink-0" />
+        </span>
+      </div>
     </div>
   )
 }
@@ -260,6 +495,30 @@ export default function Home() {
   useLenis()
   const heroRef = useRef<HTMLElement>(null)
 
+  // Shows every shared sample report immediately (so the hero is never empty or waiting on a
+  // network round trip, and all 5 — not just the first 3 — get a turn in the stack, see PARKED
+  // above), then swaps in the newest real reports if there are at least 3 of them — fewer than
+  // that and it just stays on the samples, so the stack never looks thin.
+  const [hero, setHero] = useState(() => ({ reports: SAMPLE_REPORTS, usingSamples: true }))
+
+  useEffect(() => {
+    let alive = true
+    supabase
+      .from('reports')
+      .select('*, report_supports(count)')
+      .order('created_at', { ascending: false })
+      .limit(5)
+      .then(({ data, error }) => {
+        if (!alive || error || !data || data.length < 3) return
+        // Sliced defensively to 5 — the stack's PARKED fallback handles any pool size from 3 up,
+        // but shouldn't be trusted with an unbounded one if the query ever ignored its own .limit(5).
+        setHero({ reports: (data as unknown as Report[]).slice(0, 5), usingSamples: false })
+      })
+    return () => {
+      alive = false
+    }
+  }, [])
+
   useEffect(() => {
     if (reducedMotion()) return
     const ctx = gsap.context(() => {
@@ -310,7 +569,7 @@ export default function Home() {
           </div>
 
           <div className="hero-fade relative mx-auto w-full max-w-md lg:ml-auto">
-            <HeroCardStack />
+            <HeroCardStack key={hero.usingSamples ? 'samples' : 'real'} reports={hero.reports} usingSamples={hero.usingSamples} />
           </div>
         </div>
       </section>

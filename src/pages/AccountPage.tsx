@@ -201,7 +201,7 @@ function MyReports({ reporterId }: { reporterId: string }) {
     <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {reports.map((r) => (
         <li key={r.id}>
-          <Link to={`/reports/${r.id}`} className="card group flex h-full flex-col overflow-hidden rounded-3xl text-left transition hover:border-ink/40">
+          <Link to={`/reports/${r.id}`} className="card group flex h-full flex-col overflow-hidden rounded-3xl text-left transition hover:border-ink/40" data-tag="View details">
             <span className="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
               <img src={photoUrl(r.photo_path)} alt="" loading="lazy" className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" />
               <span className="absolute left-3 top-3">

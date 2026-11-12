@@ -296,13 +296,6 @@
 .stack-tint-2 { background: color-mix(in oklab, var(--c-soft) 45%, var(--c-surface)); }
 .stack-tint-3 { background: color-mix(in oklab, var(--c-accent-display) 55%, var(--c-surface)); }
 
-/* A gentle, continuous float on the whole card stack, so there is always some visible motion
-   rather than only a swap every few seconds that is easy to miss. */
-.stack-idle { animation: stack-float 5s ease-in-out infinite; }
-@keyframes stack-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
-}
 .accent-panel .eyebrow { color: var(--c-accent-ink); opacity: 0.75; }
 .accent-panel .eyebrow::before { background: var(--c-accent-ink); opacity: 0.55; }
 
@@ -429,6 +422,41 @@
 .ch-bl { bottom: 2px; left: 2px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 0.5rem; transform: translate(9px, -9px); }
 .ch-br { bottom: 2px; right: 2px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 0.5rem; transform: translate(-9px, -9px); }
 .corner-hover:hover .ch-corner, .corner-hover:focus-within .ch-corner { opacity: 1; transform: translate(0, 0); }
+
+/* ---- Automatic corner-bracket hover for every link and button, site-wide — the same bracket
+   language as .corner-hover above, without needing every single usage wrapped in it by hand.
+   Drawn as 8 solid-colour gradient layers on one ::after (2 per corner: a short horizontal leg and
+   a short vertical leg meeting at a 2px inset), since a pseudo-element can only sit in one place,
+   not four. Skipped on an element that already opts into the richer, hand-wrapped .corner-hover
+   (its own 4 real spans do this already, with a little slide-in motion .ch-corner does on its
+   own), and `position: relative` is only added to an element that is not itself already
+   `absolute`/`fixed`/`sticky` via a utility class — forcing `relative` on one of those would
+   silently break its own placement (e.g. PasswordField's show/hide toggle, `absolute inset-y-0
+   right-0` inside its field). ---- */
+a:not(.absolute):not(.fixed):not(.sticky), button:not(.absolute):not(.fixed):not(.sticky), label.tile, label.dropzone { position: relative; }
+a::after, button::after, label.tile::after, label.dropzone::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  opacity: 0; transition: opacity 0.25s ease;
+  background-repeat: no-repeat;
+  background-size: 12px 2px, 2px 12px, 12px 2px, 2px 12px, 12px 2px, 2px 12px, 12px 2px, 2px 12px;
+  background-position:
+    top 2px left 2px, top 2px left 2px,
+    top 2px right 2px, top 2px right 2px,
+    bottom 2px right 2px, bottom 2px right 2px,
+    bottom 2px left 2px, bottom 2px left 2px;
+  background-image:
+    linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
+    linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
+    linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
+    linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
+    linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
+    linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
+    linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
+    linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent)));
+}
+a:hover::after, a:focus-visible::after, button:hover::after, button:focus-visible::after,
+label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::after, label.dropzone:focus-within::after { opacity: 1; }
+.corner-hover a::after, .corner-hover button::after, a.corner-hover::after, button.corner-hover::after { content: none; }
 
 /* ---- Messages ---- */
 @layer components {

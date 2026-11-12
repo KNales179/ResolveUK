@@ -1,4 +1,4 @@
-import type { ReportStatus } from '../types'
+import type { Report, ReportStatus } from '../types'
 
 // The stages a report moves through. "Cleared" is the responsible body's own word;
 // "Outcome verified" only happens once independent people have confirmed it with photos.
@@ -16,6 +16,9 @@ export const STATUS_LABELS: Record<ReportStatus, string> = {
 
 // Reports that can still be backed: not cleared, verified, a duplicate or rejected.
 export const OPEN_STATUSES: ReportStatus[] = ['reported', 'routed', 'acknowledged', 'scheduled', 'reopened']
+
+// A report always backs itself; report_supports only counts everyone *else*.
+export const backersOf = (r: Report) => 1 + (r.report_supports?.[0]?.count ?? 0)
 
 // The five groups the public list filters by, and the colour of the label for each.
 export type StatusGroup = 'reported' | 'progress' | 'cleared' | 'verified' | 'closed'
