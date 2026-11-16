@@ -7,9 +7,9 @@ import '@fontsource-variable/newsreader/wght.css'
 import '@fontsource-variable/hanken-grotesk'
 import './index.css'
 import App from './App.tsx'
-import { registerSW } from 'virtual:pwa-register'
+import { initServiceWorker } from './lib/swUpdate'
 
-registerSW({ immediate: true })
+initServiceWorker()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

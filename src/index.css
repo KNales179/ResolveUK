@@ -191,6 +191,7 @@
   }
   .dd[data-open="true"] .dd-list { opacity: 1; transform: none; pointer-events: auto; }
   .dd[data-open="true"] .dd-chevron { transform: rotate(180deg); }
+  details[open] > summary .dd-chevron { transform: rotate(180deg); }
   .dd-chevron { transition: transform 0.2s; }
   .dd-opt { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; text-align: left; border-radius: 0.5rem; padding: 0.6rem 0.8rem; font-size: 0.925rem; }
   .dd-opt:hover, .dd-opt:focus-visible { background: var(--c-surface2); }

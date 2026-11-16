@@ -31,6 +31,10 @@ const PATHS = {
   layers: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
   more: '<circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/>',
   user: '<circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4.1 3.1-7 7-7s7 2.9 7 7"/>',
+  sparkles: '<path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
+  rotate: '<path d="M20 11A8 8 0 1 0 19 16"/><path d="M20 4v7h-7"/>',
+  palette: '<path d="M12 3a9 9 0 1 0 0 18c1.4 0 1.9-.7 1.9-1.4 0-.4-.2-.7-.4-1-.3-.4-.1-.9.4-1h1.1a4 4 0 0 0 4-4A8 8 0 0 0 12 3z"/><circle cx="8.2" cy="11" r="1"/><circle cx="8.2" cy="15" r="1"/><circle cx="12" cy="8" r="1"/><circle cx="15.8" cy="11" r="1"/>',
+  bell: '<path d="M6 10a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
 } as const
 
 export type IconName = keyof typeof PATHS

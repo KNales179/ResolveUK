@@ -6,10 +6,9 @@ import { applyBgForTheme } from '../../lib/bgPreview'
 import { Logo } from './Logo'
 import { CornerHover } from '../ui/CornerHover'
 import { PageTransition } from './PageTransition'
-
-// Temporary: bumped on every change, so the footer itself shows whether a refresh actually picked
-// up the latest update — if it still shows the old number, the page/app didn't update.
-const PROTOTYPE_VERSION = '3.2'
+import { UpdateBanner } from './UpdateBanner'
+import { WhatsNewModal } from './WhatsNewModal'
+import { APP_VERSION } from '../../lib/changelog'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `nav-link rounded-lg px-3.5 py-2 transition ${isActive ? 'nav-link-active bg-surface2 text-ink' : 'text-soft hover:text-ink hover:bg-surface2/70'}`
@@ -196,6 +195,11 @@ function Footer() {
                 Get involved
               </Link>
             </CornerHover>
+            <CornerHover as="li">
+              <Link className="block px-3 py-1.5 hover:text-ink" to="/updates">
+                Updates
+              </Link>
+            </CornerHover>
           </ul>
         </div>
         <div className="text-sm">
@@ -231,7 +235,7 @@ function Footer() {
         </div>
       </div>
       <p className="border-t border-line px-5 py-3 text-center text-[0.7rem] text-soft sm:px-8 sm:text-left">
-        Prototype version {PROTOTYPE_VERSION}
+        Prototype version {APP_VERSION}
       </p>
     </footer>
   )
@@ -289,6 +293,8 @@ export function SiteShell() {
       <Nav />
       <PageTransition />
       <Footer />
+      <UpdateBanner />
+      <WhatsNewModal />
     </>
   )
 }

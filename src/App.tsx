@@ -14,6 +14,7 @@ const CommunityPage = lazy(() => import('./pages/CommunityPage').then((m) => ({ 
 const CommercialPage = lazy(() => import('./pages/CommercialPage').then((m) => ({ default: m.CommercialPage })))
 const AccountPage = lazy(() => import('./pages/AccountPage').then((m) => ({ default: m.AccountPage })))
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })))
+const UpdatesPage = lazy(() => import('./pages/UpdatesPage').then((m) => ({ default: m.UpdatesPage })))
 const StaffApp = lazy(() => import('./staff/StaffApp').then((m) => ({ default: m.StaffApp })))
 
 const Blank = <div className="min-h-svh" aria-busy="true" />
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="commercial" element={<CommercialPage />} />
             <Route path="account" element={<AccountPage />} />
             <Route path="reset-password" element={<ResetPasswordPage />} />
+            <Route path="updates" element={<UpdatesPage />} />
           </Route>
           <Route path="/staff/*" element={<StaffApp />} />
           <Route path="*" element={<Navigate to="/" replace />} />
