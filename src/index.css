@@ -275,11 +275,14 @@
    a same-colour hill butting up against the panel leaves no visible boundary at all. */
 .accent-panel { background: color-mix(in oklab, var(--c-accent) 75%, transparent); color: var(--c-accent-ink); box-shadow: 0 1px 3px rgb(var(--c-shadow) / 0.16), 0 10px 26px -14px rgb(var(--c-shadow) / 0.4); }
 
-/* A soft halo behind text that sits directly on the hills with no card of its own (headings,
-   the step list, the timeline) — using the section's own surface tone, which is always the
-   readable "paper" colour opposite the text in both themes, so it lifts the text clear of
-   whatever hill colour happens to be behind it instead of only working against one hue. */
-.text-halo { text-shadow: 0 0 10px var(--c-surface), 0 0 10px var(--c-surface), 0 1px 2px var(--c-surface); }
+/* A dark halo behind text that sits directly on the hills with no card of its own (headings,
+   the step list, the timeline). This used to be the section's own pale surface tone, but against
+   a busy photo that only lifted the text where the photo happened to be dark underneath — against
+   a bright patch of sky or field it barely showed up at all, per direct feedback that it was hard
+   to read at a glance. A dark halo instead reads as a consistent edge around the letterforms
+   regardless of what's directly behind them, so it keeps working across the whole photo, not just
+   the darker half of it — in both themes, since dark-mode text is light-on-dark anyway. */
+.text-halo { text-shadow: 0 0 10px rgba(0, 0, 0, 0.85), 0 0 14px rgba(0, 0, 0, 0.65), 0 1px 3px rgba(0, 0, 0, 0.9); }
 
 /* A half-opaque backing for the handful of content blocks (the step list, the "what you can
    report" list, the journey timeline) that are just rows of text with no card of their own —
