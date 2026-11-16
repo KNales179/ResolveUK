@@ -94,7 +94,7 @@ export function WhyPage() {
 
         <Reveal className="mt-14">
           <h2 className="font-serif text-2xl">In the news</h2>
-          <ul className="text-halo panel-tint mt-6 divide-y divide-line overflow-hidden rounded-3xl">
+          <ul className="panel-tint mt-6 divide-y divide-line overflow-hidden rounded-3xl">
             {HEADLINES.map(([headline, source, url]) => (
               <CornerHover as="li" key={headline} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-4 sm:px-7">
                 <a href={url} target="_blank" rel="noreferrer" className="font-semibold hover:underline">

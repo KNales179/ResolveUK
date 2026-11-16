@@ -93,7 +93,7 @@ export function AboutPage() {
 
         <Reveal className="mt-14">
           <h2 className="font-serif text-2xl">What it stands for</h2>
-          <ul className="text-halo panel-tint mt-6 divide-y divide-line overflow-hidden rounded-3xl">
+          <ul className="panel-tint mt-6 divide-y divide-line overflow-hidden rounded-3xl">
             {PRINCIPLES.map(([title, text]) => (
               <CornerHover as="li" key={title} className="block px-5 py-5 sm:px-7">
                 <p className="font-semibold">{title}</p>

@@ -587,7 +587,7 @@ export default function Home() {
               <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Report it in a minute, then follow it.</h2>
               <p className="mt-5 text-lg leading-relaxed opacity-85">Each report has a public history. Whoever takes it on, whether that is a council, a contractor or another organisation, adds to that history as it moves towards fixed.</p>
             </Reveal>
-            <ol className="text-halo panel-tint divide-y divide-line overflow-hidden rounded-3xl">
+            <ol className="panel-tint divide-y divide-line overflow-hidden rounded-3xl">
               {STEPS.map(([n, title, text], i) => (
                 <CornerHover as="li" key={n}>
                   <Reveal delay={i * 70} className="grid grid-cols-[3rem_1fr] gap-4 p-4 sm:grid-cols-[4rem_1fr]">
@@ -646,7 +646,7 @@ export default function Home() {
               </figure>
             </Reveal>
           </div>
-          <ul className="text-halo panel-tint mt-10 grid grid-cols-1 gap-x-8 gap-y-2 rounded-3xl p-6 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
+          <ul className="panel-tint mt-10 grid grid-cols-1 gap-x-8 gap-y-2 rounded-3xl p-6 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
             {OTHER_TYPES.map(([title, text], i) => (
               <CornerHover as="li" key={title}>
                 <Reveal delay={i * 50} className="border-t border-line p-4">
@@ -670,7 +670,7 @@ export default function Home() {
               line is positioned relative to the ol's own box, so padding it directly would pull
               the line out of line with the dots. */}
           <div className="panel-tint mt-14 overflow-hidden rounded-3xl p-6 sm:p-8">
-            <ol className="text-halo timeline-rail grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
+            <ol className="timeline-rail grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
               {STAGES.map(([title, text], n) => (
                 <CornerHover as="li" key={title}>
                   <Reveal delay={n * 50} className="block p-4 pt-0">

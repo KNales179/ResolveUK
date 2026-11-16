@@ -299,8 +299,10 @@
 
 /* A half-opaque backing for the handful of content blocks (the step list, the "what you can
    report" list, the journey timeline) that are just rows of text with no card of their own —
-   .text-halo alone was carrying all of the contrast there; this gives them an actual surface to
-   sit on, at 50% rather than the fully solid cards elsewhere. */
+   this gives them an actual surface to sit on, at 50% rather than the fully solid cards
+   elsewhere. Once a block has this, its own text should NOT also carry .text-halo: the two
+   stack (a soft card plus a hard per-letter shadow on top), which reads as a dirty smudge
+   behind every word rather than a clean edge. .text-halo is only for text with no card at all. */
 .panel-tint { background: color-mix(in oklab, var(--c-surface) 50%, transparent); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border: 1px solid var(--c-glass-line); }
 /* In dark mode, the deep bluish-charcoal card tone (already used for the hero's "Sample" tag etc.)
    reads better here than a green-on-green mix of the panel against the hill scene behind it. */
