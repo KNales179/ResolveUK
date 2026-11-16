@@ -49,12 +49,12 @@ export function GetInvolvedPage() {
         </Reveal>
 
         <Reveal className="mt-14">
-          <h2 className="text-halo font-serif text-2xl">On your own</h2>
+          <h2 className="font-serif text-2xl">On your own</h2>
           <ActionList items={INDIVIDUAL} />
         </Reveal>
 
         <Reveal className="mt-14">
-          <h2 className="text-halo font-serif text-2xl">With your community</h2>
+          <h2 className="font-serif text-2xl">With your community</h2>
           {/* A bento grid rather than a third copy of the same row list — the litter-pick entry
               carries the one concrete number here, so it gets the large, emphasised tile; the
               other two sit stacked beside it. Below `lg` that is just three full cards stacked on

@@ -401,7 +401,7 @@ function ResolutionRoutes() {
   return (
     <section className="cv grid-texture grid-shimmer border-y border-line">
       <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-        <Reveal className="max-w-2xl text-halo">
+        <Reveal className="max-w-2xl">
           <p className="eyebrow">Not just a reporting form</p>
           <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Three ways a problem gets resolved.</h2>
           <p className="mt-5 text-lg leading-relaxed text-soft">Who should act on a report depends on who is actually responsible for the place it happened. Resolve UK is built around that, not just around one route to a council.</p>
@@ -609,7 +609,7 @@ export default function Home() {
       {/* ---- what people report ---- */}
       <section className="cv grid-texture grid-shimmer">
         <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-          <Reveal className="max-w-2xl text-halo">
+          <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">What you can report</p>
             <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">The everyday problems that wear a place down.</h2>
           </Reveal>
@@ -662,7 +662,7 @@ export default function Home() {
       {/* ---- the journey ---- */}
       <section className="cv grid-texture grid-shimmer border-y border-line">
         <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-          <Reveal className="max-w-2xl text-halo">
+          <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">What happens to a report</p>
             <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">From reported to fixed, one step at a time.</h2>
           </Reveal>
@@ -693,7 +693,7 @@ export default function Home() {
       {/* ---- where the project is ---- */}
       <section className="cv grid-texture grid-shimmer">
         <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-          <Reveal className="max-w-2xl text-halo">
+          <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">Where it stands</p>
             <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">An early prototype, built in stages.</h2>
             <p className="mt-5 text-lg leading-relaxed text-soft">Some of this works now. The rest is planned and is not available yet.</p>

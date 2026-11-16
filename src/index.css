@@ -36,8 +36,11 @@
      official colours nearest that feeling (Mint Green cooled down with the page's own white)
      rather than a separate invented teal. */
   --c-water: color-mix(in oklab, var(--c-mint-green) 65%, var(--c-clean-white));
-  --c-glass: rgb(255 255 255 / 0.72);
-  --c-glass-line: rgb(11 61 54 / 0.08);
+  /* 0.85/0.18, not the original 0.72/0.08: against the page's own near-white background (once
+     past the photo-heavy part of a page), that faint a glass tint and border were nearly
+     invisible, so a "card" read as bare text floating on the page instead of sitting on anything. */
+  --c-glass: rgb(255 255 255 / 0.85);
+  --c-glass-line: rgb(11 61 54 / 0.18);
   --c-shadow: 11 30 26;
   color-scheme: light;
 }
@@ -288,24 +291,20 @@
    a same-colour hill butting up against the panel leaves no visible boundary at all. */
 .accent-panel { background: color-mix(in oklab, var(--c-accent) 75%, transparent); color: var(--c-accent-ink); box-shadow: 0 1px 3px rgb(var(--c-shadow) / 0.16), 0 10px 26px -14px rgb(var(--c-shadow) / 0.4); }
 
-/* A dark halo behind text that sits directly on the hills with no card of its own (headings,
-   the step list, the timeline). This used to be the section's own pale surface tone, but against
-   a busy photo that only lifted the text where the photo happened to be dark underneath — against
-   a bright patch of sky or field it barely showed up at all, per direct feedback that it was hard
-   to read at a glance. A dark halo instead reads as a consistent edge around the letterforms
-   regardless of what's directly behind them, so it keeps working across the whole photo, not just
-   the darker half of it — in both themes, since dark-mode text is light-on-dark anyway. */
-.text-halo { text-shadow: 0 0 10px rgba(0, 0, 0, 0.85), 0 0 14px rgba(0, 0, 0, 0.65), 0 1px 3px rgba(0, 0, 0, 0.9); }
-
-/* A half-opaque backing for the handful of content blocks (the step list, the "what you can
-   report" list, the journey timeline) that are just rows of text with no card of their own —
-   this gives them an actual surface to sit on, at 50% rather than the fully solid cards
-   elsewhere. Once a block has this, its own text should NOT also carry .text-halo: the two
-   stack (a soft card plus a hard per-letter shadow on top), which reads as a dirty smudge
-   behind every word rather than a clean edge. .text-halo is only for text with no card at all. */
-.panel-tint { background: color-mix(in oklab, var(--c-surface) 50%, transparent); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border: 1px solid var(--c-glass-line); }
+/* A half-opaque backing for content blocks that sit directly on the hills/photo with no card of
+   their own (the step list, the "what you can report" list, the journey timeline, every page's
+   intro). A dark per-letter text-shadow used to carry the contrast instead, but it stacked badly
+   wherever a block like this already had its own background, and even bare it read as a stray
+   dark smudge behind every word — contrast belongs to the container (this background, this
+   border), never to the text itself. */
+/* 88%, not 50%: at 50% in light mode this was nearly the same pale tone as the page itself once
+   past the photo-heavy part of the hill scene, so the card edge all but disappeared and the text
+   on it read as floating on bare background instead of sitting on a card. The box-shadow gives it
+   real depth too, matching .card, instead of relying on the (quite faint) border alone. */
+.panel-tint { background: color-mix(in oklab, var(--c-surface) 88%, transparent); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border: 1px solid var(--c-glass-line); box-shadow: 0 1px 2px rgb(var(--c-shadow) / 0.05), 0 10px 24px -16px rgb(var(--c-shadow) / 0.35); }
 /* In dark mode, the deep bluish-charcoal card tone (already used for the hero's "Sample" tag etc.)
-   reads better here than a green-on-green mix of the panel against the hill scene behind it. */
+   reads better here than a green-on-green mix of the panel against the hill scene behind it —
+   already opaque enough there, so it keeps its own lower percentage rather than jumping to 88%. */
 [data-theme="dark"] .panel-tint { background: color-mix(in oklab, var(--c-charcoal) 55%, transparent); }
 
 /* Three distinct identities for the hero's stacked sample cards, so they read as a stack of
@@ -350,7 +349,7 @@
 
 /* "Where it stands": frosted glass panels, instead of a solid colour fill — reuses the same
    glass tokens the nav bar already uses, so it still feels native to the site. */
-.glass-panel { background: var(--c-glass); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); border: 1px solid var(--c-glass-line); }
+.glass-panel { background: var(--c-glass); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); border: 1px solid var(--c-glass-line); box-shadow: 0 1px 2px rgb(var(--c-shadow) / 0.05), 0 10px 24px -16px rgb(var(--c-shadow) / 0.35); }
 /* In dark mode, the same deep bluish-charcoal as .panel-tint — kept separate from --c-glass
    itself, which the nav bar and map attribution still use their own green-tinted version of. */
 [data-theme="dark"] .glass-panel { background: color-mix(in oklab, var(--c-charcoal) 55%, transparent); }

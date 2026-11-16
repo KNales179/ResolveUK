@@ -88,9 +88,9 @@ export function ReportsPage() {
         <PageBackdrop />
         <main className="grid-texture grid-shimmer mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8">
         <div className="rise flex flex-wrap items-end justify-between gap-6">
-          <div className="text-halo max-w-2xl">
+          <div className="accent-panel max-w-2xl rounded-3xl p-6 sm:p-8">
             <h1 className="text-4xl sm:text-5xl">Reported problems</h1>
-            <p className="mt-4 text-lg text-soft">Open a report to see its photo, where it stands and everything that has happened to it.</p>
+            <p className="mt-4 text-lg opacity-90">Open a report to see its photo, where it stands and everything that has happened to it.</p>
           </div>
           <Link to="/report" className="btn btn-primary">
             Report a problem <Icon name="arrow" />

@@ -27,7 +27,7 @@ export function CommunityPage() {
         </Reveal>
 
         <Reveal className="mt-10">
-          <p className="text-halo text-sm font-semibold uppercase tracking-widest text-soft">A group's queue, shown here as a preview</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-soft">A group's queue, shown here as a preview</p>
           <ul className="panel-tint mt-4 divide-y divide-line overflow-hidden rounded-3xl">
             {COMMUNITY_SAMPLES.map(([photo, title, backedBy]) => (
               <CornerHover as="li" key={title} className="flex flex-wrap items-center gap-4 px-5 py-4 sm:px-7">

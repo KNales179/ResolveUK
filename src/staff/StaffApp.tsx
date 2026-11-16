@@ -64,10 +64,10 @@ function Shell() {
       <div className="relative">
         <PageBackdrop />
         <main className="grid-texture grid-shimmer mx-auto max-w-6xl px-5 pb-24 pt-28 sm:px-8">
-          <div className="text-halo rise mb-8">
+          <div className="accent-panel rise mb-8 rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">Staff dashboard</p>
             <h1 className="mt-3 text-4xl sm:text-5xl">Hello, {profile?.display_name}</h1>
-            <p className="mt-1 text-soft">{ROLE_LABEL[profile!.role]}</p>
+            <p className="mt-1 opacity-90">{ROLE_LABEL[profile!.role]}</p>
           </div>
           <Routes>
             <Route index element={<StaffDashboard />} />

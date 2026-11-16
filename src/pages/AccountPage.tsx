@@ -470,7 +470,7 @@ function AccountBody() {
 
       {status === 'ready' && profile && (
         <div className="mt-14 max-w-5xl">
-          <h2 className="text-halo font-serif text-2xl">Your reports</h2>
+          <h2 className="font-serif text-2xl">Your reports</h2>
           <MyReports key={refreshKey} reporterId={profile.id} />
           <div className="max-w-2xl">
             <LinkedReportForm reporterId={profile.id} onSent={() => setRefreshKey((k) => k + 1)} />
