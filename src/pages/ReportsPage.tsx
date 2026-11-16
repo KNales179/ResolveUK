@@ -36,8 +36,11 @@ export function ReportsPage() {
   const [query, setQuery] = useState('')
 
   // Shows the shared sample reports immediately — no loading skeleton, no wait — then silently
-  // swaps in the real ones if that request succeeds. A down or hanging backend just means it
-  // stays on the samples it was already showing; there is nothing to wait on either way.
+  // swaps in the real ones if that request succeeds and there are at least 3 of them (same
+  // threshold the homepage's hero stack uses, and the same reasoning: with only a handful of real
+  // reports so far, swapping in a list that's thinner than the samples does more harm than good,
+  // so it just stays on the samples until there is enough real data to be worth showing instead.
+  // Raise or drop this threshold whenever that's no longer the right call.)
   useEffect(() => {
     let alive = true
     supabase
@@ -45,8 +48,8 @@ export function ReportsPage() {
       .select('*, report_events(id, seq, status, note, created_at), report_supports(count), responsible_bodies(name, kind)')
       .order('created_at', { ascending: false })
       .then(({ data, error: problem }) => {
-        if (!alive || problem) return
-        setReports((data ?? []) as unknown as Report[])
+        if (!alive || problem || !data || data.length < 3) return
+        setReports(data as unknown as Report[])
         setUsingSamples(false)
       })
     return () => {

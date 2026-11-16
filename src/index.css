@@ -18,17 +18,24 @@
   --c-soft: #4f5d52;
   --c-line: #dce5d4;
   --c-accent: var(--c-sage-green);
-  --c-accent-display: #4c8c53;
+  /* The logo's own R colour, kept separate from --c-ink: the brand kit's own Sage Green artwork
+     shows the R in Sage Green itself, not the darker ink/text colour, so the mark gets its own
+     token instead of borrowing the text colour's role. */
+  --c-logo-mark: var(--c-sage-green);
+  /* The second accent, for whatever sits beside the primary one (the logo's second leaf, a
+     secondary tile tint) — now literally Soft Olive, the fourth brand colour, instead of a
+     hand-picked green that wasn't actually in the decided set. */
+  --c-accent-display: var(--c-soft-olive);
   --c-accent-ink: #0b3d36;
-  /* Sage on its own reads more khaki than green (its hue sits near 98°, next to yellow, at fairly
-     low saturation) — fine as a quiet background tint, but not enough "green" for the elements
-     that are meant to stand out. This is a true, more saturated green (hue ~132°) for exactly
-     those: primary buttons, active states, the icons and dots that should read as green at a
-     glance. Dark mode's own accent (mint) is already vivid, so it just reuses it there. */
-  --c-accent-vivid: #4cbd62;
-  /* A soft teal for the river in the hill scene — close enough to the brand greens to stay in
-     the same family, but distinct enough to read as water rather than another field. */
-  --c-water: #8fc9bd;
+  /* The brand's three greens (Sage, Mint, Olive) are all close, fairly muted mid-greens — fine as
+     quiet tints, but none of them pop enough for a primary button or an active state. Mint Green
+     is the most saturated of the three, so it takes that job instead of a colour outside the
+     decided set. */
+  --c-accent-vivid: var(--c-mint-green);
+  /* The river in the hill scene needs to read as water, not another field — built from the two
+     official colours nearest that feeling (Mint Green cooled down with the page's own white)
+     rather than a separate invented teal. */
+  --c-water: color-mix(in oklab, var(--c-mint-green) 65%, var(--c-clean-white));
   --c-glass: rgb(255 255 255 / 0.72);
   --c-glass-line: rgb(11 61 54 / 0.08);
   --c-shadow: 11 30 26;
@@ -54,10 +61,15 @@
   --c-soft: #9cc2b5;
   --c-line: #1e5349;
   --c-accent: var(--c-mint-green);
+  /* The brand kit's Deep Green logo art sits on a light backing — against this theme's near-black
+     page, literal Deep Green would be almost invisible, so the mark uses Clean White instead, the
+     Deep Green scheme's own lightest colour, to stay the same kind of "bright, legible mark on a
+     dark backing" rather than reproducing a hex that would vanish here. */
+  --c-logo-mark: var(--c-clean-white);
   --c-accent-display: color-mix(in oklab, var(--c-deep-green) 40%, var(--c-mint-green));
   --c-accent-ink: var(--c-deep-green);
   --c-accent-vivid: var(--c-accent);
-  --c-water: #2f7d78;
+  --c-water: color-mix(in oklab, var(--c-mint-green) 55%, var(--c-charcoal));
   --c-glass: rgb(11 61 54 / 0.6);
   --c-glass-line: rgb(247 250 248 / 0.1);
   --c-shadow: 0 0 0;
