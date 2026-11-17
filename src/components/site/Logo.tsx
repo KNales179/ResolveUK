@@ -14,8 +14,8 @@ export function Logo({ className = '' }: { className?: string }) {
       aria-label="Resolve"
     >
       <path fill="var(--c-logo-mark)" fillRule="evenodd" d={`${R_PATH} ${PIN_PATH}`} />
-      <path fill="var(--c-accent)" d={LEAF_RIGHT_PATH} />
-      <path fill="var(--c-accent-display)" d={LEAF_LEFT_PATH} />
+      <path fill="var(--c-logo-leaf-r, var(--c-accent))" d={LEAF_RIGHT_PATH} />
+      <path fill="var(--c-logo-leaf-l, var(--c-accent-display))" d={LEAF_LEFT_PATH} />
     </svg>
   )
 }

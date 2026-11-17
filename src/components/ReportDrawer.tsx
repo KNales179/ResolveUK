@@ -108,7 +108,7 @@ export function ReportDrawer({ report, categories, onClose, onBacked }: Props) {
         </div>
 
         {r && (
-          <div className="flex-1 overflow-y-auto">
+          <div data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain">
             <div className="relative aspect-[16/10] bg-surface2">
               <img src={photoUrl(r.photo_path)} alt={r.description} className="absolute inset-0 size-full object-cover" decoding="async" />
             </div>

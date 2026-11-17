@@ -33,7 +33,9 @@ export function WhatsNewModal() {
     <>
       <div className="fixed inset-0 z-50 bg-black/55 backdrop-blur-sm" onClick={close} aria-hidden="true" />
       <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div role="dialog" aria-modal="true" aria-labelledby="whats-new-title" className="card rise max-h-[85svh] w-full max-w-md overflow-y-auto p-6">
+        {/* data-lenis-prevent: the homepage's smooth scrolling otherwise grabs the wheel and scrolls
+            the page behind instead of this list. overscroll-contain stops it spilling over at the ends. */}
+        <div role="dialog" aria-modal="true" aria-labelledby="whats-new-title" data-lenis-prevent className="card rise max-h-[85svh] w-full max-w-2xl overflow-y-auto overscroll-contain p-6 sm:p-8">
           <div className="flex items-start justify-between gap-3">
             <h2 id="whats-new-title" className="flex items-center gap-2 text-lg font-semibold">
               <Icon name="sparkles" className="size-5" /> What's new

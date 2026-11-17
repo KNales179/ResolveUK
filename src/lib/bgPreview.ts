@@ -1,23 +1,42 @@
 import { gsap } from './gsap'
 import type { ThemeName } from './theme'
 
-// TEMPORARY — part of the BgSwatchPicker comparison tool (see BgSwatchPicker.tsx). Delete this
-// file alongside it once a background colour is picked for each theme.
-//
-// A plain module object, not React state, so a picked colour survives navigating away from the
-// Home page (where the picker itself lives) and back — it isn't tied to that component's mount
-// lifecycle. applyBgForTheme must run on every theme change from somewhere that's always mounted
-// (SiteShell), not just while the picker is: otherwise toggling the theme on any other page left
-// --c-bg stuck on whatever inline override the previous theme had, mismatched against the new
-// theme's own styling until the picker remounted (going back to Home) and corrected it.
-export const pickedBg: Record<ThemeName, string | null> = { light: null, dark: null }
+// The background shade a visitor picked for each theme (see BgSwatchPicker), remembered on this
+// device. public/theme-init.js applies it before the first paint; applyBgForTheme keeps it in step
+// whenever the theme is switched, from any page (SiteShell's BgPreviewSync).
+const KEY = 'resolve.bg'
+type Picks = Record<ThemeName, string | null>
 
-export function applyBgForTheme(theme: ThemeName) {
-  gsap.killTweensOf(document.documentElement, '--c-bg')
-  const hex = pickedBg[theme]
-  if (hex) {
-    gsap.to(document.documentElement, { '--c-bg': hex, duration: 0.6, ease: 'power2.out' })
-  } else {
-    document.documentElement.style.removeProperty('--c-bg')
+function read(): Picks {
+  try {
+    const v = JSON.parse(localStorage.getItem(KEY) || '{}')
+    return { light: v.light ?? null, dark: v.dark ?? null }
+  } catch {
+    return { light: null, dark: null }
   }
+}
+
+export function pickedBgFor(theme: ThemeName): string | null {
+  return read()[theme]
+}
+
+export function setPickedBg(theme: ThemeName, hex: string): void {
+  const picks = read()
+  picks[theme] = hex
+  try {
+    localStorage.setItem(KEY, JSON.stringify(picks))
+  } catch {
+    // storage blocked: the pick still applies for this visit
+  }
+  gsap.killTweensOf(document.documentElement, '--c-bg')
+  gsap.to(document.documentElement, { '--c-bg': hex, duration: 0.6, ease: 'power2.out' })
+}
+
+// Instant (not tweened): this runs right as the theme switches, inside the theme toggle's own
+// circular reveal, which should show the new theme's shade straight away.
+export function applyBgForTheme(theme: ThemeName): void {
+  gsap.killTweensOf(document.documentElement, '--c-bg')
+  const hex = read()[theme]
+  if (hex) document.documentElement.style.setProperty('--c-bg', hex)
+  else document.documentElement.style.removeProperty('--c-bg')
 }

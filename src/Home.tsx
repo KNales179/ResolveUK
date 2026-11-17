@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Icon, type IconName } from './components/ui/Icon'
+import { Icon } from './components/ui/Icon'
 import { Pic } from './components/ui/Pic'
 import { GsapReveal as Reveal } from './components/ui/GsapReveal'
 import { CornerHover } from './components/ui/CornerHover'
-import { StaticCorners } from './components/ui/StaticCorners'
+import { PurposeArt, StorySection } from './components/about/Story'
+import { openInstallDialog } from './lib/install'
+import { FlyTippingChart } from './components/home/FlyTippingChart'
 import { HillsScene } from './components/ui/HillsScene'
+import { BgSwatchPicker } from './components/ui/BgSwatchPicker'
 import { gsap, reducedMotion } from './lib/gsap'
 import { backedReportIds, rememberBacked } from './lib/device'
 import { timeAgo } from './lib/format'
@@ -32,10 +35,10 @@ const STEPS: Array<[string, string, string]> = [
   ['3', 'Follow it', 'Every step is added to the report’s history, from picked up to cleared to verified, with the date and time, whoever ends up resolving it.'],
 ]
 
-const ROUTES: Array<[IconName, string, string, string, string]> = [
-  ['map', 'Public', 'A report on public land goes to the council or contractor responsible for it. This is what already works today.', '/report', 'Report a problem'],
-  ['users', 'Community', 'A safe, non-hazardous problem, such as litter, can be claimed and cleared by a registered local group instead of waiting on a council.', '/community', 'See how it would work'],
-  ['building', 'Commercial', 'On private land, where a council has no duty to clear it, registered waste carriers can quote a price and the landowner picks one.', '/commercial', 'See how it would work'],
+const MORE: Array<[string, string, string]> = [
+  ['/about', 'About Resolve UK', 'Who it is for, what it promises, and what the logo stands for.'],
+  ['/why', 'Why it matters', 'The numbers behind fly-tipping, potholes and the reports that go nowhere.'],
+  ['/get-involved', 'Get involved', 'Things you can do on your own or with others, and the three ways a problem gets resolved.'],
 ]
 
 const OTHER_TYPES: Array<[string, string]> = [
@@ -43,26 +46,6 @@ const OTHER_TYPES: Array<[string, string]> = [
   ['Graffiti', 'On walls, signs and street furniture'],
   ['Abandoned vehicles', 'Left on the street with no sign of an owner'],
   ['Damaged infrastructure', 'Street lights, barriers, bins and benches'],
-]
-
-const TODAY = [
-  'Reports with a photo, a type and a place on the map',
-  'A check for the same problem nearby, before a report is sent',
-  'Adding your support to someone else’s report',
-  'A public history of every step on each report',
-  'Routing a report to any responsible organisation, not just a council',
-  'Sign-in for council, contractor and Resolve staff, to handle reports',
-  'An optional account, to keep track of the reports you have sent',
-  'Report data stored in the UK',
-]
-const NEXT = [
-  'A local group claiming and clearing a safe problem itself',
-  'A registered waste carrier quoting to clear private land, and getting chosen',
-  'Sending each report to the right organisation automatically',
-  'Residents confirming a fix with a photo',
-  'A map inside each report, and updates with photos of the work',
-  'Suggesting the type of problem from the photo',
-  'Public pages comparing how quickly problems get fixed',
 ]
 
 // Only the front card's text is ever legible. Cards behind it keep their photo visible (dimmed, so
@@ -400,102 +383,6 @@ function HeroCardStack({ reports, usingSamples }: { reports: Report[]; usingSamp
 // "Three ways a problem gets resolved": a bento grid instead of a single morphing panel — Public
 // (the one route that already works) gets the large, emphasised tile; Community and Commercial
 // sit stacked beside it as smaller tiles, both visible at once rather than hidden behind a timer.
-function ResolutionRoutes() {
-  const [[publicIcon, publicTitle, publicText, publicHref, publicCta], ...otherRoutes] = ROUTES
-
-  return (
-    <section className="grid-texture grid-shimmer border-y border-line">
-      <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-        <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
-          <p className="eyebrow">Not just a reporting form</p>
-          <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Three ways a problem gets resolved.</h2>
-          <p className="mt-5 text-lg leading-relaxed text-soft">Who should act on a report depends on who is actually responsible for the place it happened. Resolve UK is built around that, not just around one route to a council.</p>
-        </Reveal>
-
-        <Reveal className="mt-14">
-          {/* Below `lg` a bento grid is just every tile stacked full-width, one padded card after
-              another — more clutter than layout at that width. So below `lg` this collapses into
-              one compact divided list instead of trying to preserve the grid; the bento itself
-              only renders from `lg` up, where there is room for it. */}
-          <ul className="panel-tint divide-y divide-line overflow-hidden rounded-3xl lg:hidden">
-            {ROUTES.map(([icon, title, text, href, cta], i) => (
-              <CornerHover as="li" key={title} className="flex items-start gap-3.5 px-5 py-4">
-                <span className="tile-icon size-10 shrink-0 rounded-lg">
-                  <Icon name={icon} className="size-4" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-semibold">{title}</p>
-                    <span className={`pill ${i === 0 ? 'pill-cleared' : 'pill-reported'}`}>{i === 0 ? 'Already works' : 'Not live yet'}</span>
-                  </div>
-                  <p className="mt-1 text-sm leading-relaxed text-soft">{text}</p>
-                  <Link to={href} className="link-nudge mt-2 inline-flex text-sm font-semibold text-accent">
-                    {cta} <Icon name="arrow" className="size-3.5" />
-                  </Link>
-                </div>
-              </CornerHover>
-            ))}
-          </ul>
-
-          <div className="hidden lg:block">
-            <StaticCorners>
-              <div className="grid gap-5 rounded-3xl p-1 lg:grid-cols-[1.3fr_1fr]">
-                {/* CornerHover wraps a plain, backgroundless layer here rather than carrying
-                    accent-panel/card itself — combined on one element, its hover tint (meant for a
-                    bare row) would override the panel's own solid fill and wash the whole tile out
-                    on hover. The inner div keeps the solid background; hover-lift gives its own,
-                    non-opacity feedback (a small lift + deeper shadow) alongside the corner brackets. */}
-                <CornerHover className="block">
-                  <div className="accent-panel hover-lift flex h-full flex-col justify-between rounded-3xl p-8 sm:p-10">
-                    <div>
-                      <span className="tile-icon size-14 rounded-2xl bg-black/10">
-                        <Icon name={publicIcon} className="size-7" />
-                      </span>
-                      <p className="eyebrow mt-6">Already works today</p>
-                      <h3 className="mt-3 font-serif text-4xl">{publicTitle}</h3>
-                      <p className="mt-4 max-w-md leading-relaxed opacity-85">{publicText}</p>
-                    </div>
-                    <Link to={publicHref} className="link-nudge mt-8 inline-flex w-fit font-semibold">
-                      {publicCta} <Icon name="arrow" className="size-4" />
-                    </Link>
-                  </div>
-                </CornerHover>
-
-                <div className="grid gap-5">
-                  {otherRoutes.map(([icon, title, text, href, cta]) => (
-                    <CornerHover key={title} className="block">
-                      <div className="card hover-lift flex h-full flex-col justify-between rounded-3xl p-7">
-                        <div>
-                          <div className="flex items-start justify-between gap-3">
-                            <span className="tile-icon size-11 rounded-xl"><Icon name={icon} className="size-5" /></span>
-                            <span className="pill pill-reported shrink-0">Not live yet</span>
-                          </div>
-                          <h3 className="mt-4 font-serif text-2xl">{title}</h3>
-                          <p className="mt-2 text-sm leading-relaxed text-soft">{text}</p>
-                        </div>
-                        <Link to={href} className="link-nudge mt-5 inline-flex w-fit text-sm font-semibold text-accent">
-                          {cta} <Icon name="arrow" className="size-4" />
-                        </Link>
-                      </div>
-                    </CornerHover>
-                  ))}
-                </div>
-              </div>
-            </StaticCorners>
-          </div>
-        </Reveal>
-
-        <Reveal className="mt-10 flex max-w-3xl gap-4 rounded-3xl border border-accent/30 bg-accent/10 p-6">
-          <Icon name="shield" className="mt-0.5 size-6 shrink-0 text-accent" />
-          <p className="leading-relaxed">
-            Public routing already works. Community and commercial routing are not built yet; the pages above show what they would look like. Reporting itself does not change either way, and stays open to anyone with no account needed.
-          </p>
-        </Reveal>
-      </div>
-    </section>
-  )
-}
-
 export default function Home() {
   useLenis()
   const heroRef = useRef<HTMLElement>(null)
@@ -579,11 +466,27 @@ export default function Home() {
         </div>
       </section>
 
+      <BgSwatchPicker />
+
       {/* ---- how it works, through the closing CTA: one continuous hill scene behind all of
           them (see HillsScene.tsx), bounded-strip fill so nothing pinches at a fixed corner ---- */}
       <HillsScene zoneColors={HILL_ZONES}>
+      {/* ---- why it exists (same as the About page's purpose) ---- */}
+      <section className="grid-texture grid-shimmer">
+        <div className="mx-auto max-w-7xl px-5 pt-10 pb-2 sm:px-8 sm:pt-12">
+          <StorySection label="Why it exists" title="Reporting shouldn't be the end of the story" art={<PurposeArt />}>
+            <p>
+              Everyone has walked past the same mattress in the same lay-by for weeks. Someone probably reported it. Did they? Did anything happen? Was it actually cleared, or just marked as done?
+            </p>
+            <p>
+              Resolve UK gives every street <strong className="text-ink">one public record</strong> of what has been reported and where it stands, so nobody has to wonder, chase or report the same thing twice.
+            </p>
+          </StorySection>
+        </div>
+      </section>
+
       <section id="how" className="grid-texture grid-shimmer scroll-mt-24">
-        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
+        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
           <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:gap-10">
             <Reveal className="accent-panel flex flex-col justify-center rounded-3xl p-8 sm:p-10">
               <p className="eyebrow">How it works</p>
@@ -607,16 +510,14 @@ export default function Home() {
         </div>
       </section>
 
-      <ResolutionRoutes />
-
       {/* ---- what people report ---- */}
       <section className="grid-texture grid-shimmer">
-        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
+        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
           <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">What you can report</p>
             <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">The everyday problems that wear a place down.</h2>
           </Reveal>
-          <div className="mt-12 grid gap-8 md:grid-cols-3 md:grid-rows-2">
+          <div className="mt-8 grid gap-8 md:grid-cols-3 md:grid-rows-2">
             {/* The rotation lives on the inner <figure>, not the Reveal wrapper — GSAP writes its
                 own inline transform onto whatever element it animates, which would otherwise
                 silently override a Tailwind rotate class (inline style beats any class). */}
@@ -662,9 +563,31 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---- why it matters: one chart from DEFRA's official statistics ---- */}
+      <section className="grid-texture grid-shimmer">
+        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
+          <Reveal className="panel-tint grid gap-10 rounded-3xl p-6 sm:p-10 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
+            <div>
+              <p className="eyebrow">Why it matters</p>
+              <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Fly-tipping keeps rising.</h2>
+              <p className="mt-5 text-lg leading-relaxed text-soft">
+                Councils in England dealt with <strong className="font-semibold text-ink">1.26 million</strong> fly-tipping incidents in 2024/25, up 9% in a year and nearly a third more than in 2018/19.
+              </p>
+              <p className="mt-3 leading-relaxed text-soft">
+                Over a third (37%) were on pavements and roads, and 62% involved household waste: the kind of problem anyone walking past can report.
+              </p>
+              <Link to="/why" className="link-nudge mt-6 inline-flex font-semibold text-accent">
+                More on why it matters <Icon name="arrow" className="size-4" />
+              </Link>
+            </div>
+            <FlyTippingChart />
+          </Reveal>
+        </div>
+      </section>
+
       {/* ---- the journey ---- */}
       <section className="grid-texture grid-shimmer border-y border-line">
-        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
+        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
           <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">What happens to a report</p>
             <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">From reported to fixed, one step at a time.</h2>
@@ -672,7 +595,7 @@ export default function Home() {
           {/* Padding lives on this wrapper, not the <ol> itself — .timeline-rail's connecting
               line is positioned relative to the ol's own box, so padding it directly would pull
               the line out of line with the dots. */}
-          <div className="panel-tint mt-14 overflow-hidden rounded-3xl p-6 sm:p-8">
+          <div className="panel-tint mt-8 overflow-hidden rounded-3xl p-6 sm:p-8">
             <ol className="timeline-rail grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
               {STAGES.map(([title, text], n) => (
                 <CornerHover as="li" key={title}>
@@ -685,7 +608,7 @@ export default function Home() {
               ))}
             </ol>
           </div>
-          <Reveal className="accent-panel mt-14 max-w-3xl rounded-3xl p-7 sm:p-8">
+          <Reveal className="accent-panel mt-8 max-w-3xl rounded-3xl p-7 sm:p-8">
             <p className="text-lg leading-relaxed">
               <b className="font-semibold">Cleared and verified mean different things.</b> Cleared is the responsible body saying the work is done. Verified is someone else confirming it. The site shows both, so you can see the difference.
             </p>
@@ -693,78 +616,43 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---- where the project is ---- */}
+      {/* ---- find out more ---- */}
       <section className="grid-texture grid-shimmer">
-        <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-          <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
-            <p className="eyebrow">Where it stands</p>
-            <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">An early prototype, built in stages.</h2>
-            <p className="mt-5 text-lg leading-relaxed text-soft">Some of this works now. The rest is planned and is not available yet.</p>
+        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
+          <Reveal className="panel-tint rounded-3xl p-8 sm:p-10">
+            <h2 className="text-3xl leading-[1.1] sm:text-4xl">Find out more</h2>
+            <ul className="mt-8 grid gap-6 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line">
+              {MORE.map(([to, title, text]) => (
+                <li key={to} className="md:px-8 md:first:pl-0 md:last:pr-0">
+                  <Link to={to} className="group block">
+                    <span className="flex items-center gap-2 font-serif text-2xl">
+                      {title}
+                      <Icon name="arrow" className="size-5 transition-transform group-hover:translate-x-1" />
+                    </span>
+                    <span className="mt-2 block leading-relaxed text-soft">{text}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </Reveal>
-
-          {/* A pair of stat tiles ahead of the two lists, so this section is more than one
-              repeated card shape — a small bento touch before the fuller lists below. Always two
-              columns, even on a phone: two small stat tiles side by side reads fine at any width,
-              where stacking them full-width would just be two more cards piling on top of the
-              bigger lists below. */}
-          <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-5">
-            <Reveal className="card flex items-center gap-3 rounded-2xl p-4 sm:gap-4 sm:rounded-3xl sm:p-6">
-              <span className="tile-icon size-10 shrink-0 rounded-xl bg-accent-vivid text-accent-ink sm:size-12">
-                <Icon name="check" className="size-4 sm:size-5" />
-              </span>
-              <div>
-                <span className="font-serif text-2xl leading-none sm:text-4xl">{TODAY.length}</span>
-                <span className="ml-1.5 text-xs text-soft sm:ml-2 sm:text-sm">features working today</span>
-              </div>
-            </Reveal>
-            <Reveal delay={40} className="card flex items-center gap-3 rounded-2xl border-dashed p-4 opacity-90 sm:gap-4 sm:rounded-3xl sm:p-6">
-              <span className="tile-icon size-10 shrink-0 rounded-xl sm:size-12">
-                <Icon name="clock" className="size-4 sm:size-5" />
-              </span>
-              <div>
-                <span className="font-serif text-2xl leading-none text-soft sm:text-4xl">{NEXT.length}</span>
-                <span className="ml-1.5 text-xs text-soft sm:ml-2 sm:text-sm">planned next</span>
-              </div>
-            </Reveal>
-          </div>
-
-          <div className="mt-5 grid gap-6 md:grid-cols-2">
-            <Reveal className="glass-panel rounded-3xl p-7 sm:p-9">
-              <h3 className="font-serif text-2xl">Working now</h3>
-              <ul>
-                {TODAY.map((x, i) => (
-                  <CornerHover as="li" key={x}>
-                    <Reveal as="p" delay={i * 40} y={10} className="border-t border-line p-3 leading-relaxed text-soft">{x}</Reveal>
-                  </CornerHover>
-                ))}
-              </ul>
-            </Reveal>
-            <Reveal delay={80} className="glass-panel rounded-3xl p-7 sm:p-9 opacity-80">
-              <h3 className="font-serif text-2xl">Planned</h3>
-              <ul>
-                {NEXT.map((x, i) => (
-                  <CornerHover as="li" key={x}>
-                    <Reveal as="p" delay={80 + i * 40} y={10} className="border-t border-line p-3 leading-relaxed text-soft">{x}</Reveal>
-                  </CornerHover>
-                ))}
-              </ul>
-            </Reveal>
-          </div>
         </div>
       </section>
 
       {/* ---- closing call to action ---- */}
-      <section className="grid-texture grid-shimmer px-3 pb-24 sm:px-6">
+      <section className="grid-texture grid-shimmer px-3 pt-6 pb-16 sm:px-6">
         <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-2xl">
           <div className="cta-bg absolute inset-0 -z-20" role="img" aria-label="Countryside landscape, mirrored from the hero photo" />
           <div className="absolute inset-0 -z-10 bg-gradient-to-r from-bg/95 via-bg/70 to-bg/10" />
-          <div className="px-7 py-20 sm:px-14 sm:py-28">
+          <div className="px-7 py-16 sm:px-14 sm:py-20">
             <Reveal as="h2" className="max-w-xl text-4xl leading-[1.08] sm:text-6xl">Seen something that needs fixing?</Reveal>
             <Reveal as="p" delay={80} className="mt-4 max-w-md text-lg text-soft">Reporting takes about a minute.</Reveal>
-            <Reveal delay={160} className="mt-8 inline-block">
+            <Reveal delay={160} className="mt-8 flex flex-wrap gap-3">
               <Link to="/report" className="btn btn-primary text-base">
                 Report a problem <Icon name="arrow" />
               </Link>
+              <button type="button" className="btn btn-ghost text-base" onClick={openInstallDialog}>
+                Install the app
+              </button>
             </Reveal>
           </div>
         </div>

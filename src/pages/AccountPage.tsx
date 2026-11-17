@@ -4,6 +4,7 @@ import { PageBackdrop } from '../components/site/SiteShell'
 import { Reveal } from '../components/ui/Reveal'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { GoogleIcon } from '../components/ui/GoogleIcon'
+import { useAuthOptions } from '../lib/authOptions'
 import { PasswordField } from '../components/ui/PasswordField'
 import { useCategories } from '../lib/categories'
 import { deviceToken } from '../lib/device'
@@ -73,7 +74,11 @@ function ForgotPasswordForm({ onBack }: { onBack: () => void }) {
 
 function AuthForm() {
   const { signIn, signUp, signInWithGoogle } = useReporterAuth()
-  const [mode, setMode] = useState<'signIn' | 'signUp' | 'forgot'>('signUp')
+  const options = useAuthOptions()
+  const [chosenMode, setMode] = useState<'signIn' | 'signUp' | 'forgot'>('signUp')
+  // Creating an account only when the project actually accepts new sign-ups; otherwise this is a
+  // plain sign-in form for existing accounts.
+  const mode = chosenMode === 'signUp' && !options.signUp ? 'signIn' : chosenMode
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -108,25 +113,33 @@ function AuthForm() {
 
   return (
     <div className="card max-w-md rounded-2xl p-6 sm:p-7">
-      <div className="dd flex gap-1 rounded-lg border border-line p-1">
-        <button type="button" className={`flex-1 rounded-md py-2 text-sm font-semibold ${mode === 'signUp' ? 'bg-surface2 text-ink' : 'text-soft'}`} onClick={() => setMode('signUp')}>
-          Create an account
-        </button>
-        <button type="button" className={`flex-1 rounded-md py-2 text-sm font-semibold ${mode === 'signIn' ? 'bg-surface2 text-ink' : 'text-soft'}`} onClick={() => setMode('signIn')}>
-          Sign in
-        </button>
-      </div>
+      {options.signUp ? (
+        <div className="seg flex gap-1 rounded-lg p-1">
+          <button type="button" className={`flex-1 rounded-md py-2 text-sm font-semibold ${mode === 'signUp' ? 'seg-on' : 'text-soft'}`} onClick={() => setMode('signUp')}>
+            Create an account
+          </button>
+          <button type="button" className={`flex-1 rounded-md py-2 text-sm font-semibold ${mode === 'signIn' ? 'seg-on' : 'text-soft'}`} onClick={() => setMode('signIn')}>
+            Sign in
+          </button>
+        </div>
+      ) : (
+        <h2 className="font-serif text-2xl">Sign in</h2>
+      )}
 
-      <button type="button" className="btn btn-ghost mt-6 w-full gap-2.5" onClick={() => void withGoogle()} disabled={googleBusy}>
-        <GoogleIcon /> {googleBusy ? 'Redirecting…' : `Continue with Google`}
-      </button>
-      <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-soft">
-        <span className="h-px flex-1 bg-line" />
-        or
-        <span className="h-px flex-1 bg-line" />
-      </div>
+      {options.google && (
+        <>
+          <button type="button" className="btn btn-ghost mt-6 w-full gap-2.5" onClick={() => void withGoogle()} disabled={googleBusy}>
+            <GoogleIcon /> {googleBusy ? 'Redirecting…' : `Continue with Google`}
+          </button>
+          <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-soft">
+            <span className="h-px flex-1 bg-line" />
+            or
+            <span className="h-px flex-1 bg-line" />
+          </div>
+        </>
+      )}
 
-      <form onSubmit={submit} className="space-y-4">
+      <form onSubmit={submit} className={`space-y-4 ${options.google ? '' : 'mt-6'}`}>
         {mode === 'signUp' && (
           <div>
             <label htmlFor="account-name" className="mb-1.5 block text-sm font-semibold">
@@ -201,8 +214,8 @@ function MyReports({ reporterId }: { reporterId: string }) {
     <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {reports.map((r) => (
         <li key={r.id}>
-          <Link to={`/reports/${r.id}`} className="card group flex h-full flex-col overflow-hidden rounded-3xl text-left transition hover:border-ink/40" data-tag="View details">
-            <span className="relative block aspect-[4/3] w-full overflow-hidden bg-surface2">
+          <Link to={`/reports/${r.id}`} className="card group flex h-full flex-col rounded-3xl text-left transition hover:border-ink/40" data-tag="View details">
+            <span className="relative block aspect-[4/3] w-full overflow-hidden rounded-t-3xl bg-surface2">
               <img src={photoUrl(r.photo_path)} alt="" loading="lazy" className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" />
               <span className="absolute left-3 top-3">
                 <span className={`pill pill-${statusGroup(r.current_status)}`}>{STATUS_LABELS[r.current_status]}</span>

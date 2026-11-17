@@ -3,6 +3,7 @@ import { PageBackdrop } from '../components/site/SiteShell'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Reveal } from '../components/ui/Reveal'
 import { CornerHover } from '../components/ui/CornerHover'
+import { PlacesChart, RegionChart, SizeChart, TrendChart } from '../components/why/FlyTippingCharts'
 
 const STATS: Array<[IconName, string, string, string, string, string]> = [
   ['trash', 'Fly-tipping', '1.26 million', 'incidents dealt with by English councils in 2024/25, up 9% on the year before. Over a third happened on pavements and roads.', 'DEFRA, official statistics, 2025', 'https://www.gov.uk/government/statistics/fly-tipping-statistics-for-england/fly-tipping-statistics-for-england-2024-to-2025'],
@@ -92,6 +93,30 @@ export function WhyPage() {
           </div>
         </Reveal>
 
+        {/* ---- Fly-tipping in numbers: four kinds of chart, one official source ---- */}
+        <section className="mt-16">
+          <Reveal className="panel-tint max-w-3xl rounded-3xl p-6 sm:p-8">
+            <h2 className="text-3xl sm:text-4xl">Fly-tipping, in numbers</h2>
+            <p className="mt-3 leading-relaxed text-soft">
+              All four charts use the government's own figures for England. Point at any part of a chart for the exact number, or open it as a table.
+            </p>
+          </Reveal>
+          <div className="mt-6 grid gap-5 lg:grid-cols-2">
+            <Reveal>
+              <TrendChart />
+            </Reveal>
+            <Reveal delay={60}>
+              <RegionChart />
+            </Reveal>
+            <Reveal>
+              <PlacesChart />
+            </Reveal>
+            <Reveal delay={60}>
+              <SizeChart />
+            </Reveal>
+          </div>
+        </section>
+
         <Reveal className="mt-14">
           <h2 className="font-serif text-2xl">In the news</h2>
           <ul className="panel-tint mt-6 divide-y divide-line overflow-hidden rounded-3xl">
@@ -106,7 +131,7 @@ export function WhyPage() {
           </ul>
         </Reveal>
 
-        <Reveal className="glass-panel mt-14 rounded-3xl border-l-4 border-accent p-6 sm:p-8">
+        <Reveal className="glass-panel mt-14 rounded-3xl p-6 sm:p-8">
           <p className="text-lg leading-relaxed">
             In a 2024 survey of more than 71,000 residents, over a third of English council areas scored 10% or lower for satisfaction with how often potholes are dealt with locally. Three areas scored as low as 5%.
           </p>

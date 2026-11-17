@@ -42,6 +42,12 @@
   --c-glass: rgb(255 255 255 / 0.85);
   --c-glass-line: rgb(11 61 54 / 0.18);
   --c-shadow: 11 30 26;
+  /* Things sitting INSIDE a card (text fields, choice tiles, icon tiles, tab switchers) get their
+     own surface that differs from the card, never the card's own colour — otherwise they melt
+     into it. Light mode: brighter than the card. Dark mode: darker than the card. */
+  --c-field: #ffffff;
+  --c-icon-tile: color-mix(in oklab, var(--c-accent) 28%, #ffffff);
+  --c-icon-fg: var(--c-ink);
   color-scheme: light;
 }
 
@@ -76,6 +82,9 @@
   --c-glass: rgb(11 61 54 / 0.6);
   --c-glass-line: rgb(247 250 248 / 0.1);
   --c-shadow: 0 0 0;
+  --c-field: color-mix(in oklab, var(--c-near-black-green) 75%, var(--c-deep-green));
+  --c-icon-tile: color-mix(in oklab, var(--c-mint-green) 20%, var(--c-near-black-green));
+  --c-icon-fg: var(--c-mint-green);
   color-scheme: dark;
 }
 
@@ -175,12 +184,12 @@
   /* Text fields: nothing here is the browser's default look. */
   .input {
     width: 100%; appearance: none; -webkit-appearance: none; border-radius: 0.65rem;
-    border: 1px solid var(--c-line); background: color-mix(in oklab, var(--c-surface) 80%, transparent);
+    border: 1px solid color-mix(in oklab, var(--c-ink) 14%, var(--c-line)); background: var(--c-field);
     padding: 0.85rem 1rem; color: var(--c-ink); outline: none; transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
   }
   .input::placeholder { color: color-mix(in oklab, var(--c-soft) 70%, transparent); }
   .input:hover { border-color: color-mix(in oklab, var(--c-accent) 35%, var(--c-line)); }
-  .input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--c-accent) 22%, transparent); background: var(--c-surface); }
+  .input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--c-accent) 22%, transparent); background: var(--c-field); }
   textarea.input { resize: none; min-height: 7.5rem; line-height: 1.6; }
 
   /* Custom dropdown (button + list), so even the open menu matches. */
@@ -203,15 +212,20 @@
   .dd-opt[aria-selected="true"] .dd-check { opacity: 1; }
 
   /* Selectable tiles (radio buttons without the radio) */
-  .tile { position: relative; display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; border-radius: 0.8rem; border: 1px solid var(--c-line); background: color-mix(in oklab, var(--c-surface) 70%, transparent); cursor: pointer; transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s; }
+  .tile { position: relative; display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; border-radius: 0.8rem; border: 1px solid color-mix(in oklab, var(--c-ink) 12%, var(--c-line)); background: var(--c-field); cursor: pointer; transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s; }
   .tile:hover { border-color: color-mix(in oklab, var(--c-ink) 40%, var(--c-line)); }
   .tile input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-  .tile:has(input:checked) { border-color: var(--c-accent); background: color-mix(in oklab, var(--c-accent) 11%, var(--c-surface)); box-shadow: 0 0 0 1px var(--c-accent); }
+  .tile:has(input:checked) { border-color: var(--c-accent-ink); background: color-mix(in oklab, var(--c-accent) 34%, var(--c-field)); box-shadow: 0 0 0 1px var(--c-accent-ink); }
+  [data-theme="dark"] .tile:has(input:checked) { border-color: var(--c-accent); box-shadow: 0 0 0 1px var(--c-accent); }
   .tile:has(input:focus-visible) { outline: 2px solid var(--c-accent); outline-offset: 3px; }
-  .tile-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 0.6rem; background: var(--c-surface2); color: var(--c-accent); transition: background-color 0.2s, color 0.2s; }
-  .tile:has(input:checked) .tile-icon { background: var(--c-accent-vivid); color: var(--c-accent-ink); }
+  /* A two-way switch (e.g. Create an account / Sign in): its own track, and a clearly lit active side. */
+  .seg { background: var(--c-field); border: 1px solid color-mix(in oklab, var(--c-ink) 12%, var(--c-line)); }
+  .seg-on { background: var(--c-accent-vivid); color: var(--c-accent-ink); }
+  .tile-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 0.6rem; background: var(--c-icon-tile); color: var(--c-icon-fg); transition: background-color 0.2s, color 0.2s; }
+  .tile:has(input:checked) .tile-icon { background: var(--c-accent-ink); color: var(--c-clean-white); }
+  [data-theme="dark"] .tile:has(input:checked) .tile-icon { background: var(--c-accent-vivid); color: var(--c-accent-ink); }
 
-  .dropzone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; text-align: center; min-height: 11rem; padding: 1.5rem; border-radius: 0.8rem; border: 1.5px dashed color-mix(in oklab, var(--c-accent) 45%, var(--c-line)); background: color-mix(in oklab, var(--c-surface) 60%, transparent); cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
+  .dropzone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; text-align: center; min-height: 11rem; padding: 1.5rem; border-radius: 0.8rem; border: 1.5px dashed color-mix(in oklab, var(--c-accent) 45%, var(--c-line)); background: var(--c-field); cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
   .dropzone:hover, .dropzone[data-over="true"] { background: color-mix(in oklab, var(--c-accent) 9%, var(--c-surface)); border-color: var(--c-accent); }
 
   .pill { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 999px; padding: 0.25rem 0.7rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.01em; background-color: var(--c-surface); background-image: linear-gradient(var(--pill-bg), var(--pill-bg)); color: var(--pill-fg); }
@@ -353,6 +367,18 @@
    both themes, so the blur behind it actually shows scrolled content through, same as dark mode. */
 .site-header { background: color-mix(in oklab, color-mix(in oklab, var(--c-accent-vivid) 50%, var(--c-bg)) 80%, transparent); backdrop-filter: blur(20px) saturate(140%); -webkit-backdrop-filter: blur(20px) saturate(140%); }
 [data-theme="dark"] .site-header { background: color-mix(in oklab, var(--c-bg) 80%, transparent); }
+/* The light header is a green wash, the same family as the logo's sage R and leaves, so the logo
+   disappeared into it. Inside the light header only, the R takes the brand's deep green and the
+   leaves deeper shades of their own greens; everywhere else the logo keeps its brand colours. */
+/* Sage Green is a fill colour: as text on the light page, cards and panels it is too pale to read
+   (about 2:1). Accent-coloured text in light mode uses a deeper shade of the same green instead. */
+:root:not([data-theme="dark"]) .text-accent { color: color-mix(in oklab, var(--c-sage-green) 40%, var(--c-ink)); }
+:root:not([data-theme="dark"]) .site-header,
+:root:not([data-theme="dark"]) .stand-panel {
+  --c-logo-mark: var(--c-ink);
+  --c-logo-leaf-r: color-mix(in oklab, var(--c-sage-green) 55%, var(--c-ink));
+  --c-logo-leaf-l: color-mix(in oklab, var(--c-soft-olive) 75%, var(--c-ink));
+}
 
 /* "Where it stands": frosted glass panels, instead of a solid colour fill — reuses the same
    glass tokens the nav bar already uses, so it still feels native to the site. */
@@ -447,10 +473,12 @@
 .accent-panel .corner-hover { --ch-color: var(--c-accent-ink); --ch-tint: color-mix(in oklab, var(--c-accent-ink) 16%, transparent); }
 .corner-hover:hover, .corner-hover:focus-within { background: var(--ch-tint); }
 .ch-corner { position: absolute; width: 18px; height: 18px; border-color: var(--ch-color); border-style: solid; border-width: 0; opacity: 0; transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none; }
-.ch-tl { top: 2px; left: 2px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 0.5rem; transform: translate(9px, 9px); }
-.ch-tr { top: 2px; right: 2px; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 0.5rem; transform: translate(-9px, 9px); }
-.ch-bl { bottom: 2px; left: 2px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 0.5rem; transform: translate(9px, -9px); }
-.ch-br { bottom: 2px; right: 2px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 0.5rem; transform: translate(-9px, -9px); }
+/* The brackets sit just outside the row's edge (never inside it, where they read as a square
+   drawn over the content), sliding outward into place. */
+.ch-tl { top: -5px; left: -5px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 0.5rem; transform: translate(6px, 6px); }
+.ch-tr { top: -5px; right: -5px; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: 0.5rem; transform: translate(-6px, 6px); }
+.ch-bl { bottom: -5px; left: -5px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: 0.5rem; transform: translate(6px, -6px); }
+.ch-br { bottom: -5px; right: -5px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 0.5rem; transform: translate(-6px, -6px); }
 .corner-hover:hover .ch-corner, .corner-hover:focus-within .ch-corner { opacity: 1; transform: translate(0, 0); }
 
 /* ---- Automatic corner-bracket hover for every link and button, site-wide — the same bracket
@@ -465,15 +493,17 @@
    right-0` inside its field). ---- */
 a:not(.absolute):not(.fixed):not(.sticky), button:not(.absolute):not(.fixed):not(.sticky), label.tile, label.dropzone { position: relative; }
 a::after, button::after, label.tile::after, label.dropzone::after {
-  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  /* inset: -5px puts the brackets just outside the element's edge, framing it, rather than
+     inside it, where on a small or round control they drew a square over the content. */
+  content: ''; position: absolute; inset: -5px; pointer-events: none;
   opacity: 0; transition: opacity 0.25s ease;
   background-repeat: no-repeat;
-  background-size: 12px 2px, 2px 12px, 12px 2px, 2px 12px, 12px 2px, 2px 12px, 12px 2px, 2px 12px;
+  background-size: 10px 2px, 2px 10px, 10px 2px, 2px 10px, 10px 2px, 2px 10px, 10px 2px, 2px 10px;
   background-position:
-    top 2px left 2px, top 2px left 2px,
-    top 2px right 2px, top 2px right 2px,
-    bottom 2px right 2px, bottom 2px right 2px,
-    bottom 2px left 2px, bottom 2px left 2px;
+    top left, top left,
+    top right, top right,
+    bottom right, bottom right,
+    bottom left, bottom left;
   background-image:
     linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
     linear-gradient(var(--ch-color, var(--c-accent)), var(--ch-color, var(--c-accent))),
@@ -487,6 +517,116 @@ a::after, button::after, label.tile::after, label.dropzone::after {
 a:hover::after, a:focus-visible::after, button:hover::after, button:focus-visible::after,
 label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::after, label.dropzone:focus-within::after { opacity: 1; }
 .corner-hover a::after, .corner-hover button::after, a.corner-hover::after, button.corner-hover::after { content: none; }
+/* Round controls (the background-shade swatches) get a soft highlight ring instead of brackets:
+   square corners around a circle never sit right. */
+.hover-ring::after { content: none !important; }
+.hover-ring { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.hover-ring:hover, .hover-ring:focus-visible { box-shadow: 0 0 0 3px var(--c-bg), 0 0 0 6px color-mix(in oklab, var(--c-accent-vivid) 70%, transparent); }
+
+/* Anything sitting on a solid accent panel takes the panel's ink colour instead of the accent,
+   which would vanish into it: the logo, and the hover brackets of buttons and links. */
+.accent-panel {
+  --ch-color: var(--c-accent-ink);
+  --c-logo-mark: var(--c-accent-ink);
+  --c-logo-leaf-r: color-mix(in oklab, var(--c-accent-ink) 72%, var(--c-accent));
+  --c-logo-leaf-l: color-mix(in oklab, var(--c-accent-ink) 50%, var(--c-accent));
+}
+/* Homepage fly-tipping chart. Bar greens checked with the dataviz palette validator: in the
+   lightness band, not greyish, and at least 3:1 against the panel in each theme. */
+:root { --c-chart-bar: #24804f; --c-chart-grid: color-mix(in oklab, var(--c-ink) 12%, transparent); }
+[data-theme="dark"] { --c-chart-bar: #34a876; }
+.chart-bar { background: var(--c-chart-bar); transition: opacity 0.2s ease; }
+.chart-col::after { content: none !important; }
+.chart-col:focus-visible { outline: 2px solid var(--c-ink); outline-offset: 2px; border-radius: 4px; }
+.chart-tip { background: var(--c-field); border: 1px solid color-mix(in oklab, var(--c-ink) 18%, var(--c-line)); pointer-events: none; }
+.chart-table summary::-webkit-details-marker { display: none; }
+
+/* Categorical series for the Why it matters charts, in fixed order. Brand green first, then the
+   reference palette's blue, orange, violet and yellow. Validated per theme (lightness band, chroma,
+   colourblind and normal-vision separation of neighbours); the light orange and yellow are under 3:1
+   against the panel, so every chart that uses them has visible labels and a table view. */
+:root { --series-1: #24804f; --series-2: #2a78d6; --series-3: #eb6834; --series-4: #6250d6; --series-5: #eda100; }
+[data-theme="dark"] { --series-1: #34a876; --series-2: #3987e5; --series-3: #d95926; --series-4: #9085e9; --series-5: #c98500; }
+.series-1 { --s: var(--series-1); } .series-2 { --s: var(--series-2); }
+.series-1-bg { background: var(--series-1); } .series-2-bg { background: var(--series-2); } .series-3-bg { background: var(--series-3); }
+.series-4-bg { background: var(--series-4); } .series-5-bg { background: var(--series-5); }
+.series-stroke { stroke: var(--s); }
+.series-dot { fill: var(--s); stroke: var(--c-surface); stroke-width: 2; transition: r 0.15s ease; }
+.chart-gridline { stroke: var(--c-chart-grid); stroke-width: 1; }
+.chart-axis-strong { stroke: color-mix(in oklab, var(--c-ink) 35%, transparent); stroke-width: 1; }
+.chart-crosshair { stroke: color-mix(in oklab, var(--c-ink) 40%, transparent); stroke-width: 1; stroke-dasharray: 3 3; }
+.chart-tick { fill: var(--c-soft); font-size: 12px; font-variant-numeric: tabular-nums; }
+.chart-endlabel { fill: var(--c-ink); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Report form: a step that still needs something after Send was pressed. */
+:root { --c-danger: #b91c1c; }
+[data-theme="dark"] { --c-danger: #fca5a5; }
+.step-invalid { border-color: color-mix(in oklab, var(--c-danger) 70%, transparent); box-shadow: 0 0 0 1px color-mix(in oklab, var(--c-danger) 70%, transparent); }
+.field-error { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 600; color: var(--c-danger); }
+.input[aria-invalid="true"] { border-color: var(--c-danger); }
+
+/* "Where it stands" closing panel on About: a calm, lightly tinted panel rather than a full-strength
+   accent fill (the dark-mode mint was too bright as a large block). In light mode the main button is
+   deep ink, since the mint button would blend into the sage tint. */
+.stand-panel { background: color-mix(in oklab, var(--c-accent) 20%, var(--c-surface)); border: 1px solid color-mix(in oklab, var(--c-accent) 45%, var(--c-line)); box-shadow: 0 18px 40px -24px rgb(var(--c-shadow) / 0.35); }
+[data-theme="dark"] .stand-panel { background: color-mix(in oklab, var(--c-accent) 9%, var(--c-surface)); border-color: color-mix(in oklab, var(--c-accent) 30%, transparent); }
+:root:not([data-theme="dark"]) .stand-panel .btn-primary { background: var(--c-accent-ink); color: var(--c-clean-white); }
+
+/* Buttons for an accent panel: deep ink, never the accent itself on an accent background. */
+.btn-ink { background: var(--c-accent-ink); color: var(--c-clean-white); }
+.btn-ink:hover { filter: brightness(1.25); }
+.btn-ink-ghost { border: 1.5px solid var(--c-accent-ink); color: var(--c-accent-ink); background: transparent; }
+.btn-ink-ghost:hover { background: color-mix(in oklab, var(--c-accent-ink) 12%, transparent); }
+
+/* ---- About page (purpose / mission / vision, devices), adapted from the Fico landing page ---- */
+.story-glass {
+  position: relative; overflow: hidden; border-radius: 1.5rem; padding: 1.75rem;
+  background: color-mix(in oklab, var(--c-surface) 86%, transparent);
+  border: 1px solid color-mix(in oklab, var(--c-ink) 12%, var(--c-line));
+  backdrop-filter: blur(10px) saturate(140%); -webkit-backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: 0 18px 40px -24px rgb(var(--c-shadow) / 0.35);
+}
+.story-glass::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: linear-gradient(90deg, transparent, var(--c-accent-vivid), transparent); }
+@media (min-width: 640px) { .story-glass { padding: 2.5rem; } }
+
+.bubble { background: var(--c-field); border: 1px solid color-mix(in oklab, var(--c-ink) 14%, var(--c-line)); box-shadow: 0 6px 18px -10px rgb(var(--c-shadow) / 0.35); }
+.typing-dots > span { width: 6px; height: 6px; border-radius: 9999px; background: var(--c-soft); animation: typing-dot 1s ease-in-out infinite; }
+.typing-dots > span:nth-child(2) { animation-delay: 0.15s; }
+.typing-dots > span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typing-dot { 0%, 60%, 100% { translate: 0 0; opacity: 0.4; } 30% { translate: 0 -3px; opacity: 1; } }
+.typing-caret { display: inline-block; width: 2px; height: 1em; margin-left: 1px; vertical-align: -0.15em; background: var(--c-ink); animation: typing-caret 0.8s steps(1) infinite; }
+@keyframes typing-caret { 50% { opacity: 0; } }
+
+/* Sample map in the vision picture. Pin colours match the status labels, at a strength that
+   stands out on the map in both themes. */
+.vision-map { background: var(--c-field); }
+.vision-road { stroke: color-mix(in oklab, var(--c-ink) 13%, transparent); stroke-linecap: round; }
+:root { --pin-verified: #0b3d36; --pin-cleared: #2f9e44; --pin-progress: #1d4ed8; }
+[data-theme="dark"] { --pin-verified: #94c690; --pin-cleared: #6ee7b7; --pin-progress: #93c5fd; }
+.vision-pin { transition: scale 0.2s ease; transform-origin: 50% 100%; filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.25)); }
+.vision-pin:hover { scale: 1.25; }
+.vision-pin-verified { color: var(--pin-verified); }
+.vision-pin-cleared { color: var(--pin-cleared); }
+.vision-pin-progress { color: var(--pin-progress); }
+.vision-dot { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: currentColor; }
+
+/* Logo meaning: the card for the part being pointed at. */
+.meaning-on { border-color: var(--c-accent-vivid); background: color-mix(in oklab, var(--c-accent) 18%, var(--c-surface)); }
+
+/* Device frames. A dark device in light mode; a lighter graphite one with a thin light edge in dark
+   mode, so the frames never melt into the near-black page. */
+.theme-dark-only { display: none; }
+[data-theme="dark"] .theme-dark-only { display: block; }
+[data-theme="dark"] .theme-light-only { display: none; }
+.device-bezel { border-color: #1b201e; background: #101412; box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.55); }
+.device-base { background: linear-gradient(#3a403d, #1d2220); box-shadow: 0 18px 30px -18px rgb(0 0 0 / 0.6); }
+[data-theme="dark"] .device-bezel { border-color: #3b4441; background: #2a312e; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.14), 0 30px 60px -30px rgb(0 0 0 / 0.8); }
+[data-theme="dark"] .device-base { background: linear-gradient(#5b6561, #343c39); box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12); }
+.hover-device { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+.hover-device:hover { transform: translateY(-8px); }
+
+.faq > summary::-webkit-details-marker { display: none; }
+.faq[open] { border-color: color-mix(in oklab, var(--c-ink) 22%, var(--c-line)); }
 
 /* ---- Messages ---- */
 @layer components {
@@ -496,6 +636,7 @@ label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::a
   .msg-warn { background: color-mix(in oklab, #d97706 14%, var(--c-surface)); color: #b45309; border: 1px solid color-mix(in oklab, #d97706 35%, transparent); }
   [data-theme="dark"] .msg-error { color: #fca5a5; }
   [data-theme="dark"] .msg-warn { color: #fcd34d; }
+  .msg-info { background: color-mix(in oklab, var(--c-accent) 16%, var(--c-surface)); color: var(--c-ink); border: 1px solid color-mix(in oklab, var(--c-accent) 45%, transparent); font-weight: 500; }
 }
 
 

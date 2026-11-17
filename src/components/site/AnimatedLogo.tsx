@@ -84,8 +84,8 @@ export function AnimatedLogo({ className = '' }: { className?: string }) {
       <ellipse className="lg-ping" cx="76.5" cy="91" rx="6" ry="2.2" fill="none" stroke="var(--c-accent)" strokeWidth="7" opacity="0" />
       <ellipse className="lg-ping" cx="76.5" cy="91" rx="6" ry="2.2" fill="none" stroke="var(--c-accent)" strokeWidth="7" opacity="0" />
       <path d={R_PATH} fill="var(--c-logo-mark)" />
-      <path className="lg-leaf-r" d={LEAF_RIGHT_PATH} fill="var(--c-accent)" />
-      <path className="lg-leaf-l" d={LEAF_LEFT_PATH} fill="var(--c-accent-display)" />
+      <path className="lg-leaf-r" d={LEAF_RIGHT_PATH} fill="var(--c-logo-leaf-r, var(--c-accent))" />
+      <path className="lg-leaf-l" d={LEAF_LEFT_PATH} fill="var(--c-logo-leaf-l, var(--c-accent-display))" />
       <path className="lg-pin" d={PIN_PATH} fill="var(--c-logo-mark)" fillRule="evenodd" />
     </svg>
   )

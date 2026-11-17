@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
 import { PageBackdrop } from '../components/site/SiteShell'
+import { Logo } from '../components/site/Logo'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Reveal } from '../components/ui/Reveal'
 import { CornerHover } from '../components/ui/CornerHover'
+import { LogoMeaning, Mission, PurposeArt, StorySection, Vision } from '../components/about/Story'
+import { Devices } from '../components/about/Devices'
+import { openInstallDialog } from '../lib/install'
 
 const TODAY_TILES: Array<[IconName, string, string]> = [
   ['camera', 'Report it', 'Anyone can report fly-tipping, potholes, graffiti, abandoned vehicles and damaged street infrastructure, with a photo and a location.'],
@@ -10,26 +14,20 @@ const TODAY_TILES: Array<[IconName, string, string]> = [
   ['eye', 'Everyone can see it', 'The same public record of what has been reported and where it stands is visible to anyone, not just the people handling it.'],
 ]
 
-const PRINCIPLES: Array<[string, string]> = [
-  ['Cleared and verified stay separate', 'A council or contractor saying a job is done is one thing. Someone independent confirming it is another. The site shows both, rather than treating the first as proof.'],
-  ['Every step is on record', 'From a report being sent to it being acknowledged, scheduled, cleared and verified, each change is saved with the time it happened and cannot be edited afterwards.'],
-  ['No claims ahead of what is built', 'Features that are not working yet are shown as placeholders, not hidden or implied. This is an early prototype, and it says so.'],
-]
-
-const INSTALL_STEPS: Array<[string, string]> = [
-  ['step0', 'Open the site. Some browsers offer to install it straight away.'],
-  ['step1-marked', "If not, open the browser's own menu."],
-  ['step2-marked', 'Choose "Install and create shortcut" (the wording varies by browser).'],
-  ['step3-marked', 'Pick "Install".'],
-  ['step4-marked', 'Confirm by tapping "Install" again.'],
-  ['step5', 'Done. Resolve UK now opens full-screen, the same as any other app.'],
+// "Getting it resolved, and quickly": the focus Kay asked the About page to spell out. Written as
+// what Resolve UK is built to do, without claiming the parts that are still planned are live.
+const RESOLUTION: Array<[IconName, string, string]> = [
+  ['rotate', 'Fewer steps between seeing it and fixing it', 'One report reaches the people responsible, with the photo and exact spot they need to act. If the same problem has already been reported, you add your support instead of starting again, so nobody waits on a pile of duplicates.'],
+  ['map', 'Public land and private land', 'Not every problem is the council’s to fix. Rubbish on a road goes to the council or its contractor; rubbish on a supermarket car park is the landowner’s. Resolve UK follows the problem to whoever is actually responsible, wherever it is.'],
+  ['users', 'With the community', 'Local groups will be able to take on safe jobs like litter in their own area, and residents to confirm a fix with a photo of their own. The quickest way to get something cleared is often the people who live next to it.'],
 ]
 
 const FAQS: Array<[string, string]> = [
   ['Is this a council website?', 'No. Resolve UK is not run by a council. It sends a report to the council or contractor responsible for the area, the same as writing to them yourself would.'],
-  ['Do I need an account to report something?', 'No. Reporting is open to anyone, with no sign-in. An account is only needed by council and contractor staff, to handle the reports that come in.'],
+  ['Do I need an account to report something?', 'No. Anyone can report a problem without signing in. An account is optional: it keeps the reports you have sent together so you can follow them. Council and contractor staff have their own separate sign-in.'],
   ["What shouldn't I report here?", "Anything urgent or dangerous, such as a gas leak, a dangerous structure, or a fallen tree blocking a road, should go straight to the emergency services or the relevant utility, not through this site. Anything that isn't a physical problem in a public place, such as noise, a missed bin collection, or a complaint about a council decision, should go directly to the council instead."],
   ['What can council and contractor staff do?', 'Staff have their own sign-in, separate from the public site. Once a report is claimed for their council or contractor, they can acknowledge it, schedule the work and mark it cleared. A Resolve reviewer then checks a cleared report before it counts as verified. Staff can only act on a report; they cannot change what the public sees was originally reported.'],
+  ['Is there an app?', 'Resolve UK is a website, but you can install it like an app on a phone, tablet or computer. It gets its own icon and opens full screen, with nothing to download from an app store. Use the Install button further up this page for the steps on your device.'],
 ]
 
 export function AboutPage() {
@@ -54,14 +52,59 @@ export function AboutPage() {
           </div>
         </Reveal>
 
+        {/* ---- Purpose, mission, vision ---- */}
+        <div className="mt-6">
+          <StorySection id="purpose" label="Our purpose" title="Reporting shouldn't be the end of the story" art={<PurposeArt />}>
+            <p>
+              Everyone has walked past the same mattress in the same lay-by for weeks. Someone probably reported it. Did they? Did anything happen? Was it actually cleared, or just marked as done? Once a report is sent, the answers usually disappear into an inbox.
+            </p>
+            <p>
+              Resolve UK exists to give every street <strong className="text-ink">one public record</strong> of what has been reported and where it stands, so nobody has to wonder, chase or report the same thing twice.
+            </p>
+          </StorySection>
+
+        </div>
+
+        <Reveal className="mt-4">
+          <Mission />
+        </Reveal>
+
         <Reveal className="mt-10">
+          <Vision />
+        </Reveal>
+
+        {/* ---- Getting it resolved, and quickly ---- */}
+        <Reveal className="mt-10">
+          <section id="resolution" className="panel-tint scroll-mt-28 grid gap-10 rounded-3xl p-8 sm:p-12 lg:grid-cols-[.9fr_1.1fr]">
+            <div>
+              <p className="eyebrow">Our focus</p>
+              <h2 className="mt-3 text-3xl sm:text-4xl">Getting it resolved, and quickly</h2>
+              <p className="mt-5 leading-relaxed text-soft">
+                Plenty of ways already exist to report a problem. What's missing is knowing it actually gets fixed, and how long it takes. That is the part Resolve UK is built around: not collecting reports, but making sure each one reaches the right people and ends in a real fix, as quickly as possible.
+              </p>
+              <p className="mt-4 leading-relaxed text-soft">
+                Every step is timed and shown in public, so a report that has stalled is easy to spot, and so is a place where problems keep coming back.
+              </p>
+            </div>
+            <ul className="space-y-6">
+              {RESOLUTION.map(([icon, title, text]) => (
+                <li key={title} className="flex gap-4">
+                  <span className="tile-icon size-11 shrink-0 rounded-xl">
+                    <Icon name={icon} className="size-5" />
+                  </span>
+                  <div>
+                    <h3 className="font-serif text-2xl">{title}</h3>
+                    <p className="mt-1.5 leading-relaxed text-soft">{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </Reveal>
+
+        <Reveal className="mt-16">
           <h2 className="font-serif text-2xl">What it does today</h2>
-          {/* A bento rather than one dense paragraph: three distinct moments (reporting, staff
-              handling it, the public record) as their own tiles, first one emphasised. Below `lg`
-              a bento is just every tile stacked full-width, one card after another — so it
-              collapses into one compact divided list there instead, and only becomes the grid
-              from `lg` up. CornerHover wraps a plain outer layer, not accent-panel/card itself, so
-              its hover tint can't override a tile's own solid background. */}
+          {/* Below `lg` the three tiles are one compact divided list; from `lg` up, a bento grid. */}
           <ul className="panel-tint divide-y divide-line mt-6 overflow-hidden rounded-3xl lg:hidden">
             {TODAY_TILES.map(([icon, title, text]) => (
               <CornerHover as="li" key={title} className="flex items-start gap-3.5 px-5 py-4">
@@ -80,74 +123,79 @@ export function AboutPage() {
             {TODAY_TILES.map(([icon, title, text], i) => (
               <CornerHover key={title} className="block">
                 <div className={`hover-lift flex h-full flex-col rounded-3xl p-7 sm:p-8 ${i === 0 ? 'accent-panel' : 'card'}`}>
-                  <span className={`tile-icon size-12 rounded-2xl ${i === 0 ? 'bg-black/10' : ''}`}>
+                  <span className="tile-icon size-12 rounded-2xl">
                     <Icon name={icon} className="size-6" />
                   </span>
                   <h3 className="mt-5 font-serif text-2xl">{title}</h3>
-                  <p className={`mt-2.5 leading-relaxed ${i === 0 ? 'opacity-85' : 'text-soft'}`}>{text}</p>
+                  <p className={`mt-2.5 leading-relaxed ${i === 0 ? '' : 'text-soft'}`}>{text}</p>
                 </div>
               </CornerHover>
             ))}
           </div>
         </Reveal>
 
-        <Reveal className="mt-14">
-          <h2 className="font-serif text-2xl">What it stands for</h2>
-          <ul className="panel-tint mt-6 divide-y divide-line overflow-hidden rounded-3xl">
-            {PRINCIPLES.map(([title, text]) => (
-              <CornerHover as="li" key={title} className="block px-5 py-5 sm:px-7">
-                <p className="font-semibold">{title}</p>
-                <p className="mt-1.5 leading-relaxed text-soft">{text}</p>
-              </CornerHover>
-            ))}
-          </ul>
+        {/* ---- The meaning behind the logo ---- */}
+        <Reveal className="story-glass mt-16">
+          <p className="eyebrow">The mark</p>
+          <h2 className="mt-3 text-3xl sm:text-4xl">What the logo stands for</h2>
+          <p className="mt-3 max-w-2xl leading-relaxed text-soft">Four shapes, one idea. Point at each one to see where it sits in the mark.</p>
+          <div className="mt-8">
+            <LogoMeaning />
+          </div>
         </Reveal>
 
-        <Reveal className="mt-14">
-          <h2 className="font-serif text-2xl">Questions</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        {/* ---- On every screen, and the install button ---- */}
+        <section id="app" className="mt-20 scroll-mt-28">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow justify-center">Any device</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl">Resolve UK on every screen</h2>
+            <p className="mt-3 leading-relaxed text-soft">A laptop at home, a tablet on the sofa, your phone in the lay-by: the same reports and the same record everywhere. Install it and it works like an app.</p>
+          </Reveal>
+          <div className="mt-12">
+            <Devices />
+          </div>
+          <div className="mt-10 flex flex-col items-center gap-2 text-center">
+            <button type="button" className="btn btn-primary px-6 text-base" onClick={openInstallDialog}>
+              <Icon name="plus" className="size-4" /> Install Resolve UK
+            </button>
+            <p className="text-sm text-soft">Free. Its own icon, opens full screen, nothing to download from an app store.</p>
+          </div>
+        </section>
+
+        {/* ---- Questions ---- */}
+        <section className="mx-auto mt-20 max-w-3xl">
+          <Reveal className="text-center">
+            <p className="eyebrow justify-center">Questions</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl">Questions, answered</h2>
+          </Reveal>
+          <div className="mt-8 space-y-3">
             {FAQS.map(([q, a]) => (
-              <CornerHover key={q} className="card rounded-2xl p-6">
-                <p className="font-semibold">{q}</p>
-                <p className="mt-1.5 leading-relaxed text-soft">{a}</p>
-              </CornerHover>
+              <details key={q} className="faq card rounded-2xl">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 font-semibold">
+                  {q}
+                  <Icon name="chevron" className="dd-chevron size-5 shrink-0 text-soft transition-transform" />
+                </summary>
+                <p className="px-6 pb-6 leading-relaxed text-soft">{a}</p>
+              </details>
             ))}
           </div>
-        </Reveal>
+        </section>
 
-        <Reveal className="glass-panel mt-10 rounded-3xl p-8 sm:p-10">
-          <h2 className="font-serif text-2xl">Is there an app?</h2>
-          <p className="mt-4 max-w-3xl leading-relaxed text-soft">
-            Resolve UK is a website rather than something from an app store, but a phone's browser can install it like one. Open the site, then use the browser's "Add to Home Screen" or "Install" option. An icon is added to the home screen, and it opens full-screen from there, the same as any other app. The exact wording differs between phones; here is what it looks like on Android.
+        {/* ---- Where it stands ---- */}
+        <Reveal className="stand-panel mt-20 rounded-3xl px-6 py-12 text-center sm:px-12">
+          <Logo className="mx-auto !h-14" />
+          <h2 className="mt-4 font-serif text-3xl">Where it stands</h2>
+          <p className="mx-auto mt-3 max-w-xl leading-relaxed text-soft">
+            Resolve UK is an early prototype, built in stages and tested with sample data. Report data is hosted in the UK. It is not yet connected to real councils, and nothing on it should be treated as a finished product.
           </p>
-          <p className="mt-3">
-            <Link to="/staff" className="font-semibold text-accent hover:underline">
-              Staff sign-in
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <Link to="/report" className="btn btn-primary">
+              Report a problem <Icon name="arrow" />
             </Link>
-          </p>
-          <ol className="mt-6 grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-3 lg:grid-cols-6" aria-label="Steps to install Resolve UK">
-            {INSTALL_STEPS.map(([file, caption], i) => (
-              <li key={file}>
-                <img src={`/install/${file}.jpg`} alt={caption} loading="lazy" className="aspect-[1080/2460] w-full rounded-xl border border-line object-cover" />
-                <p className="mt-2 text-xs leading-snug text-soft">
-                  <span className="font-semibold text-ink">{i + 1}. </span>
-                  {caption}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
-
-        <Reveal className="accent-panel mt-10 flex flex-wrap items-center justify-between gap-6 rounded-3xl p-8 sm:p-10">
-          <div>
-            <h2 className="font-serif text-2xl">Where it stands</h2>
-            <p className="mt-3 max-w-xl leading-relaxed opacity-90">
-              Resolve UK is an early prototype, built in stages and tested with sample data. Report data is hosted in the UK. It is not yet connected to real councils, and nothing on it should be treated as a finished product.
-            </p>
+            <button type="button" className="btn btn-ghost" onClick={openInstallDialog}>
+              Install the app
+            </button>
           </div>
-          <Link to="/report" className="btn btn-primary shrink-0">
-            Report a problem
-          </Link>
         </Reveal>
       </main>
     </div>

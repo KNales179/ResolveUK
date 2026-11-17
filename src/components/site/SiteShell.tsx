@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Icon } from '../ui/Icon'
-import { toggleTheme } from '../../lib/theme'
+import { toggleTheme, useThemeName } from '../../lib/theme'
+import { applyBgForTheme } from '../../lib/bgPreview'
 import { Logo } from './Logo'
 import { AnimatedLogo } from './AnimatedLogo'
 import { IntroSplash } from './IntroSplash'
@@ -9,6 +10,8 @@ import { CornerHover } from '../ui/CornerHover'
 import { PageTransition } from './PageTransition'
 import { UpdateBanner } from './UpdateBanner'
 import { WhatsNewModal } from './WhatsNewModal'
+import { InstallDialog } from './InstallDialog'
+import { InstallNudge } from './InstallNudge'
 import { APP_VERSION } from '../../lib/changelog'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
@@ -117,7 +120,7 @@ function Nav() {
           </div>
         </nav>
         {open && (
-          <div id="mobile-menu" className="max-h-[calc(100svh-4rem)] overflow-y-auto border-t border-line py-3 xl:hidden">
+          <div id="mobile-menu" data-lenis-prevent className="max-h-[calc(100svh-4rem)] overflow-y-auto overscroll-contain border-t border-line py-3 xl:hidden">
             <div className="grid gap-1 text-base font-semibold">
               <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/">
                 Home
@@ -157,7 +160,7 @@ function Nav() {
 function Footer() {
   return (
     <footer className="grid-texture grid-shimmer border-t border-line bg-surface/60">
-      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 sm:grid-cols-2 lg:grid-cols-[1.1fr_1.6fr_1fr_1fr]">
         <div>
           <Link to="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
             <Logo />
@@ -169,7 +172,7 @@ function Footer() {
         </div>
         <div className="text-sm">
           <p className="font-semibold">Explore</p>
-          <ul className="mt-3 -mx-3 space-y-1 text-soft">
+          <ul className="mt-3 -mx-3 grid grid-cols-2 gap-x-2 gap-y-1 text-soft">
             <CornerHover as="li">
               <Link className="block px-3 py-1.5 hover:text-ink" to="/report">
                 Report a problem
@@ -251,6 +254,14 @@ function Footer() {
 // its ::after (see .grid-shimmer in index.css) lands exactly on that section's own grid lines
 // regardless of scroll position. Renders nothing itself — it only ever writes CSS custom
 // properties. Throttled to one update per animation frame; skipped for reduced motion.
+// Keeps the visitor's chosen background shade (BgSwatchPicker) in step with the theme: when they
+// switch light/dark, the shade they picked for that theme (or the default) is applied, on any page.
+function BgPreviewSync() {
+  const theme = useThemeName()
+  useEffect(() => applyBgForTheme(theme), [theme])
+  return null
+}
+
 function CursorGlow() {
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -280,29 +291,28 @@ export function SiteShell() {
   return (
     <>
       <CursorGlow />
+      <BgPreviewSync />
       <Nav />
       <PageTransition />
       <Footer />
       <UpdateBanner />
       <WhatsNewModal />
+      <InstallDialog />
+      <InstallNudge />
       <IntroSplash />
     </>
   )
 }
 
-// A soft picture at the top of the working pages, so they feel part of the same place as the
-// landing page. It only covers the first stretch of the page and fades out to the plain page
-// colour, so forms, lists and body text further down sit on calm ground rather than on foliage.
-// The page using this must wrap its own content in a `relative` element (see each page's outer <div>).
+// A soft picture behind the working pages, so they feel part of the same place as the landing
+// page. Absolutely positioned (not fixed) so it scrolls with the page; the tall photo repeats
+// down the full length of the page. The page using this must wrap its own content in a
+// `relative` element for this to size against (see each page's outer <div>).
 export function PageBackdrop() {
   return (
     <>
-      <div className="page-bg page-bg-fade absolute inset-x-0 top-0 -z-20 h-[52rem]" aria-hidden="true" />
-      <div
-        className="absolute inset-x-0 top-0 -z-10 h-[52rem]"
-        style={{ background: 'linear-gradient(180deg,color-mix(in oklab,var(--c-bg) 52%,transparent) 0%,color-mix(in oklab,var(--c-bg) 70%,transparent) 45%,var(--c-bg) 100%)' }}
-        aria-hidden="true"
-      />
+      <div className="page-bg absolute inset-0 -z-20" aria-hidden="true" />
+      <div className="absolute inset-0 -z-10" style={{ background: 'linear-gradient(0deg,var(--c-bg) 4%,color-mix(in oklab,var(--c-bg) 55%,transparent))' }} aria-hidden="true" />
     </>
   )
 }

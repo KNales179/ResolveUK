@@ -47,12 +47,57 @@ export const RELEASES: Release[] = [
       {
         icon: 'eye',
         title: 'Easier to read on every page',
-        body: "The photo at the top of each page now fades away below the first screen, so the content further down sits on a plain background. Headings that were sitting straight on the picture now have a panel behind them, and the green panels are solid so nothing shows through them.",
+        body: "Panels and cards now stand out clearly from the background in light mode, headings that were sitting straight on the picture have a panel behind them, and the green panels are solid so nothing shows through them. Form fields, buttons and icons inside a panel now always use a different colour from the panel itself, so they never blend in.",
+      },
+      {
+        icon: 'palette',
+        title: 'Pick your background shade',
+        body: 'Under the opening section there is a row of colour circles for choosing how bright or dark the page background is, with separate choices for light and dark mode. Your choice is now remembered on your device and used on every page.',
       },
       {
         icon: 'check',
-        title: 'Leftovers tidied away',
-        body: 'A row of colour circles used for testing background colours was still showing under the opening section. It has been taken off the page.',
+        title: 'Clearer when a report is missing something',
+        body: 'Pressing Send with something left out now shows exactly what is missing, right under each question, takes you to the first one, and marks it as needed in the summary. Nothing is picked for you any more, and a report you have started is kept on your device, photo included, so switching apps to take the photo or reloading the page does not lose it.',
+      },
+      {
+        icon: 'rotate',
+        title: 'Our focus: getting it resolved, and quickly',
+        body: 'The About page has a new section on what Resolve UK is really for: making sure a report ends in a real fix, as quickly as possible, whether the problem is on public or private land, with local people involved.',
+      },
+      {
+        icon: 'layers',
+        title: 'Fly-tipping in numbers, on Why it matters',
+        body: 'The Why it matters page now has four charts from the government\'s official figures: fly-tipping rising while prosecutions fall, how each region compares, where fly-tipping happens, and how big each fly-tip is. Each one links to its source and can be opened as a table.',
+      },
+      {
+        icon: 'layers',
+        title: 'The numbers behind it, on the homepage',
+        body: 'A new chart on the homepage shows how many fly-tipping incidents councils in England dealt with each year from 2018/19 to 2024/25, using the government\'s official figures, with a link to the source. Point at a bar for the exact number, or open it as a table.',
+      },
+      {
+        icon: 'map',
+        title: 'A shorter, clearer homepage',
+        body: 'The homepage now opens with why Resolve UK exists, and ends with links to About, Why it matters and Get involved. The three ways a problem gets resolved moved to the Get involved page, and the list of what works today and what is planned moved to the Updates page.',
+      },
+      {
+        icon: 'eye',
+        title: 'A fuller About page',
+        body: 'The About page now tells the story properly: why Resolve UK exists, what it promises, and what it is working towards, each with a picture made from the site itself. It also explains what each part of the logo stands for, and answers common questions in a list you can open one at a time.',
+      },
+      {
+        icon: 'plus',
+        title: 'Install it like an app',
+        body: 'The About page shows the site on a laptop, a tablet and a phone, with an Install button underneath. It opens a short guide: one tap where your browser allows it, or the exact steps for your phone or computer. Now and then a small card offers the same thing; "Not now" hides it for two weeks.',
+      },
+      {
+        icon: 'crosshair',
+        title: 'Neater hover highlights',
+        body: 'When you point at a button, link or card, its corner marks now sit just outside it instead of being drawn over it. The colour circles light up with a soft ring instead.',
+      },
+      {
+        icon: 'user',
+        title: 'Only the sign-in options that work',
+        body: 'Signing in with Google and creating a new account are not switched on yet, so those buttons are hidden for now. They will appear by themselves once they are turned on.',
       },
     ],
   },

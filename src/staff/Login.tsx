@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Logo } from '../components/site/Logo'
 import { PageBackdrop } from '../components/site/SiteShell'
 import { GoogleIcon } from '../components/ui/GoogleIcon'
+import { useAuthOptions } from '../lib/authOptions'
 import { PasswordField } from '../components/ui/PasswordField'
 import { useStaffAuth } from './auth'
 
@@ -80,6 +81,8 @@ function StaffForgotPassword({ onBack }: { onBack: () => void }) {
 export function StaffLogin() {
   const { signIn, signInWithGoogle } = useStaffAuth()
   const [forgot, setForgot] = useState(false)
+  // Only offered once Google sign-in is actually switched on for the project.
+  const googleOn = useAuthOptions().google
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -112,16 +115,20 @@ export function StaffLogin() {
     <Frame title="Staff sign-in">
       <p className="mt-2 text-soft">For council and contractor staff, and Resolve reviewers and admins.</p>
 
-      <button type="button" className="btn btn-ghost mt-6 w-full gap-2.5" onClick={() => void withGoogle()} disabled={googleBusy}>
-        <GoogleIcon /> {googleBusy ? 'Redirecting…' : 'Continue with Google'}
-      </button>
-      <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-soft">
-        <span className="h-px flex-1 bg-line" />
-        or
-        <span className="h-px flex-1 bg-line" />
-      </div>
+      {googleOn && (
+        <>
+          <button type="button" className="btn btn-ghost mt-6 w-full gap-2.5" onClick={() => void withGoogle()} disabled={googleBusy}>
+            <GoogleIcon /> {googleBusy ? 'Redirecting…' : 'Continue with Google'}
+          </button>
+          <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-soft">
+            <span className="h-px flex-1 bg-line" />
+            or
+            <span className="h-px flex-1 bg-line" />
+          </div>
+        </>
+      )}
 
-      <form onSubmit={submit} className="space-y-5">
+      <form onSubmit={submit} className={`space-y-5 ${googleOn ? '' : 'mt-6'}`}>
         <div>
           <label htmlFor="staff-email" className="mb-1.5 block text-sm font-semibold">
             Email

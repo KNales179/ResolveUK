@@ -1,6 +1,7 @@
 import { Icon } from '../components/ui/Icon'
 import { PageBackdrop } from '../components/site/SiteShell'
 import { APP_VERSION, RELEASES } from '../lib/changelog'
+import { PLANNED, WORKING_NOW } from '../lib/roadmap'
 
 // The full history behind the "What's new" pop-up — every release in plain language, newest
 // first. Plain <details> rather than a hand-rolled collapsible: it's one page, visited rarely,
@@ -9,14 +10,38 @@ export function UpdatesPage() {
   return (
     <div className="relative">
       <PageBackdrop />
-      <section className="relative mx-auto max-w-2xl px-5 pt-28 pb-20 sm:px-8 sm:pt-36">
+      <section className="relative mx-auto max-w-4xl px-5 pt-28 pb-20 sm:px-8 sm:pt-36">
         <div className="accent-panel rounded-3xl p-6 sm:p-8">
           <h1 className="flex items-center gap-2.5 text-3xl font-semibold tracking-tight">
             <Icon name="sparkles" className="size-7" /> Updates
           </h1>
           <p className="mt-3 opacity-85">Everything that's changed on the site so far, in plain language. This is still an early prototype — version numbers here are just a running count, not a finished release scheme.</p>
         </div>
-        <div className="mt-8 space-y-3">
+        <div className="panel-tint mt-8 grid gap-8 rounded-3xl p-6 sm:p-8 md:grid-cols-2 md:gap-0 md:divide-x md:divide-line">
+          <div className="md:pr-8">
+            <h2 className="flex items-center gap-2 font-serif text-2xl">
+              <Icon name="check" className="size-5 text-accent" /> Working now
+            </h2>
+            <ul className="mt-4 space-y-2.5 text-sm leading-relaxed">
+              {WORKING_NOW.map((x) => (
+                <li key={x}>{x}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="md:pl-8">
+            <h2 className="flex items-center gap-2 font-serif text-2xl">
+              <Icon name="clock" className="size-5 text-soft" /> Planned
+            </h2>
+            <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-soft">
+              {PLANNED.map((x) => (
+                <li key={x}>{x}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <h2 className="mt-12 font-serif text-2xl">What has changed</h2>
+        <div className="mt-4 space-y-3">
           {RELEASES.map((release) => (
             <details key={release.version} className="card overflow-hidden p-0" open={release.version === APP_VERSION}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5">

@@ -3,6 +3,7 @@ import { PageBackdrop } from '../components/site/SiteShell'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Reveal } from '../components/ui/Reveal'
 import { CornerHover } from '../components/ui/CornerHover'
+import { ROUTES } from '../lib/roadmap'
 
 const INDIVIDUAL: Array<[IconName, string, string]> = [
   ['camera', 'Report what you see', 'A photo, a type and a place on the map is enough. It takes about a minute, and you do not need an account.'],
@@ -108,6 +109,28 @@ export function GetInvolvedPage() {
               ))}
             </div>
           </div>
+        </Reveal>
+
+        <Reveal className="panel-tint mt-14 rounded-3xl p-8 sm:p-10">
+          <h2 className="text-3xl sm:text-4xl">Three ways a problem gets resolved</h2>
+          <p className="mt-3 max-w-2xl leading-relaxed text-soft">Who should act on a report depends on who is responsible for the place it happened. Reporting itself is the same either way, and open to anyone with no account needed.</p>
+          <ul className="mt-8 grid gap-8 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line">
+            {ROUTES.map((r) => (
+              <li key={r.title} className="md:px-8 md:first:pl-0 md:last:pr-0">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="tile-icon size-11 rounded-xl">
+                    <Icon name={r.icon} className="size-5" />
+                  </span>
+                  <span className={`pill ${r.live ? 'pill-cleared' : 'pill-reported'}`}>{r.live ? 'Works today' : 'Not live yet'}</span>
+                </div>
+                <h3 className="mt-4 font-serif text-2xl">{r.title}</h3>
+                <p className="mt-2 leading-relaxed text-soft">{r.text}</p>
+                <Link to={r.href} className="link-nudge mt-4 inline-flex text-sm font-semibold text-accent">
+                  {r.cta} <Icon name="arrow" className="size-3.5" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </Reveal>
 
         <Reveal className="mt-14 flex flex-wrap gap-3">

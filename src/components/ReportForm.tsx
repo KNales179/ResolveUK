@@ -1,8 +1,10 @@
-import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { useMediaQuery } from '../lib/useMediaQuery'
 import { useNavigate } from 'react-router-dom'
 import { useCategories } from '../lib/categories'
 import { deviceToken } from '../lib/device'
+import { clearDraft, loadDraft, loadDraftPhoto, saveDraft, saveDraftPhoto } from '../lib/draft'
 import { backReport, findNearby } from '../lib/nearby'
 import { preparePhoto } from '../lib/photo'
 import { photoUrl } from '../lib/photos'
@@ -37,6 +39,10 @@ const TYPE_HINT: Record<string, string> = {
 }
 const MAX = 1000
 
+type Field = 'category' | 'description' | 'photo' | 'location'
+type Errors = Partial<Record<Field, string>>
+const ORDER: Field[] = ['category', 'description', 'photo', 'location']
+
 function StepTitle({ n, children }: { n: number; children: string }) {
   return (
     <h2 className="flex items-center gap-3 font-sans text-lg font-semibold tracking-normal">
@@ -46,11 +52,39 @@ function StepTitle({ n, children }: { n: number; children: string }) {
   )
 }
 
+// One numbered step. A step that is missing something when Send is pressed gets a red edge and says
+// what it needs, right under its own question rather than somewhere else on the page.
+function Step({ id, n, title, error, children }: { id: Field; n: number; title: string; error?: string; children: ReactNode }) {
+  return (
+    <section id={`step-${id}`} className={`card scroll-mt-28 rounded-3xl p-6 sm:p-7 ${error ? 'step-invalid' : ''}`}>
+      <StepTitle n={n}>{title}</StepTitle>
+      {error && (
+        <p id={`${id}-error`} className="field-error mt-3">
+          <Icon name="x" className="size-4 shrink-0" /> {error}
+        </p>
+      )}
+      {children}
+    </section>
+  )
+}
+
+// Plain words for what went wrong while sending, instead of the raw technical message.
+function friendlyError(err: unknown): string {
+  console.error(err)
+  const msg = err instanceof Error ? err.message : String(err)
+  if (!navigator.onLine || /fetch|network|load failed/i.test(msg))
+    return "Couldn't reach Resolve UK. Check your connection and press Send again. Your report is still here."
+  if (/payload|too large|size/i.test(msg)) return "That photo couldn't be uploaded. Try a different or smaller photo."
+  if (/rate|too many/i.test(msg)) return 'Too many reports have been sent from here in a short time. Please wait a minute and try again.'
+  return 'Something went wrong while sending your report. Your report is still here; please press Send again.'
+}
+
 export function ReportForm() {
   const navigate = useNavigate()
   const desktop = useMediaQuery('(min-width: 1024px)')
   const categories = useCategories()
-  const [category, setCategory] = useState('fly-tipping')
+  // Nothing chosen to start with, so a report is never filed under a type nobody picked.
+  const [category, setCategory] = useState('')
   const [description, setDescription] = useState('')
   const [photo, setPhoto] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
@@ -60,6 +94,11 @@ export function ReportForm() {
   const [geoError, setGeoError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // What each step still needs is only shown once Send has been pressed, then kept up to date as the
+  // person fills things in.
+  const [attempted, setAttempted] = useState(false)
+  const [restored, setRestored] = useState(false)
+  const loaded = useRef(false)
   // reports close by that might be the same problem, shown before anything is sent
   const [matches, setMatches] = useState<NearbyReport[] | null>(null)
   // the place and type the person has already said are a different problem, so they are not asked again
@@ -69,8 +108,42 @@ export function ReportForm() {
     if (photoPreview) URL.revokeObjectURL(photoPreview)
   }, [photoPreview])
 
+  // Bring back an unsent report from earlier on this device, then keep saving as it changes.
+  useEffect(() => {
+    const d = loadDraft()
+    if (d) {
+      setCategory(d.category)
+      setDescription(d.description)
+      if (d.position) setPosition(d.position)
+      if (d.category || d.description.trim() || d.position) setRestored(true)
+    }
+    void loadDraftPhoto().then((f) => {
+      if (f) {
+        setPhoto(f)
+        setPhotoPreview(URL.createObjectURL(f))
+        setRestored(true)
+      }
+      loaded.current = true
+    })
+  }, [])
+
+  useEffect(() => {
+    if (loaded.current) saveDraft({ category, description, position })
+  }, [category, description, position])
+
+  const startOver = () => {
+    clearDraft()
+    setCategory('')
+    setDescription('')
+    setPhoto(null)
+    setPhotoPreview(null)
+    setAttempted(false)
+    setRestored(false)
+  }
+
   const choosePhoto = (file: File | null | undefined) => {
     if (!file) return
+    void saveDraftPhoto(file)
     setPhoto(file)
     setPhotoPreview((prev) => {
       if (prev) URL.revokeObjectURL(prev)
@@ -99,7 +172,9 @@ export function ReportForm() {
         setLocating(false)
       },
       () => {
-        setGeoError(auto ? 'Could not find your location automatically. Tap the map or drag the pin to set the spot.' : 'Could not get your location. Tap the map to drop a pin instead.')
+        // The automatic try failing on its own is normal (location off, or just slow), so it is not
+        // shown as an error; the hint under the button already says what to do. Only a failed tap is.
+        if (!auto) setGeoError('Could not get your location. Tap the map to drop a pin instead.')
         setLocating(false)
       },
       { enableHighAccuracy: true, timeout: 10000 },
@@ -133,23 +208,38 @@ export function ReportForm() {
     })
     if (insertError) throw insertError
 
+    clearDraft()
     navigate('/reports', { state: { notice: 'Report submitted. Thank you.' } })
+  }
+
+  const errors: Errors = {}
+  if (!category) errors.category = 'Choose the type of problem.'
+  if (!description.trim()) errors.description = 'Add a short description of what you saw.'
+  if (!photo) errors.photo = 'Add a photo of the problem.'
+  if (!position) errors.location = 'Set the spot: use your location, or tap the map.'
+  const shown: Errors = attempted ? errors : {}
+  const missing = ORDER.filter((f) => errors[f])
+
+  // Takes the person to the first step that still needs something, and puts the cursor there.
+  const goTo = (f: Field) => {
+    document.getElementById(`step-${f}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    const target =
+      f === 'category'
+        ? document.querySelector<HTMLInputElement>('#step-category input')
+        : f === 'description'
+          ? document.getElementById('description-field')
+          : f === 'photo'
+            ? document.getElementById('photo-field')
+            : document.getElementById('locate-button')
+    window.setTimeout(() => target?.focus({ preventScroll: true }), 350)
   }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
-
-    if (!description.trim()) {
-      setError('Please add a short description.')
-      return
-    }
-    if (!photo) {
-      setError('Please add a photo.')
-      return
-    }
-    if (!position) {
-      setError('Please set a location by tapping the map or using your location.')
+    setAttempted(true)
+    if (missing.length || !position || !photo) {
+      if (missing[0]) goTo(missing[0])
       return
     }
 
@@ -165,7 +255,7 @@ export function ReportForm() {
       }
       await send(position, photo)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setError(friendlyError(err))
     } finally {
       setSubmitting(false)
     }
@@ -185,7 +275,7 @@ export function ReportForm() {
         },
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setError(friendlyError(err))
       setSubmitting(false)
     }
   }
@@ -199,7 +289,7 @@ export function ReportForm() {
       setMatches(null)
       await send(position, photo)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setError(friendlyError(err))
     } finally {
       setSubmitting(false)
     }
@@ -217,13 +307,22 @@ export function ReportForm() {
   return (
     <div className="mt-10 grid items-start gap-6 lg:grid-cols-[1.2fr_.8fr]">
       {/* On a phone or tablet the send button stays pinned to the bottom, so it is always in reach. */}
-      {!desktop && !matches && (
+      {/* Rendered straight into <body>: the page's <main> is its own stacking layer (isolation:
+          isolate, from the grid texture), so a fixed bar inside it ended up underneath the footer
+          when scrolled to the bottom, and Send could not be tapped there. */}
+      {!desktop && !matches && createPortal(
         <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/85 px-4 pt-3 backdrop-blur-xl" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}>
+          {(error || (attempted && missing.length > 0)) && (
+            <p className="mx-auto mb-2 max-w-2xl text-center text-sm font-semibold text-[var(--c-danger)]" role="status">
+              {error ?? `${missing.length} ${missing.length === 1 ? 'thing' : 'things'} still needed above`}
+            </p>
+          )}
           <button type="button" className="btn btn-primary mx-auto w-full max-w-2xl text-base" disabled={submitting} onClick={(e) => handleSubmit(e as unknown as FormEvent)}>
             {submitting ? 'Checking…' : 'Send report'}
             <Icon name="arrow" />
           </button>
-        </div>
+        </div>,
+        document.body,
       )}
       {matches ? (
         <section className="card rounded-3xl p-6 sm:p-7" aria-labelledby="match-title">
@@ -265,9 +364,16 @@ export function ReportForm() {
         </section>
       ) : (
         <form className="space-y-5" onSubmit={handleSubmit} noValidate>
-          <section className="card rounded-3xl p-6 sm:p-7">
-            <StepTitle n={1}>What is the problem?</StepTitle>
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3" role="radiogroup" aria-label="Type of problem">
+          {restored && (
+            <p className="msg msg-info flex flex-wrap items-center justify-between gap-3" role="status">
+              We kept the report you started earlier on this device.
+              <button type="button" className="font-semibold underline underline-offset-2" onClick={startOver}>
+                Start over
+              </button>
+            </p>
+          )}
+          <Step id="category" n={1} title="What is the problem?" error={shown.category}>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3" role="radiogroup" aria-label="Type of problem" aria-invalid={!!shown.category} aria-describedby={shown.category ? 'category-error' : undefined}>
               {categories.map((c) => (
                 <label key={c.code} className="tile" data-tag={`Select ${c.label}`}>
                   <input type="radio" name="type" value={c.code} checked={category === c.code} onChange={() => setCategory(c.code)} />
@@ -279,10 +385,9 @@ export function ReportForm() {
                 </label>
               ))}
             </div>
-          </section>
+          </Step>
 
-          <section className="card rounded-3xl p-6 sm:p-7">
-            <StepTitle n={2}>Describe it</StepTitle>
+          <Step id="description" n={2} title="Describe it" error={shown.description}>
             <div className="mt-5">
               <label className="sr-only" htmlFor="description-field">
                 Description
@@ -293,16 +398,17 @@ export function ReportForm() {
                 maxLength={MAX}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                aria-invalid={!!shown.description}
+                aria-describedby={shown.description ? 'description-error' : undefined}
                 placeholder="For example: black bags piled against the wall, blocking the pavement."
               />
               <p className="mt-2 text-right text-xs text-soft">
                 {description.length} / {MAX}
               </p>
             </div>
-          </section>
+          </Step>
 
-          <section className="card rounded-3xl p-6 sm:p-7">
-            <StepTitle n={3}>Add a photo</StepTitle>
+          <Step id="photo" n={3} title="Add a photo" error={shown.photo}>
             <label
               className="dropzone mt-5"
               data-over={dragging}
@@ -318,7 +424,7 @@ export function ReportForm() {
                 choosePhoto(e.dataTransfer.files[0])
               }}
             >
-              <input id="photo-field" className="sr-only" type="file" accept="image/*" capture="environment" onChange={(e) => choosePhoto(e.target.files?.[0])} />
+              <input id="photo-field" className="sr-only" type="file" accept="image/*" capture="environment" aria-invalid={!!shown.photo} aria-describedby={shown.photo ? 'photo-error' : undefined} onChange={(e) => choosePhoto(e.target.files?.[0])} />
               {photoPreview ? (
                 <img src={photoPreview} alt="The photo you chose" className="max-h-52 rounded-xl object-cover" />
               ) : (
@@ -329,12 +435,11 @@ export function ReportForm() {
               <span className="font-bold">{photo ? photo.name : 'Drop a photo here, or browse'}</span>
               <span className="text-sm text-soft">{photo ? 'Ready. Click to choose a different photo.' : 'Large photos are reduced in size before they are sent.'}</span>
             </label>
-          </section>
+          </Step>
 
-          <section className="card rounded-3xl p-6 sm:p-7">
-            <StepTitle n={4}>Where is it?</StepTitle>
+          <Step id="location" n={4} title="Where is it?" error={shown.location}>
             <div className="mt-5 flex flex-wrap gap-3">
-              <button type="button" className="btn btn-ghost" onClick={() => findMe()} disabled={locating}>
+              <button id="locate-button" type="button" className="btn btn-ghost" onClick={() => findMe()} disabled={locating} aria-describedby={shown.location ? 'location-error' : undefined}>
                 <Icon name="crosshair" className="size-5 text-accent" />
                 {locating ? 'Locating…' : 'Use my location'}
               </button>
@@ -350,7 +455,7 @@ export function ReportForm() {
               )}
             </p>
             {geoError && (
-              <p className="msg msg-error mt-3" role="alert">
+              <p className="msg msg-warn mt-3" role="alert">
                 {geoError}
               </p>
             )}
@@ -364,13 +469,7 @@ export function ReportForm() {
                 {map}
               </div>
             )}
-          </section>
-
-          {error && (
-            <p className="msg msg-error" role="alert">
-              {error}
-            </p>
-          )}
+          </Step>
         </form>
       )}
 
@@ -384,30 +483,47 @@ export function ReportForm() {
         <section className="card hidden rounded-3xl p-6 lg:block">
           <h2 className="font-sans text-lg font-semibold tracking-normal">Your report</h2>
           <dl className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-soft">Type</dt>
-              <dd className="font-semibold">{typeLabel}</dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-soft">Description</dt>
-              <dd className="max-w-[14rem] truncate font-semibold">{description.trim() || 'Not written yet'}</dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-soft">Photo</dt>
-              <dd className="font-semibold">{photo ? 'Added' : 'None yet'}</dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-soft">Location</dt>
-              <dd className="font-semibold">{locationText}</dd>
-            </div>
+            <SummaryRow label="Type" value={category ? typeLabel : 'Not chosen'} needed={!!shown.category} onFix={() => goTo('category')} />
+            <SummaryRow label="Description" value={description.trim() || 'Not written yet'} needed={!!shown.description} onFix={() => goTo('description')} truncate />
+            <SummaryRow label="Photo" value={photo ? 'Added' : 'None yet'} needed={!!shown.photo} onFix={() => goTo('photo')} />
+            <SummaryRow label="Location" value={locationText} needed={!!shown.location} onFix={() => goTo('location')} />
           </dl>
           <button type="button" className="btn btn-primary mt-6 w-full text-base" disabled={submitting || !!matches} onClick={(e) => handleSubmit(e as unknown as FormEvent)}>
             {submitting ? 'Checking…' : 'Send report'}
             <Icon name="arrow" />
           </button>
-          <p className="mt-3 text-center text-xs text-soft">You will see it appear in the list straight away.</p>
+          {error ? (
+            <p className="msg msg-error mt-3" role="alert">
+              {error}
+            </p>
+          ) : attempted && missing.length > 0 ? (
+            <p className="mt-3 text-center text-sm font-semibold text-[var(--c-danger)]" role="status">
+              {missing.length} {missing.length === 1 ? 'thing' : 'things'} still needed. Click one above to go to it.
+            </p>
+          ) : (
+            <p className="mt-3 text-center text-xs text-soft">You will see it appear in the list straight away.</p>
+          )}
         </section>
       </aside>
+    </div>
+  )
+}
+
+// A line in the "Your report" summary. When that part is missing after Send was pressed, it turns red
+// and becomes a link to the step that needs it.
+function SummaryRow({ label, value, needed, onFix, truncate }: { label: string; value: string; needed: boolean; onFix: () => void; truncate?: boolean }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <dt className="text-soft">{label}</dt>
+      <dd className={`font-semibold ${truncate ? 'max-w-[14rem] truncate' : ''}`}>
+        {needed ? (
+          <button type="button" className="font-semibold text-[var(--c-danger)] underline underline-offset-2" onClick={onFix}>
+            Needed
+          </button>
+        ) : (
+          value
+        )}
+      </dd>
     </div>
   )
 }
