@@ -4,7 +4,7 @@ import { gsap, reducedMotion } from '../../lib/gsap'
 // Matches every link and button site-wide, plus the handful of <label> elements that act as a
 // clickable control themselves (a category tile or the photo dropzone, each wrapping a hidden
 // radio/file input) — except ones that opt out with data-no-tag and ones already inside their own
-// richer version of this same idea (the hero card stack).
+// richer version of this same idea (the hero card stack, .stack-idle).
 const SELECTOR = 'a:not([data-no-tag]), button:not([data-no-tag]):not(:disabled), label.tile:not([data-no-tag]), label.dropzone:not([data-no-tag])'
 
 function labelFor(el: HTMLElement): string | null {
@@ -16,10 +16,13 @@ function labelFor(el: HTMLElement): string | null {
   return text || null
 }
 
-// A small branded tag that follows the cursor over any link or button, anywhere on the site —
-// the nav, the footer, every page — saying what a click there does (its own label, read straight
-// off the element). The hero card stack (.stack-idle) opts out here since it already runs a
-// richer, per-element version of the same mechanic; this component is everything else.
+// A small branded tag that follows the cursor over any link or button, anywhere on the site,
+// saying what a click there does (its own label, read straight off the element).
+//
+// Event-driven: it does work only when the pointer moves, the page scrolls under a still pointer,
+// or the pointer leaves the window — never a loop that runs every frame for the life of the page.
+// The hit test is batched to at most once per frame, and the show/hide tween only fires when the
+// hovered target actually changes.
 export function CursorTag() {
   const tagRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLSpanElement>(null)
@@ -35,76 +38,72 @@ export function CursorTag() {
     gsap.set(tagEl, { x: -9999, y: -9999, rotation: -3, scale: 0.85, opacity: 0 })
     const moveX = gsap.quickTo(tagEl, 'x', { duration: 0.2, ease: 'power3.out' })
     const moveY = gsap.quickTo(tagEl, 'y', { duration: 0.2, ease: 'power3.out' })
-    // quickTo for opacity/scale too, not plain .to() calls fired only on transitions — under fast
-    // repeated toggling, several independent .to() tweens on the same properties can overlap and
-    // leave the final rendered value stuck wherever the last-resolved one happened to land, even
-    // after this component's own tracked state is correctly back to "nothing hovered". quickTo
-    // reuses one persistent tween and just re-aims it, driven every frame below, so it always
-    // converges on the current correct target regardless of how it got there.
-    const showOpacity = gsap.quickTo(tagEl, 'opacity', { duration: 0.18, ease: 'power2.out' })
-    const showScale = gsap.quickTo(tagEl, 'scale', { duration: 0.22, ease: 'back.out(1.7)' })
 
     let active: HTMLElement | null = null
     let lastX = 0
     let lastY = 0
     let hasPointer = false
+    let frame = 0
 
-    // Browsers coalesce mousemove to roughly one dispatched event per animation frame — during a
-    // genuinely fast flick of the mouse, a brief pass over a small target can be dropped entirely
-    // before it ever reaches this listener (real, documented browser behaviour, not a bug in this
-    // code). Reacting only to whichever events happen to arrive left the tag able to miss a
-    // hover-out (or hover-in) completely and get stuck. Instead, mousemove only ever records the
-    // latest known position; a requestAnimationFrame loop re-checks what's actually under that
-    // position every single frame, so the result can't depend on how many discrete events the
-    // browser decided to deliver.
-    const onMove = (e: MouseEvent) => {
-      lastX = e.clientX
-      lastY = e.clientY
-      hasPointer = true
-    }
-    // The cursor leaving the browser window entirely fires no further mousemove to catch it.
-    const onWindowLeave = () => {
-      hasPointer = false
-    }
-    // Backgrounding the tab (switching apps/tabs) stops delivering mousemove too — the real
-    // cursor may go on to move over other windows entirely, so lastX/lastY can go stale while
-    // hidden. Treated the same as the cursor leaving: forget it, and wait for a fresh mousemove
-    // once the tab is visible again rather than trusting a position from before it was hidden.
-    const onVisibilityChange = () => {
-      if (document.hidden) hasPointer = false
+    const show = (on: boolean) => {
+      // overwrite: a fast in/out/in can't leave two tweens fighting over the same properties.
+      gsap.to(tagEl, on
+        ? { opacity: 1, scale: 1, duration: 0.22, ease: 'back.out(1.7)', overwrite: 'auto' }
+        : { opacity: 0, scale: 0.85, duration: 0.18, ease: 'power2.out', overwrite: 'auto' })
     }
 
-    let rafId = 0
-    const tick = () => {
-      rafId = requestAnimationFrame(tick)
-      const next = hasPointer
-        ? (() => {
-            const hit = document.elementFromPoint(lastX, lastY) as HTMLElement | null
-            const target = hit?.closest<HTMLElement>(SELECTOR)
-            return target && !target.closest('.stack-idle') && labelFor(target) ? target : null
-          })()
-        : null
-
+    const update = () => {
+      frame = 0
+      const hit = hasPointer ? (document.elementFromPoint(lastX, lastY) as HTMLElement | null) : null
+      const target = hit?.closest<HTMLElement>(SELECTOR)
+      const next = target && !target.closest('.stack-idle') && labelFor(target) ? target : null
       if (next !== active) {
+        if (next) {
+          textEl.textContent = labelFor(next)
+          // Jump to the pointer when appearing, rather than gliding in from wherever it last was.
+          if (!active) gsap.set(tagEl, { x: lastX + 16, y: lastY + 16 })
+        }
+        if (!!next !== !!active) show(!!next)
         active = next
-        if (active) textEl.textContent = labelFor(active)
       }
-      showOpacity(active ? 1 : 0)
-      showScale(active ? 1 : 0.85)
       if (active) {
         moveX(lastX + 16)
         moveY(lastY + 16)
       }
     }
-    rafId = requestAnimationFrame(tick)
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
 
-    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseleave', onWindowLeave)
+    const onMove = (e: MouseEvent) => {
+      lastX = e.clientX
+      lastY = e.clientY
+      hasPointer = true
+      schedule()
+    }
+    // Scrolling moves content under a still cursor, so the hovered element can change without
+    // any mousemove at all.
+    const onScroll = () => {
+      if (hasPointer) schedule()
+    }
+    // The cursor leaving the window, or the tab being backgrounded, fires no further mousemove.
+    const onLeave = () => {
+      hasPointer = false
+      schedule()
+    }
+    const onVisibilityChange = () => {
+      if (document.hidden) onLeave()
+    }
+
+    document.addEventListener('mousemove', onMove, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
+    document.addEventListener('mouseleave', onLeave)
     document.addEventListener('visibilitychange', onVisibilityChange)
     return () => {
-      cancelAnimationFrame(rafId)
+      cancelAnimationFrame(frame)
       document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseleave', onWindowLeave)
+      window.removeEventListener('scroll', onScroll)
+      document.removeEventListener('mouseleave', onLeave)
       document.removeEventListener('visibilitychange', onVisibilityChange)
     }
   }, [])

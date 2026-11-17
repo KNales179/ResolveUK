@@ -255,6 +255,9 @@
    would zoom it in). Shared by both themes for now — dark mode gets its own photo later. */
 .page-bg { background-image: image-set(url(/img/longimg-768.avif) type("image/avif"), url(/img/longimg-768.webp) type("image/webp")); background-size: 100% auto; background-position: top center; background-repeat: repeat-y; }
 [data-theme="dark"] .page-bg { background-image: image-set(url(/img/longimg-768.avif) type("image/avif"), url(/img/longimg-768.webp) type("image/webp")); }
+/* The photo itself also fades out downward, so its bottom edge never shows as a hard line. */
+.page-bg-fade { background-size: cover; background-position: center top; background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, black 45%, transparent 100%); mask-image: linear-gradient(to bottom, black 45%, transparent 100%); }
 
 /* Both photos are built for a wide viewport: the hero's mask reveals a horizontal band next to
    the card stack (on a narrow, tall mobile screen that band becomes an odd full-height vertical
@@ -289,7 +292,9 @@
 /* A shadow, not just a fill colour, so the panel's own edge still reads when the hills behind it
    (see HillsScene.tsx) happen to use this same accent colour for one of their bands — without it,
    a same-colour hill butting up against the panel leaves no visible boundary at all. */
-.accent-panel { background: color-mix(in oklab, var(--c-accent) 75%, transparent); color: var(--c-accent-ink); box-shadow: 0 1px 3px rgb(var(--c-shadow) / 0.16), 0 10px 26px -14px rgb(var(--c-shadow) / 0.4); }
+/* Solid: when see-through, the hill scene's trees and river showed through as smudges behind the
+   panel's text. */
+.accent-panel { background: var(--c-accent); color: var(--c-accent-ink); box-shadow: 0 1px 3px rgb(var(--c-shadow) / 0.16), 0 10px 26px -14px rgb(var(--c-shadow) / 0.4); }
 
 /* A half-opaque backing for content blocks that sit directly on the hills/photo with no card of
    their own (the step list, the "what you can report" list, the journey timeline, every page's
@@ -314,6 +319,8 @@
 .stack-tint-3 { background: color-mix(in oklab, var(--c-accent-display) 55%, var(--c-surface)); }
 
 .accent-panel .eyebrow { color: var(--c-accent-ink); opacity: 0.75; }
+/* An icon tile on a green panel: the default accent-coloured icon would vanish into the panel. */
+.accent-panel .tile-icon { color: var(--c-accent-ink); background: color-mix(in oklab, var(--c-accent-ink) 12%, transparent); }
 .accent-panel .eyebrow::before { background: var(--c-accent-ink); opacity: 0.55; }
 
 /* ---- One consistent treatment for every section below the hero: the plain grid
@@ -391,6 +398,12 @@
    tint a section's own background would otherwise use, so the hills never blend into the ground
    they sit on. */
 .hills-layer { position: absolute; inset: 0; z-index: -1; pointer-events: none; display: block; width: 100%; height: 100%; }
+/* Near and far bands of hills alternate down the page. Light mode needs a little more strength to
+   read on near-white; dark mode's mint is already bright against the near-black ground. */
+.hill-far { fill-opacity: 0.15; }
+.hill-near { fill-opacity: 0.27; }
+[data-theme="dark"] .hill-far { fill-opacity: 0.13; }
+[data-theme="dark"] .hill-near { fill-opacity: 0.21; }
 
 /* Hero: the same fine line grid as every other section, confined to the empty text side so it
    doesn't fight the photo. No sweep/shimmer — grid only. */

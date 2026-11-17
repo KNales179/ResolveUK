@@ -10,10 +10,12 @@ export function UpdatesPage() {
     <div className="relative">
       <PageBackdrop />
       <section className="relative mx-auto max-w-2xl px-5 pt-28 pb-20 sm:px-8 sm:pt-36">
-        <h1 className="flex items-center gap-2.5 text-3xl font-semibold tracking-tight">
-          <Icon name="sparkles" className="size-7" /> Updates
-        </h1>
-        <p className="mt-3 text-soft">Everything that's changed on the site so far, in plain language. This is still an early prototype — version numbers here are just a running count, not a finished release scheme.</p>
+        <div className="accent-panel rounded-3xl p-6 sm:p-8">
+          <h1 className="flex items-center gap-2.5 text-3xl font-semibold tracking-tight">
+            <Icon name="sparkles" className="size-7" /> Updates
+          </h1>
+          <p className="mt-3 opacity-85">Everything that's changed on the site so far, in plain language. This is still an early prototype — version numbers here are just a running count, not a finished release scheme.</p>
+        </div>
         <div className="mt-8 space-y-3">
           {RELEASES.map((release) => (
             <details key={release.version} className="card overflow-hidden p-0" open={release.version === APP_VERSION}>

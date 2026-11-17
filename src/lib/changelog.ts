@@ -20,6 +20,65 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '3.6.0',
+    date: '2026-11-17',
+    title: 'A new opening, and a calmer homepage',
+    highlights: [
+      {
+        icon: 'sparkles',
+        title: 'A new opening animation',
+        body: "The first time you open the site in a visit, the logo arrives with a short animation before the page appears: the pin drops in and the logo opens out around it, or the logo is drawn and filled with colour, or the R is laid down like a route on a map. They take turns from one visit to the next. A tap or any key skips it, and anyone with reduced motion turned on goes straight to the page.",
+      },
+      {
+        icon: 'bell',
+        title: 'The header logo reacts when you point at it',
+        body: 'Pointing at the logo in the header now plays a small move, a different one each time: the pin hops, the leaves sway in a breeze, or the pin spins and lands. This replaces the growing vine.',
+      },
+      {
+        icon: 'map',
+        title: 'The hills and river, redrawn',
+        body: "The landscape behind the homepage had a photo, hills, a river, a grid and tiny figures all piled on top of each other, which made it look muddy. It's now a clean drawing: soft rolling hills that change colour from section to section, a proper river with banks and moving glints of water, trees, and a few people out walking.",
+      },
+      {
+        icon: 'rotate',
+        title: 'Smoother scrolling',
+        body: 'The background used to be redrawn from scratch several times while you scrolled, which made the page stutter. It is now drawn once, and only the moving water and walkers update, and only while they are on screen.',
+      },
+      {
+        icon: 'eye',
+        title: 'Easier to read on every page',
+        body: "The photo at the top of each page now fades away below the first screen, so the content further down sits on a plain background. Headings that were sitting straight on the picture now have a panel behind them, and the green panels are solid so nothing shows through them.",
+      },
+      {
+        icon: 'check',
+        title: 'Leftovers tidied away',
+        body: 'A row of colour circles used for testing background colours was still showing under the opening section. It has been taken off the page.',
+      },
+    ],
+  },
+  {
+    version: '3.5.0',
+    date: '2026-11-17',
+    title: 'The logo, redrawn, and it grows in',
+    highlights: [
+      {
+        icon: 'palette',
+        title: 'A properly drawn logo',
+        body: "The logo has been redrawn from the brand artwork as clean shapes, so its edges stay smooth at every size instead of looking jagged up close. The location pin has its round hole again, and the R's foot and both leaves now sit on one flat line.",
+      },
+      {
+        icon: 'sparkles',
+        title: 'The logo grows in when the site opens',
+        body: "The logo in the header now grows in: a vine sprouts from the ground and climbs the R, the letter fills in, the two leaves open, and the pin drops into place. Anyone who has reduced motion turned on sees the finished logo straight away.",
+      },
+      {
+        icon: 'camera',
+        title: 'Matching browser tab and home-screen icons',
+        body: 'The small icons in the browser tab and on a phone home screen use the same redrawn logo.',
+      },
+    ],
+  },
+  {
     version: '3.4.1',
     date: '2026-11-16',
     title: "Fixed cards that were blending into the page",

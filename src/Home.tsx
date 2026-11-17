@@ -6,7 +6,6 @@ import { GsapReveal as Reveal } from './components/ui/GsapReveal'
 import { CornerHover } from './components/ui/CornerHover'
 import { StaticCorners } from './components/ui/StaticCorners'
 import { HillsScene } from './components/ui/HillsScene'
-import { BgSwatchPicker } from './components/ui/BgSwatchPicker'
 import { gsap, reducedMotion } from './lib/gsap'
 import { backedReportIds, rememberBacked } from './lib/device'
 import { timeAgo } from './lib/format'
@@ -84,6 +83,11 @@ const STACK_POSITIONS = [
 const PARKED = { card: { scale: 0.85, y: 26, rotate: 0, zIndex: 0, opacity: 0 }, textOpacity: 0, imgOpacity: 0, tilt: 0 }
 const STACK_INTERVAL = 5500
 const STACK_TILT_DEG = 8
+
+// One colour per section of the hill scene, cycled. Theme tokens rather than fixed brand colours, so
+// dark mode gets its own greens instead of the light scheme's olive (which went brown on dark).
+// Module-level so the array keeps one identity and the scene doesn't rebuild on every render.
+const HILL_ZONES = ['--c-accent', '--c-accent-display', '--c-mint-green']
 
 // Collapses the full status enum down to the stack card's simple 4-stop progress bar.
 const GROUP_STEP: Record<StatusGroup, number> = { reported: 1, progress: 2, cleared: 3, verified: 4, closed: 2 }
@@ -295,7 +299,8 @@ function HeroCardStack({ reports, usingSamples }: { reports: Report[]; usingSamp
   }, [])
 
   return (
-    <div ref={rootRef} className="relative h-[19.5rem] sm:h-[18rem]">
+    // .stack-idle opts the stack out of the site-wide CursorTag — it shows its own tag instead.
+    <div ref={rootRef} className="stack-idle relative h-[19.5rem] sm:h-[18rem]">
       {display.map((s, i) => (
         <div key={s.id} className={`stack-card card stack-tint-${(i % 3) + 1} absolute inset-0 cursor-pointer rounded-2xl px-4 pb-6 pt-4 shadow-xl`}>
           {usingSamples && <span className="absolute -top-3 right-5 z-10 rounded-md bg-ink px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-bg">Sample</span>}
@@ -399,9 +404,9 @@ function ResolutionRoutes() {
   const [[publicIcon, publicTitle, publicText, publicHref, publicCta], ...otherRoutes] = ROUTES
 
   return (
-    <section className="cv grid-texture grid-shimmer border-y border-line">
+    <section className="grid-texture grid-shimmer border-y border-line">
       <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
-        <Reveal className="max-w-2xl">
+        <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
           <p className="eyebrow">Not just a reporting form</p>
           <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Three ways a problem gets resolved.</h2>
           <p className="mt-5 text-lg leading-relaxed text-soft">Who should act on a report depends on who is actually responsible for the place it happened. Resolve UK is built around that, not just around one route to a council.</p>
@@ -574,12 +579,10 @@ export default function Home() {
         </div>
       </section>
 
-      <BgSwatchPicker />
-
       {/* ---- how it works, through the closing CTA: one continuous hill scene behind all of
           them (see HillsScene.tsx), bounded-strip fill so nothing pinches at a fixed corner ---- */}
-      <HillsScene zoneColors={['--c-accent', '--c-soft-olive', '--c-mint-green', '--c-accent', '--c-soft-olive', '--c-mint-green']}>
-      <section id="how" className="cv grid-texture grid-shimmer scroll-mt-24">
+      <HillsScene zoneColors={HILL_ZONES}>
+      <section id="how" className="grid-texture grid-shimmer scroll-mt-24">
         <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
           <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:gap-10">
             <Reveal className="accent-panel flex flex-col justify-center rounded-3xl p-8 sm:p-10">
@@ -607,7 +610,7 @@ export default function Home() {
       <ResolutionRoutes />
 
       {/* ---- what people report ---- */}
-      <section className="cv grid-texture grid-shimmer">
+      <section className="grid-texture grid-shimmer">
         <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
           <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">What you can report</p>
@@ -660,7 +663,7 @@ export default function Home() {
       </section>
 
       {/* ---- the journey ---- */}
-      <section className="cv grid-texture grid-shimmer border-y border-line">
+      <section className="grid-texture grid-shimmer border-y border-line">
         <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
           <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">What happens to a report</p>
@@ -691,7 +694,7 @@ export default function Home() {
       </section>
 
       {/* ---- where the project is ---- */}
-      <section className="cv grid-texture grid-shimmer">
+      <section className="grid-texture grid-shimmer">
         <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 sm:py-32">
           <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">Where it stands</p>
@@ -751,7 +754,7 @@ export default function Home() {
       </section>
 
       {/* ---- closing call to action ---- */}
-      <section className="cv grid-texture grid-shimmer px-3 pb-24 sm:px-6">
+      <section className="grid-texture grid-shimmer px-3 pb-24 sm:px-6">
         <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-2xl">
           <div className="cta-bg absolute inset-0 -z-20" role="img" aria-label="Countryside landscape, mirrored from the hero photo" />
           <div className="absolute inset-0 -z-10 bg-gradient-to-r from-bg/95 via-bg/70 to-bg/10" />

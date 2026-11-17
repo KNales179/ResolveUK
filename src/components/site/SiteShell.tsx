@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { Icon } from '../ui/Icon'
-import { toggleTheme, useThemeName } from '../../lib/theme'
-import { applyBgForTheme } from '../../lib/bgPreview'
+import { toggleTheme } from '../../lib/theme'
 import { Logo } from './Logo'
+import { AnimatedLogo } from './AnimatedLogo'
+import { IntroSplash } from './IntroSplash'
 import { CornerHover } from '../ui/CornerHover'
 import { PageTransition } from './PageTransition'
 import { UpdateBanner } from './UpdateBanner'
@@ -59,16 +60,20 @@ function AboutMenu() {
 }
 
 function Nav() {
-  const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
-  useEffect(() => setOpen(false), [pathname])
+  // Remembers which page the mobile menu was opened on, so navigating anywhere closes it on its
+  // own — no effect resetting state after every route change.
+  const [openOn, setOpenOn] = useState<string | null>(null)
+  const open = openOn === pathname
+  const setOpen = (next: boolean | ((o: boolean) => boolean)) =>
+    setOpenOn((typeof next === 'function' ? next(open) : next) ? pathname : null)
 
   return (
     <header className="site-header fixed inset-x-0 top-0 z-40 border-b border-line">
       <div className="mx-auto max-w-7xl px-4 sm:px-8">
         <nav className="flex h-16 items-center justify-between" aria-label="Main">
           <Link to="/" className="flex items-center gap-2.5 text-[1.05rem] font-semibold tracking-tight">
-            <Logo />
+            <AnimatedLogo />
             <span className="whitespace-nowrap">Resolve</span>
           </Link>
           <div className="hidden items-center gap-1 whitespace-nowrap text-sm font-semibold xl:flex">
@@ -271,43 +276,33 @@ function CursorGlow() {
   return null
 }
 
-// TEMPORARY — part of the BgSwatchPicker comparison tool (see BgSwatchPicker.tsx and
-// lib/bgPreview.ts). Delete alongside them once a background colour is picked for each theme.
-// Unlike the picker itself, this is mounted on every page, so a theme toggle anywhere re-syncs
-// --c-bg to that theme's remembered pick (or clears it) no matter which page you're on — without
-// this, toggling theme on a page other than Home left the colour stuck on the previous theme's
-// value until you navigated back to Home and the picker remounted.
-function BgPreviewSync() {
-  const theme = useThemeName()
-  useEffect(() => {
-    applyBgForTheme(theme)
-  }, [theme])
-  return null
-}
-
 export function SiteShell() {
   return (
     <>
       <CursorGlow />
-      <BgPreviewSync />
       <Nav />
       <PageTransition />
       <Footer />
       <UpdateBanner />
       <WhatsNewModal />
+      <IntroSplash />
     </>
   )
 }
 
-// A soft picture behind the working pages, so they feel part of the same place as the landing
-// page — absolutely positioned (not fixed) so it scrolls along with the page's own content,
-// the same as the home page's hill scene backdrop. The page using this must wrap its own
-// content in a `relative` element for this to size against (see each page's outer <div>).
+// A soft picture at the top of the working pages, so they feel part of the same place as the
+// landing page. It only covers the first stretch of the page and fades out to the plain page
+// colour, so forms, lists and body text further down sit on calm ground rather than on foliage.
+// The page using this must wrap its own content in a `relative` element (see each page's outer <div>).
 export function PageBackdrop() {
   return (
     <>
-      <div className="page-bg absolute inset-0 -z-20" />
-      <div className="absolute inset-0 -z-10" style={{ background: 'linear-gradient(0deg,var(--c-bg) 4%,color-mix(in oklab,var(--c-bg) 55%,transparent))' }} />
+      <div className="page-bg page-bg-fade absolute inset-x-0 top-0 -z-20 h-[52rem]" aria-hidden="true" />
+      <div
+        className="absolute inset-x-0 top-0 -z-10 h-[52rem]"
+        style={{ background: 'linear-gradient(180deg,color-mix(in oklab,var(--c-bg) 52%,transparent) 0%,color-mix(in oklab,var(--c-bg) 70%,transparent) 45%,var(--c-bg) 100%)' }}
+        aria-hidden="true"
+      />
     </>
   )
 }
