@@ -7,7 +7,7 @@ import { CornerHover } from './components/ui/CornerHover'
 import { PurposeArt, StorySection } from './components/about/Story'
 import { openInstallDialog } from './lib/install'
 import { FlyTippingChart } from './components/home/FlyTippingChart'
-import { HillsScene } from './components/ui/HillsScene'
+import { Backdrop } from './components/site/Backdrop'
 import { BgSwatchPicker } from './components/ui/BgSwatchPicker'
 import { gsap, reducedMotion } from './lib/gsap'
 import { backedReportIds, rememberBacked } from './lib/device'
@@ -67,10 +67,6 @@ const PARKED = { card: { scale: 0.85, y: 26, rotate: 0, zIndex: 0, opacity: 0 },
 const STACK_INTERVAL = 5500
 const STACK_TILT_DEG = 8
 
-// One colour per section of the hill scene, cycled. Theme tokens rather than fixed brand colours, so
-// dark mode gets its own greens instead of the light scheme's olive (which went brown on dark).
-// Module-level so the array keeps one identity and the scene doesn't rebuild on every render.
-const HILL_ZONES = ['--c-accent', '--c-accent-display', '--c-mint-green']
 
 // Collapses the full status enum down to the stack card's simple 4-stop progress bar.
 const GROUP_STEP: Record<StatusGroup, number> = { reported: 1, progress: 2, cleared: 3, verified: 4, closed: 2 }
@@ -428,8 +424,9 @@ export default function Home() {
 
   return (
     <main>
+      <Backdrop kind="home" />
       {/* ---- hero ---- */}
-      <section ref={heroRef} className="relative isolate flex min-h-[100svh] items-center overflow-hidden">
+      <section ref={heroRef} className="relative isolate flex min-h-[100svh] items-center overflow-hidden bg-bg">
         <div className="hero-motion-bg shimmer-grid grid-shimmer absolute inset-0 -z-20" aria-hidden="true">
           <div className="hero-photo" />
         </div>
@@ -466,11 +463,15 @@ export default function Home() {
         </div>
       </section>
 
-      <BgSwatchPicker />
+      {/* The hero and this strip sit on a solid colour; the contour lines start below, fading in,
+          so they never run behind the hero photo. */}
+      <div className="shade-strip">
+        <BgSwatchPicker />
+      </div>
 
-      {/* ---- how it works, through the closing CTA: one continuous hill scene behind all of
-          them (see HillsScene.tsx), bounded-strip fill so nothing pinches at a fixed corner ---- */}
-      <HillsScene zoneColors={HILL_ZONES}>
+      {/* ---- how it works, through the closing CTA. The page background (contour lines) is the
+          fixed <Backdrop kind="home" /> at the top of <main>. ---- */}
+      <div>
       {/* ---- why it exists (same as the About page's purpose) ---- */}
       <section className="grid-texture grid-shimmer">
         <div className="mx-auto max-w-7xl px-5 pt-10 pb-2 sm:px-8 sm:pt-12">
@@ -641,8 +642,9 @@ export default function Home() {
       {/* ---- closing call to action ---- */}
       <section className="grid-texture grid-shimmer px-3 pt-6 pb-16 sm:px-6">
         <div className="relative isolate mx-auto max-w-7xl overflow-hidden rounded-2xl">
-          <div className="cta-bg absolute inset-0 -z-20" role="img" aria-label="Countryside landscape, mirrored from the hero photo" />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-bg/95 via-bg/70 to-bg/10" />
+          <div className="cta-bg absolute inset-0 -z-20" role="img" aria-label="Countryside landscape, toned green" />
+          <div className="cta-tone absolute inset-0 -z-20" aria-hidden="true" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-bg/90 via-bg/45 to-transparent" />
           <div className="px-7 py-16 sm:px-14 sm:py-20">
             <Reveal as="h2" className="max-w-xl text-4xl leading-[1.08] sm:text-6xl">Seen something that needs fixing?</Reveal>
             <Reveal as="p" delay={80} className="mt-4 max-w-md text-lg text-soft">Reporting takes about a minute.</Reveal>
@@ -657,7 +659,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      </HillsScene>
+      </div>
     </main>
   )
 }

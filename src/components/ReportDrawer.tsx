@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { backedReportIds } from '../lib/device'
 import { formatDateTime, timeAgo } from '../lib/format'
 import { backReport } from '../lib/nearby'
@@ -12,6 +12,8 @@ interface Props {
   categories: Category[]
   onClose: () => void
   onBacked: (id: string) => void
+  /** Extra section under the title and backing button (the app puts "Post a story" here). */
+  extra?: ReactNode
 } 
 
 const BODY_KIND_LABELS: Record<'council' | 'contractor' | 'other', string> = {
@@ -22,7 +24,7 @@ const BODY_KIND_LABELS: Record<'council' | 'contractor' | 'other', string> = {
 
 // The side panel that opens when a report is chosen: its photo, its whole history, and places for the
 // map, the responsible body and updates, which fill in as those parts of the project are built.
-export function ReportDrawer({ report, categories, onClose, onBacked }: Props) {
+export function ReportDrawer({ report, categories, onClose, onBacked, extra }: Props) {
   const [shown, setShown] = useState<Report | null>(report)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -142,6 +144,8 @@ export function ReportDrawer({ report, categories, onClose, onBacked }: Props) {
                   </p>
                 )}
               </div>
+
+              {extra}
 
               <section>
                 <h3 className="text-base font-bold">Progress</h3>

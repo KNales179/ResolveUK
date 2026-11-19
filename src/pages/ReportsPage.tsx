@@ -1,15 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { PageBackdrop } from '../components/site/SiteShell'
 import { ReportDrawer } from '../components/ReportDrawer'
 import { Dropdown } from '../components/ui/Dropdown'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { FALLBACK_CATEGORIES, useCategories } from '../lib/categories'
 import { timeAgo } from '../lib/format'
 import { photoUrl } from '../lib/photos'
-import { SAMPLE_REPORTS } from '../lib/sampleReports'
 import { backersOf, STATUS_LABELS, statusGroup, type StatusGroup } from '../lib/status'
-import { supabase } from '../lib/supabase'
+import { useReports } from '../lib/useReports'
 import type { Report } from '../types'
 
 const FILTERS: Array<[StatusGroup | 'all', string]> = [
@@ -22,40 +20,26 @@ const FILTERS: Array<[StatusGroup | 'all', string]> = [
 const TYPE_ICON: Record<string, IconName> = { 'fly-tipping': 'trash', pothole: 'road', graffiti: 'spray', 'abandoned-vehicle': 'car', 'damaged-infrastructure': 'lamp', other: 'more' }
 const SORTS = ['Newest', 'Most backed', 'Oldest']
 
-export function ReportsPage() {
+// The full list of reports, with search, filters and a detail panel for each. It lives in the app
+// (/app/reports); the public website shows a shorter, limited list instead (PublicReportsPage).
+// `demo` keeps it on sample data; `storySlot` adds the app's "Post a story" section to the panel.
+export interface ReportTools {
+  patch: (id: string, patch: Partial<Report>) => void
+  refresh: () => void
+}
+
+export function ReportsPage({ demo = false, storySlot }: { demo?: boolean; storySlot?: (r: Report, tools: ReportTools) => ReactNode } = {}) {
+  const base = '/app/reports'
   const { id } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
   const notice = (location.state as { notice?: string } | null)?.notice
   const categories = useCategories()
-  const [reports, setReports] = useState<Report[]>(SAMPLE_REPORTS)
-  const [usingSamples, setUsingSamples] = useState(true)
+  const { reports, usingSamples, markBacked, patchReport, refresh } = useReports({ samplesOnly: demo })
   const [status, setStatus] = useState<StatusGroup | 'all'>('all')
   const [type, setType] = useState('All types')
   const [sort, setSort] = useState('Newest')
   const [query, setQuery] = useState('')
-
-  // Shows the shared sample reports immediately — no loading skeleton, no wait — then silently
-  // swaps in the real ones if that request succeeds and there are at least 3 of them (same
-  // threshold the homepage's hero stack uses, and the same reasoning: with only a handful of real
-  // reports so far, swapping in a list that's thinner than the samples does more harm than good,
-  // so it just stays on the samples until there is enough real data to be worth showing instead.
-  // Raise or drop this threshold whenever that's no longer the right call.)
-  useEffect(() => {
-    let alive = true
-    supabase
-      .from('reports')
-      .select('*, report_events(id, seq, status, note, created_at), report_supports(count), responsible_bodies(name, kind)')
-      .order('created_at', { ascending: false })
-      .then(({ data, error: problem }) => {
-        if (!alive || problem || !data || data.length < 3) return
-        setReports(data as unknown as Report[])
-        setUsingSamples(false)
-      })
-    return () => {
-      alive = false
-    }
-  }, [])
 
   const labelOf = useCallback(
     (code: string) => categories.find((c) => c.code === code)?.label ?? FALLBACK_CATEGORIES.find((c) => c.code === code)?.label ?? code,
@@ -76,23 +60,18 @@ export function ReportsPage() {
   }, [reports, status, type, sort, query, labelOf])
 
   const selected = reports.find((r) => r.id === id) ?? null
-  const close = useCallback(() => navigate('/reports'), [navigate])
-  const onBacked = useCallback(
-    (rid: string) => setReports((list) => list && list.map((r) => (r.id === rid ? { ...r, report_supports: [{ count: (r.report_supports?.[0]?.count ?? 0) + 1 }] } : r))),
-    [],
-  )
+  const close = useCallback(() => navigate(base), [navigate])
 
   return (
     <>
       <div className="relative">
-        <PageBackdrop />
-        <main className="grid-texture grid-shimmer mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8">
+        <main className="mx-auto max-w-7xl px-4 pb-24 pt-10 sm:px-6">
         <div className="rise flex flex-wrap items-end justify-between gap-6">
           <div className="accent-panel max-w-2xl rounded-3xl p-6 sm:p-8">
             <h1 className="text-4xl sm:text-5xl">Reported problems</h1>
             <p className="mt-4 text-lg opacity-90">Open a report to see its photo, where it stands and everything that has happened to it.</p>
           </div>
-          <Link to="/report" className="btn btn-primary">
+          <Link to="/app/report" className="btn btn-primary">
             Report a problem <Icon name="arrow" />
           </Link>
         </div>
@@ -131,8 +110,8 @@ export function ReportsPage() {
         </div>
 
         {usingSamples && (
-          <p className="msg msg-warn mt-8" role="status">
-            Showing sample reports. Live reports are not available right now.
+          <p className="msg msg-info mt-8" role="status">
+            {demo ? 'Demo: these are sample reports.' : 'Showing sample reports. Live reports are not available right now.'}
           </p>
         )}
 
@@ -144,7 +123,7 @@ export function ReportsPage() {
           <ul className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {shown.map((r) => (
               <li key={r.id}>
-                <Link to={`/reports/${r.id}`} className="card group flex h-full flex-col rounded-3xl text-left transition hover:border-ink/40" data-report={r.id} data-tag="View details">
+                <Link to={`${base}/${r.id}`} className="card group flex h-full flex-col rounded-3xl text-left transition hover:border-ink/40" data-report={r.id} data-tag="View details">
                   <span className="relative block aspect-[4/3] w-full overflow-hidden rounded-t-3xl bg-surface2">
                     <img src={photoUrl(r.photo_path)} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" />
                     <span className="absolute left-3 top-3">
@@ -183,7 +162,7 @@ export function ReportsPage() {
         </main>
       </div>
 
-      <ReportDrawer report={selected} categories={categories} onClose={close} onBacked={onBacked} />
+      <ReportDrawer report={selected} categories={categories} onClose={close} onBacked={markBacked} extra={selected && storySlot ? storySlot(selected, { patch: patchReport, refresh }) : undefined} />
     </>
   )
 }

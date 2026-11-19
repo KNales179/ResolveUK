@@ -79,7 +79,10 @@ function friendlyError(err: unknown): string {
   return 'Something went wrong while sending your report. Your report is still here; please press Send again.'
 }
 
-export function ReportForm() {
+// `done` is where to go after sending (the public reports page, or the app's). In the app,
+// `reporterId` links the report to the signed-in person, so they hear when it moves on and are
+// asked to check it once cleared; `demo` goes through the motions without sending anything.
+export function ReportForm({ done = '/reports', reporterId = null, demo = false }: { done?: string; reporterId?: string | null; demo?: boolean } = {}) {
   const navigate = useNavigate()
   const desktop = useMediaQuery('(min-width: 1024px)')
   const categories = useCategories()
@@ -190,6 +193,11 @@ export function ReportForm() {
 
   // Uploads the photo and saves the report.
   const send = async (p: Position, file: File) => {
+    if (demo) {
+      clearDraft()
+      navigate(done, { state: { notice: 'Demo: your report would now be sent to the council or contractor for that spot. Nothing was sent.' } })
+      return
+    }
     const { blob, ext } = await preparePhoto(file)
     const photoPath = `${crypto.randomUUID()}.${ext}`
 
@@ -205,11 +213,12 @@ export function ReportForm() {
       location_accuracy_m: p.accuracy,
       location_source: p.source,
       device_token: deviceToken(),
+      ...(reporterId ? { reporter_id: reporterId } : {}),
     })
     if (insertError) throw insertError
 
     clearDraft()
-    navigate('/reports', { state: { notice: 'Report submitted. Thank you.' } })
+    navigate(done, { state: { notice: reporterId ? "Report sent. Thank you. You'll get a notification each time it moves on." : 'Report submitted. Thank you.' } })
   }
 
   const errors: Errors = {}
@@ -266,7 +275,7 @@ export function ReportForm() {
     setSubmitting(true)
     try {
       const result = await backReport(match.id)
-      navigate('/reports', {
+      navigate(done, {
         state: {
           notice:
             result === 'added'

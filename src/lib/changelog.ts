@@ -20,6 +20,201 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '3.11.0',
+    date: '2026-11-19',
+    title: 'Community and Commercial, each with their own look',
+    highlights: [
+      {
+        icon: 'users',
+        title: 'Community: people and places',
+        body: "The Community page opens with photo prints from a litter pick, shows how it works as pins along a walking trail, and sets what groups do and don't do (with green ticks and red crosses) beside a photo.",
+      },
+      {
+        icon: 'truck',
+        title: 'Commercial: the business side',
+        body: "The Commercial page opens on a wide photo of farmland, and sets how it works beside an example waste transfer note, the document every landowner should ask for. The duty of care advice sits in its own warm panel.",
+      },
+      {
+        icon: 'sparkles',
+        title: 'Fewer identical green cards',
+        body: "Each part of these pages now has its own shape and colour: a neutral panel for the steps, an outline for an empty list, a warm panel for advice to take note of, and a plain band for the last step, instead of the same green card over and over.",
+      },
+    ],
+  },
+  {
+    version: '3.10.4',
+    date: '2026-11-19',
+    title: 'Contour lines that scroll with the page',
+    highlights: [
+      {
+        icon: 'map',
+        title: 'One long map behind every page',
+        body: "The contour lines used to stay still while the page scrolled over them. They now run the whole length of the page and move with it, like a long map, on the homepage and every other public page. The green glow still follows your mouse as you scroll.",
+      },
+    ],
+  },
+  {
+    version: '3.10.3',
+    date: '2026-11-19',
+    title: 'The glow on the homepage too',
+    highlights: [
+      {
+        icon: 'sparkles',
+        title: 'Contour lines light up on the homepage',
+        body: 'The green glow that follows your mouse across the contour lines on the other public pages now works on the homepage as well.',
+      },
+    ],
+  },
+  {
+    version: '3.10.2',
+    date: '2026-11-19',
+    title: 'The landscape photo is back on the public pages',
+    highlights: [
+      {
+        icon: 'map',
+        title: 'Photo and contour lines, with the glow',
+        body: "Every public page apart from the homepage has the landscape photo back at the top, fading out as you scroll, with the contour lines from the homepage drawn over it where the grid used to be. Move your mouse and the contour lines near it light up green, like the grid used to. On phones the photo steps aside, as before.",
+      },
+    ],
+  },
+  {
+    version: '3.10.1',
+    date: '2026-11-19',
+    title: 'The public site only shows public things',
+    highlights: [
+      {
+        icon: 'users',
+        title: 'Community and Commercial pages, rewritten',
+        body: "The public Community and Commercial pages had old previews with Claim and Choose buttons from before the app existed. They're now plain explanations of how community groups and private land quotes work, the approved groups and companies on Resolve, and buttons into the app to join, start a group, ask for quotes or register a company.",
+      },
+      {
+        icon: 'camera',
+        title: 'Reporting from inside the app stays in the app',
+        body: "Report a problem in the app now opens the report form inside the app instead of the public site. If you're signed in, the report is linked to your account, so you're told each time it moves on and asked to confirm it's clear.",
+      },
+    ],
+  },
+  {
+    version: '3.10.0',
+    date: '2026-11-19',
+    title: 'Comments, and quotes for private land',
+    highlights: [
+      {
+        icon: 'chat',
+        title: 'Comments and thanks on posts',
+        body: "Every post in the feed now has comments, and updates and resolved posts have a Thanks button. Comments appear straight away. Anyone can report one, which hides it until a Resolve admin decides; councils and the group that posted can hide comments on their own posts. If a comment looks like it names a house, a number plate or who did it, you're asked to think again before it posts.",
+      },
+      {
+        icon: 'truck',
+        title: 'Private land: get clearance quotes',
+        body: "Rubbish dumped on a farm, a car park or a business's land is the owner's to clear, not the council's. The new Private land section lets you post it with a photo and a pin, and licensed clearance companies covering that spot send quotes. Choose one and only that company gets your contact details; they mark it cleared with an after photo.",
+      },
+    ],
+  },
+  {
+    version: '3.9.0',
+    date: '2026-11-19',
+    title: 'The staff queue in the app, and a proper home feed',
+    highlights: [
+      {
+        icon: 'building',
+        title: 'Staff page',
+        body: "Council and contractor staff now work through their reports in the app. The numbers that matter sit along the top: reports to claim, open, overdue, the average days to clear, and jobs out with groups. Below is the queue, with each report's next step on its row (claim, acknowledge, schedule, mark cleared), an optional note, and the jobs with community groups beside it. Resolve reviewers and admins see every report and can verify, reopen or move one to another council.",
+      },
+      {
+        icon: 'users',
+        title: 'People, in Admin',
+        body: 'Admins can add councils and contractors and link or switch off staff accounts from the app, without opening the old staff area.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'The home page is a feed',
+        body: "Posts now run down one column you scroll through, like a social feed: who posted it, what they said, the photo large (before and after side by side once it's fixed), and buttons to back the report or open it. There's a \"seen something?\" box at the top, filters for problems, updates and resolved posts, and on wide screens your shortcuts on the left with groups near you on the right.",
+      },
+    ],
+  },
+  {
+    version: '3.8.0',
+    date: '2026-11-19',
+    title: 'Jobs for groups, updates, and checking it is clear',
+    highlights: [
+      {
+        icon: 'users',
+        title: 'Councils can hand a job to a group or company',
+        body: "Council staff can offer a report to a community group or a clearance company, with the ones that cover that spot listed first. Volunteer groups are only offered safe jobs, and staff confirm that before offering. A lead of the group accepts or declines; once accepted, the report shows who is clearing it.",
+      },
+      {
+        icon: 'camera',
+        title: 'Updates and before-and-after write-ups',
+        body: "Groups post progress updates while they work, and mark the job done with a few words and an after photo. That clears the report and publishes the write-up with the before and after photos side by side. Councils can post official updates too. Residents can now post an update or a 'fixed' story as well as a problem; theirs still wait for an admin.",
+      },
+      {
+        icon: 'check',
+        title: 'Is it clear now?',
+        body: "When a report is cleared, the person who reported it is asked to check: 'Yes, it's clear' marks it confirmed, and 'No, it's still there' reopens it so someone can go back.",
+      },
+      {
+        icon: 'bell',
+        title: 'Follow reports and get notifications',
+        body: "Follow any report to get a notification each time it moves on; your own reports notify you automatically. Group leads are told when they're offered a job, and staff when a job is answered or finished. The bell is in the app's header.",
+      },
+    ],
+  },
+  {
+    version: '3.7.1',
+    date: '2026-11-19',
+    title: 'Smoother sign-in animation, steadier map pins',
+    highlights: [
+      {
+        icon: 'sparkles',
+        title: 'The sign-in logo closes cleanly',
+        body: "Each round now closes as a mirror of how it opened, without pieces flying off or a stray mark left behind. The sample report below it also shows every step: Reported, In progress, Cleared and Verified.",
+      },
+      {
+        icon: 'pin',
+        title: 'Map pins stay where they belong',
+        body: "Pins on the app's Map drifted away from their places as you zoomed in or out. They now stay fixed to the spot that was reported. Group areas also show as a named dot when you're zoomed out to the whole country, and there's a key in the map's corner.",
+      },
+      {
+        icon: 'arrow',
+        title: 'Proper back buttons',
+        body: 'Every "Back" link is now an outlined button with an arrow, easy to see and easy to tap, instead of small grey text.',
+      },
+    ],
+  },
+  {
+    version: '3.7.0',
+    date: '2026-11-19',
+    title: 'Community groups and clearance companies',
+    highlights: [
+      {
+        icon: 'users',
+        title: 'Community in the app',
+        body: "The app's Community page now lists every approved community group and clearance company, with the area each one covers shaded on a map beside the list. You can apply to join a group: a few questions about why you'd like to join and when you're free, plus a confirmation of your age and the safety rules. The group's leads then decide.",
+      },
+      {
+        icon: 'map',
+        title: 'Register a group or company, and draw its area',
+        body: "Anyone can start a community group, or register a clearance company with its waste carrier number. You outline the area it covers by clicking points on a map. A Resolve admin checks every registration before it appears, and whoever registers it becomes its first lead. Leads approve applications and can make other members leads too.",
+      },
+      {
+        icon: 'shield',
+        title: 'Admins check new groups',
+        body: "The admin page has a second queue for new groups and companies, each shown with its area on a map. The main Map can now also show the group areas, with a button to hide them.",
+      },
+      {
+        icon: 'sparkles',
+        title: 'A livelier sign-in page',
+        body: "On the sign-in page the logo now plays the site's three opening animations in turn: it opens, rests, then closes and the next one begins. The sample report below it moves along with it, from Reported to Cleared to Verified.",
+      },
+      {
+        icon: 'sun',
+        title: 'Light mode fixed in the app',
+        body: "If you'd picked a dark background shade and then switched to light mode inside the app, the dark shade stayed and the headings were hard to read. The shade now follows the theme everywhere, and the header's Report button stands out from the light header.",
+      },
+    ],
+  },
+  {
     version: '3.6.0',
     date: '2026-11-17',
     title: 'A new opening, and a calmer homepage',
@@ -58,6 +253,21 @@ export const RELEASES: Release[] = [
         icon: 'check',
         title: 'Clearer when a report is missing something',
         body: 'Pressing Send with something left out now shows exactly what is missing, right under each question, takes you to the first one, and marks it as needed in the summary. Nothing is picked for you any more, and a report you have started is kept on your device, photo included, so switching apps to take the photo or reloading the page does not lose it.',
+      },
+      {
+        icon: 'map',
+        title: 'Reports, the map and stories, in the app',
+        body: 'Every report, with search, filters and its full history, now lives in the app, along with a map showing where each one is and where it stands. You can post a story about a report so the neighbourhood knows; a Resolve admin checks it before it appears in the feed. The website keeps a shorter list of the most recent reports for anyone to see.',
+      },
+      {
+        icon: 'user',
+        title: 'The Resolve UK app, first look',
+        body: 'Signing in now opens the Resolve UK app at /app, with its own home, sections and a tab bar on phones. There are new screens to sign in, create an account and reset a password. You can also try the app without an account: the demo uses sample data on your device only and lets you see it as a resident, community member, staff member or admin. Reporting a problem still needs no account at all.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'New backgrounds across the site',
+        body: 'The hills and river are gone. The homepage now sits on soft contour lines, like an Ordnance Survey map. Every other page has gentle colour in the brand greens with dappled leaf shadows, like sunlight through a tree. The navbar and footer carry a fine leaf-vein pattern, and the closing panel on the homepage uses one landscape photo toned green.',
       },
       {
         icon: 'rotate',

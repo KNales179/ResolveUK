@@ -18,6 +18,18 @@ export async function findNearby(position: Position, category: string): Promise<
 // Adds this device's support to a report. Returns "already" if this device backed it before.
 export async function backReport(reportId: string): Promise<'added' | 'already'> {
   if (backedReportIds().has(reportId)) return 'already'
+  // Sample reports, and anything during the app's demo, are only remembered on this device:
+  // the demo never writes to the real records.
+  let demo = false
+  try {
+    demo = localStorage.getItem('resolve.demo') !== null
+  } catch {
+    // storage blocked: not the demo
+  }
+  if (reportId.startsWith('sample-') || demo) {
+    rememberBacked(reportId)
+    return 'added'
+  }
   const { error } = await supabase
     .from('report_supports')
     .insert({ report_id: reportId, device_token: deviceToken(), kind: 'same_issue' })

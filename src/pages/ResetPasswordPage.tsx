@@ -53,7 +53,7 @@ export function ResetPasswordPage() {
           {ready === 'invalid' && (
             <>
               <p className="mt-4 text-soft">This link is invalid or has expired. Request a new one from the sign-in page.</p>
-              <Link to="/account" className="btn btn-ghost mt-6 w-full">
+              <Link to="/app" className="btn btn-ghost mt-6 w-full">
                 Back to sign in
               </Link>
             </>
@@ -78,7 +78,7 @@ export function ResetPasswordPage() {
               <p className="msg msg-ok mt-6" role="status">
                 Password updated. You're signed in with it already.
               </p>
-              <Link to="/account" className="btn btn-primary mt-6 w-full">
+              <Link to="/app" className="btn btn-primary mt-6 w-full">
                 Continue
               </Link>
             </>

@@ -261,8 +261,11 @@
   background-image: image-set(url(/img/somerset-levels-1093.avif) type("image/avif"), url(/img/somerset-levels-1093.webp) type("image/webp"));
   background-size: cover; background-position: center;
   opacity: 0.7;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 40%, black 95%);
-  mask-image: linear-gradient(to right, transparent 0%, transparent 40%, black 95%);
+  /* Fades in from the right, and out at the bottom so it melts into the solid shade strip below. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 40%, black 95%), linear-gradient(to bottom, black 70%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0%, transparent 40%, black 95%), linear-gradient(to bottom, black 70%, transparent 100%);
+  mask-composite: intersect;
 }
 /* A tall, portrait photo instead of a wide landscape one stretched to fill a tall backdrop, sized
    by width and repeated down the page rather than forced to cover the full scroll height (which
@@ -391,6 +394,40 @@
    pattern to the viewport instead of to each section's own box, so the 40px cells line up
    continuously across every section boundary rather than each section starting its own grid
    from (0,0) and drifting out of phase with its neighbours. */
+/* ---- Site backgrounds (see Backdrop.tsx; picked from the "Resolve Backdrops" samples) ---- */
+.site-backdrop { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.site-backdrop canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Homepage: contour lines, softened with a slight blur. */
+.backdrop-contours { filter: blur(1.2px); }
+/* Every other page: soft colour fields drifting very slowly, with leaf shadows swaying on top. */
+.backdrop-mesh { position: absolute; inset: -10%; filter: blur(40px); animation: bd-drift 48s ease-in-out infinite alternate; }
+.backdrop-leaves { filter: blur(8px); transform-origin: 100% 0; animation: bd-sway 11s ease-in-out infinite alternate; }
+@keyframes bd-drift { to { transform: translate3d(-3%, 2%, 0) scale(1.05); } }
+@keyframes bd-sway { from { transform: rotate(-0.7deg) translateX(-6px); } to { transform: rotate(0.7deg) translateX(6px); } }
+/* Fine film grain over the backgrounds, so flat colour reads as a surface. */
+.site-grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.04;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.2 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+[data-theme="dark"] .site-grain { opacity: 0.06; }
+/* Navbar and footer: the leaf-vein pattern (drawn per theme by VeinsSync), over their own
+   see-through backgrounds. */
+.site-header::before, .site-footer::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: var(--veins, none); background-repeat: no-repeat; background-size: 1600px auto;
+}
+.site-header::before { background-position: center top; }
+.site-footer { position: relative; isolation: isolate; }
+.site-footer::before { background-position: center bottom; }
+/* Homepage closing panel: the landscape photo toned to the brand green (the overlay is a separate
+   layer, .cta-tone, because a filter on the photo would also grey out a tint drawn inside it). */
+.cta-bg { filter: grayscale(1) contrast(1.05) brightness(1.08); }
+[data-theme="dark"] .cta-bg { filter: grayscale(1) contrast(1.15) brightness(0.8); }
+.cta-tone { background: #7fae6e; mix-blend-mode: multiply; opacity: 0.85; }
+[data-theme="dark"] .cta-tone { background: #2f8a5c; opacity: 0.75; }
+
+/* The old 40px line grid and its cursor shimmer are switched off: the new backgrounds replace them.
+   (Delete these three lines to bring the grid back.) */
+.grid-texture::before, .grid-shimmer::after, .shimmer-grid::before { content: none !important; }
+
 .grid-texture { position: relative; isolation: isolate; }
 .grid-texture::before {
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
@@ -491,7 +528,7 @@
    `absolute`/`fixed`/`sticky` via a utility class — forcing `relative` on one of those would
    silently break its own placement (e.g. PasswordField's show/hide toggle, `absolute inset-y-0
    right-0` inside its field). ---- */
-a:not(.absolute):not(.fixed):not(.sticky), button:not(.absolute):not(.fixed):not(.sticky), label.tile, label.dropzone { position: relative; }
+a:not(.absolute):not(.fixed):not(.sticky):not(.maplibregl-marker), button:not(.absolute):not(.fixed):not(.sticky):not(.maplibregl-marker), label.tile, label.dropzone { position: relative; }
 a::after, button::after, label.tile::after, label.dropzone::after {
   /* inset: -5px puts the brackets just outside the element's edge, framing it, rather than
      inside it, where on a small or round control they drew a square over the content. */
@@ -570,7 +607,8 @@ label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::a
    deep ink, since the mint button would blend into the sage tint. */
 .stand-panel { background: color-mix(in oklab, var(--c-accent) 20%, var(--c-surface)); border: 1px solid color-mix(in oklab, var(--c-accent) 45%, var(--c-line)); box-shadow: 0 18px 40px -24px rgb(var(--c-shadow) / 0.35); }
 [data-theme="dark"] .stand-panel { background: color-mix(in oklab, var(--c-accent) 9%, var(--c-surface)); border-color: color-mix(in oklab, var(--c-accent) 30%, transparent); }
-:root:not([data-theme="dark"]) .stand-panel .btn-primary { background: var(--c-accent-ink); color: var(--c-clean-white); }
+:root:not([data-theme="dark"]) .stand-panel .btn-primary,
+:root:not([data-theme="dark"]) .site-header .btn-primary { background: var(--c-accent-ink); color: var(--c-clean-white); }
 
 /* Buttons for an accent panel: deep ink, never the accent itself on an accent background. */
 .btn-ink { background: var(--c-accent-ink); color: var(--c-clean-white); }
@@ -643,3 +681,232 @@ label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::a
 /* Hide the scrollbar on a row that scrolls sideways (the row is still swipeable). */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Homepage: the background-shade strip under the hero is solid, then fades out over its last
+   stretch so the contour lines begin softly below it rather than at a hard edge. */
+.shade-strip { background: linear-gradient(var(--c-bg) 0%, var(--c-bg) 62%, transparent 100%); padding-bottom: 1.5rem; }
+
+/* ================= The app at /app (stage 1) ================= */
+/* Section tabs in the app's top bar. */
+.app-tab { padding: 0.45rem 0.85rem; border-radius: 999px; font-size: 0.875rem; font-weight: 600; color: var(--c-soft); transition: background-color 0.2s, color 0.2s; }
+.app-tab:hover { color: var(--c-ink); background: color-mix(in oklab, var(--c-ink) 7%, transparent); }
+.app-tab-on, .app-tab-on:hover { color: var(--c-bg); background: var(--c-ink); }
+/* Bottom tab bar on phones and tablets. */
+.app-bottom-nav { background: color-mix(in oklab, var(--c-surface) 94%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.app-bottom-tab { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 0.55rem 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600; color: var(--c-soft); }
+.app-bottom-tab-on { color: var(--c-ink); }
+.app-bottom-tab-on svg { color: var(--c-accent-ink); background: var(--c-accent-vivid); border-radius: 999px; padding: 2px 10px; width: 2.6rem; height: 1.6rem; }
+[data-theme="dark"] .app-bottom-tab-on svg { color: #062520; }
+.app-bottom-tab::after, .app-tab::after { content: none !important; }
+/* The account button and its menu. */
+.app-avatar { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 999px; font-weight: 700; background: var(--c-accent-ink); color: #f0f5ec; border: 2px solid var(--c-surface); flex-shrink: 0; }
+[data-theme="dark"] .app-avatar { background: var(--c-accent-vivid); color: #062520; }
+.app-avatar::after { content: none !important; }
+.app-menu-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.75rem; border-radius: 0.6rem; font-size: 0.9rem; font-weight: 500; text-align: left; }
+.app-menu-item:hover { background: var(--c-surface2); }
+.app-menu-item::after { content: none !important; }
+/* The demo banner: deep green with light text in light mode, mint with dark text in dark mode. */
+.demo-banner { background: #0b3d36; color: #f0f5ec; }
+[data-theme="dark"] .demo-banner { background: #4fd1a0; color: #062520; }
+.demo-role { padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; border: 1px solid color-mix(in oklab, currentColor 35%, transparent); }
+.demo-role-on { background: #f0f5ec; color: #0b3d36; border-color: #f0f5ec; }
+[data-theme="dark"] .demo-role-on { background: #062520; color: #4fd1a0; border-color: #062520; }
+.demo-cta { padding: 0.3rem 0.8rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; background: #f0f5ec; color: #0b3d36; }
+[data-theme="dark"] .demo-cta { background: #062520; color: #4fd1a0; }
+.demo-exit { padding: 0.3rem 0.6rem; font-size: 0.8rem; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.demo-banner button::after { content: none !important; }
+/* The existing account page, shown inside the app: the app's own header is not fixed, so the
+   page's top spacing (made for the website's fixed header) comes down, and its own background
+   steps aside for the app's. */
+.app-embedded-account main { padding-top: 2.5rem !important; }
+.app-embedded-account .site-backdrop, .app-embedded-account .site-grain { display: none; }
+
+/* Account screens: the deep green showcase panel on the right. */
+.auth-showcase { background: radial-gradient(120% 90% at 20% 10%, #12554a 0%, #0b3d36 55%, #072a25 100%); box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.5); }
+.auth-showcase .auth-contours { position: absolute; inset: 0; width: 100%; height: 100%; }
+.auth-mark { animation: auth-float 7s ease-in-out infinite alternate; filter: drop-shadow(0 18px 30px rgb(0 0 0 / 0.35)); }
+@keyframes auth-float { from { transform: translateY(-6px); } to { transform: translateY(6px); } }
+.auth-tagline { animation: auth-in 0.6s ease-out both; text-wrap: balance; }
+@keyframes auth-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.auth-sample { background: rgb(255 255 255 / 0.08); border: 1px solid rgb(255 255 255 / 0.14); backdrop-filter: blur(6px); }
+.auth-swap { animation: auth-in 0.45s ease-out both; }
+.auth-bar { transition: background-color 0.45s ease; }
+/* Password strength bar and the one-off shake on a field that needs fixing. */
+.strength-bar { height: 0.35rem; flex: 1; border-radius: 999px; background: var(--c-line); }
+.strength-1 { background: var(--c-danger); } .strength-2 { background: #d97706; } .strength-3 { background: var(--c-chart-bar); } .strength-4 { background: var(--c-chart-bar); }
+.strength-text-1 { color: var(--c-danger); } .strength-text-2 { color: #b45309; } .strength-text-3, .strength-text-4 { color: var(--c-chart-bar); }
+[data-theme="dark"] .strength-text-2 { color: #fcd34d; }
+.field-shake { animation: field-shake 0.4s ease; }
+@keyframes field-shake { 0%, 100% { transform: none; } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+.input[aria-invalid="true"] { border-color: var(--c-danger); }
+
+/* ================= App stage 2: stories and the map ================= */
+/* "Tell the neighbourhood" box inside a report's panel: a tinted box so it reads as its own step. */
+.story-box { background: color-mix(in oklab, var(--c-accent) 14%, var(--c-surface)); border: 1px solid color-mix(in oklab, var(--c-accent) 40%, var(--c-line)); }
+/* Map pins and list dots, coloured by where a report stands (same colours as the status labels). */
+:root { --pin-reported: #b45309; }
+[data-theme="dark"] { --pin-reported: #fbbf24; }
+.report-pin { color: var(--pin-reported); cursor: pointer; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.3)); transition: scale 0.15s ease; transform-origin: 50% 100%; }
+.report-pin:hover, .report-pin:focus-visible { scale: 1.18; }
+.report-pin::after { content: none !important; }
+.report-pin-progress { color: var(--pin-progress); } .report-pin-cleared { color: var(--pin-cleared); } .report-pin-verified { color: var(--pin-verified); }
+.report-dot-reported { background: var(--pin-reported); } .report-dot-progress { background: var(--pin-progress); }
+.report-dot-cleared { background: var(--pin-cleared); } .report-dot-verified { background: var(--pin-verified); } .report-dot-closed { background: var(--c-soft); }
+/* Map filters: a toggle per status, with its colour dot; switched off ones fade. */
+.map-filter { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.4rem 0.8rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; background: var(--c-surface); border: 1px solid color-mix(in oklab, var(--c-ink) 18%, var(--c-line)); }
+.map-filter[aria-pressed="false"] { opacity: 0.55; text-decoration: line-through; }
+.map-filter-dot { width: 0.6rem; height: 0.6rem; border-radius: 999px; background: currentColor; }
+.map-filter-reported .map-filter-dot { background: var(--pin-reported); } .map-filter-progress .map-filter-dot { background: var(--pin-progress); }
+.map-filter-cleared .map-filter-dot { background: var(--pin-cleared); } .map-filter-verified .map-filter-dot { background: var(--pin-verified); }
+/* Organisation areas: the map key swatches match the shaded, dashed outlines drawn on the maps. */
+.area-swatch { display: inline-block; width: 0.95rem; height: 0.7rem; border-radius: 3px; border: 1.5px dashed; flex: none; }
+.area-swatch-community { border-color: #2f9e44; background: rgb(47 158 68 / 0.22); }
+.area-swatch-commercial { border-color: #1d4ed8; background: rgb(29 78 216 / 0.2); }
+[data-theme="dark"] .area-swatch-community { border-color: #51cf66; }
+[data-theme="dark"] .area-swatch-commercial { border-color: #74a7ff; }
+
+/* Back buttons (BackLink): outlined, 44px tall, on the card colour so they never blend into the page. */
+.back-link { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 2.75rem; padding: 0.5rem 0.95rem 0.5rem 0.7rem; border-radius: 0.85rem; border: 1px solid color-mix(in oklab, var(--c-ink) 20%, var(--c-line)); background: var(--c-surface); color: var(--c-ink); font-size: 0.875rem; font-weight: 600; box-shadow: 0 1px 2px rgb(0 0 0 / 0.06); transition: border-color 0.2s, color 0.2s, background-color 0.2s; }
+.back-link:hover { border-color: color-mix(in oklab, var(--c-accent) 70%, var(--c-ink)); background: color-mix(in oklab, var(--c-accent) 10%, var(--c-surface)); }
+.back-link svg { transition: translate 0.2s; }
+.back-link:hover svg { translate: -2px 0; }
+
+/* A group's, company's or council's avatar on a story: an icon on the accent, not a letter. */
+.app-avatar-org { background: var(--c-accent-vivid); color: var(--c-accent-ink); }
+/* "Before" / "After" labels on photos: dark glass so they read on any photo, in either theme. */
+.photo-tag { padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; color: #fff; background: rgb(0 0 0 / 0.55); backdrop-filter: blur(4px); }
+
+/* Report panel (app): the reporter's "is it clear now?" check stands out in green; staff
+   tools sit on a quiet tinted panel. Both keep their buttons and fields off their own colour. */
+.check-panel { background: color-mix(in oklab, var(--c-accent) 16%, var(--c-surface)); border: 1px solid color-mix(in oklab, var(--c-accent) 50%, var(--c-line)); }
+[data-theme="dark"] .check-panel { background: color-mix(in oklab, var(--c-accent) 10%, var(--c-surface)); }
+:root:not([data-theme="dark"]) .check-panel .btn-primary,
+:root:not([data-theme="dark"]) .staff-panel .btn-primary { background: var(--c-accent-ink); color: var(--c-clean-white); }
+.staff-panel { background: color-mix(in oklab, var(--c-ink) 4%, var(--c-surface)); border: 1px dashed color-mix(in oklab, var(--c-ink) 25%, var(--c-line)); }
+.org-choice { border: 1px solid var(--c-line); background: var(--c-surface); transition: border-color 0.15s, background-color 0.15s; }
+.org-choice:hover:not(:disabled) { border-color: color-mix(in oklab, var(--c-accent) 60%, var(--c-ink)); }
+.org-choice[aria-checked="true"] { border-color: var(--c-accent-ink); background: color-mix(in oklab, var(--c-accent) 14%, var(--c-surface)); box-shadow: inset 0 0 0 1px var(--c-accent-ink); }
+[data-theme="dark"] .org-choice[aria-checked="true"] { border-color: var(--c-accent); box-shadow: inset 0 0 0 1px var(--c-accent); }
+.org-choice:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Notifications: the unread count sits on the bell's corner; new items carry a small accent bar. */
+.bell-count { position: absolute; top: -0.2rem; right: -0.2rem; min-width: 1.15rem; height: 1.15rem; padding: 0 0.3rem; border-radius: 999px; display: grid; place-items: center; font-size: 0.68rem; font-weight: 800; background: #c2410c; color: #fff; border: 2px solid var(--c-surface); }
+.notice-item { display: flex; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 0.75rem; border-left: 3px solid transparent; }
+.notice-item:hover { background: var(--c-field); }
+.notice-new { border-left-color: var(--c-accent); background: color-mix(in oklab, var(--c-accent) 8%, transparent); }
+
+/* Staff page: number tiles (the ones that filter the queue are buttons), the overdue mark, queue rows. */
+.stat-tile { transition: border-color 0.15s, box-shadow 0.15s; }
+button.stat-tile:hover { border-color: color-mix(in oklab, var(--c-accent) 60%, var(--c-ink)); }
+.stat-tile[aria-pressed="true"] { border-color: var(--c-accent-ink); box-shadow: inset 0 0 0 1px var(--c-accent-ink); }
+[data-theme="dark"] .stat-tile[aria-pressed="true"] { border-color: var(--c-accent); box-shadow: inset 0 0 0 1px var(--c-accent); }
+.stat-warn { color: #c2410c; }
+[data-theme="dark"] .stat-warn { color: #fb923c; }
+.pill-overdue { background: color-mix(in oklab, #c2410c 14%, var(--c-surface)); color: #9a3412; }
+[data-theme="dark"] .pill-overdue { background: color-mix(in oklab, #fb923c 16%, var(--c-surface)); color: #fdba74; }
+.job-mini { transition: border-color 0.15s; }
+.job-mini:hover { border-color: color-mix(in oklab, var(--c-accent) 60%, var(--c-ink)); }
+
+/* Home feed: post action bar and the "what's happening?" prompt. */
+.feed-action { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; padding: 0.65rem 0.5rem; border-radius: 0.6rem; font-size: 0.875rem; font-weight: 600; color: var(--c-soft); transition: background-color 0.15s, color 0.15s; }
+a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(--c-field); color: var(--c-ink); }
+.feed-actions .feed-action { border-radius: 0; padding-block: 0.8rem; }
+.feed-actions .feed-action + .feed-action { border-left: 1px solid var(--c-line); }
+.composer-prompt { background: var(--c-field); border: 1px solid var(--c-line); transition: border-color 0.15s; }
+.composer-prompt:hover { border-color: color-mix(in oklab, var(--c-accent) 60%, var(--c-ink)); color: var(--c-ink); }
+.feed-post .feed-report { background: var(--c-field); }
+.feed-post a:hover .feed-report { background: color-mix(in oklab, var(--c-accent) 8%, var(--c-field)); }
+
+/* Comments under a feed post: soft bubbles, small text links, and the "think again" warning. */
+.comment-bubble { background: var(--c-field); border: 1px solid var(--c-line); }
+.comment-link { font-weight: 600; color: var(--c-soft); }
+.comment-link:hover { color: var(--c-ink); text-decoration: underline; }
+.comment-link::after { content: none !important; }
+.comment-warning { background: color-mix(in oklab, #d97706 12%, var(--c-surface)); border: 1px solid color-mix(in oklab, #d97706 45%, var(--c-line)); }
+.feed-action[aria-pressed="true"] { color: var(--c-ink); }
+
+/* Private land: request cards and quotes. The chosen quote is outlined in the brand's deep green. */
+.request-card { transition: border-color 0.15s, transform 0.15s; }
+.request-card:hover { border-color: color-mix(in oklab, var(--c-accent) 60%, var(--c-ink)); }
+.quote-card { border: 1px solid var(--c-line); background: var(--c-field); }
+.quote-chosen { border-color: var(--c-accent-ink); box-shadow: inset 0 0 0 1px var(--c-accent-ink); }
+[data-theme="dark"] .quote-chosen { border-color: var(--c-accent); box-shadow: inset 0 0 0 1px var(--c-accent); }
+
+/* Public pages other than the homepage (Backdrop kind="public"): the old landscape photo at the
+   top of the page, behind the contour lines, fading out down the page and scrolling with it.
+   Below tablet width it drops out, as before (a tall photo at phone width is a busy crop). */
+.public-photo {
+  position: absolute; inset: 0 0 auto 0; height: max(110svh, 900px); z-index: -2; pointer-events: none;
+  background-image: image-set(url(/img/longimg-768.avif) type("image/avif"), url(/img/longimg-768.webp) type("image/webp"));
+  background-size: cover; background-position: center top; background-repeat: no-repeat;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%); mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+}
+[data-theme="dark"] .public-photo { opacity: 0.32; filter: saturate(0.85) brightness(0.8); }
+@media (max-width: 767px) { .public-photo { display: none; } }
+/* The long contour layer (homepage and public pages, see ScrollContours in Backdrop.tsx): as tall
+   as the page, at its top, behind everything, scrolling with it, drawn in strips. */
+.contour-scroll { position: absolute; top: 0; left: 0; width: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+.contour-strip { position: absolute; left: 0; width: 100%; }
+.contour-strip canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* The glow: the lines drawn again in the accent colour, shown only in a soft circle around the
+   pointer (page coordinates, less the strip's own top), so just the lines near it light up. */
+.contour-strip .backdrop-contours-glow {
+  filter: blur(0.6px);
+  -webkit-mask-image: radial-gradient(circle 170px at var(--spot-x, -9999px) calc(var(--spot-y, -9999px) - var(--top, 0px)), black 0%, transparent 100%);
+  mask-image: radial-gradient(circle 170px at var(--spot-x, -9999px) calc(var(--spot-y, -9999px) - var(--top, 0px)), black 0%, transparent 100%);
+}
+
+/* ---- Public explainer pages (Community, Commercial): each kind of block gets its own look, so a
+   page isn't a run of identical green cards. ---- */
+/* Neutral glass: no green tint at all, so it reads apart from the brand-green panels. */
+.panel-neutral { background: rgb(255 255 255 / 0.74); border: 1px solid rgb(11 61 54 / 0.1); backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px) saturate(120%); }
+[data-theme="dark"] .panel-neutral { background: rgb(9 13 12 / 0.66); border-color: rgb(255 255 255 / 0.09); }
+/* "Worth knowing": a warm amber panel for advice people should not skip. */
+.panel-caution { background: color-mix(in oklab, #f59e0b 13%, var(--c-bg)); border: 1px solid color-mix(in oklab, #d97706 45%, transparent); }
+.panel-caution .caution-icon { color: #b45309; background: color-mix(in oklab, #f59e0b 22%, transparent); }
+[data-theme="dark"] .panel-caution { background: color-mix(in oklab, #f59e0b 9%, #0b0f0e); border-color: color-mix(in oklab, #fbbf24 35%, transparent); }
+[data-theme="dark"] .panel-caution .caution-icon { color: #fbbf24; }
+/* An empty list: an outline waiting to be filled, not a filled card. */
+.panel-dashed { border: 1.5px dashed color-mix(in oklab, var(--c-ink) 32%, transparent); background: color-mix(in oklab, var(--c-bg) 55%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+/* A plain band across the page: rules above and below, no box. */
+.page-band { border-block: 1px solid color-mix(in oklab, var(--c-ink) 16%, transparent); background: color-mix(in oklab, var(--c-bg) 62%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+/* Big step numbers, joined by a line. */
+.step-num { font-family: var(--font-serif, Georgia, serif); font-size: 3rem; line-height: 1; color: var(--c-accent-ink); }
+[data-theme="dark"] .step-num { color: var(--c-accent); }
+.step-line { height: 1px; background: color-mix(in oklab, var(--c-ink) 22%, transparent); }
+/* Photo caption chip: dark glass so it reads on any photo. */
+.photo-chip { padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; color: #fff; background: rgb(0 0 0 / 0.5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+/* Do / don't marks. */
+.mark-do { color: #1f8a55; background: color-mix(in oklab, #22c55e 16%, transparent); }
+.mark-dont { color: #b91c1c; background: color-mix(in oklab, #ef4444 14%, transparent); }
+[data-theme="dark"] .mark-do { color: #6ee7b7; }
+[data-theme="dark"] .mark-dont { color: #fca5a5; }
+
+/* Community: photo prints scattered like snapshots from a litter pick. */
+.snap { position: absolute; background: #fbfaf6; padding: 0.55rem 0.55rem 2.1rem; border-radius: 4px; box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.12); }
+.snap picture { display: block; height: 100%; }
+.snap img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+.snap figcaption { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.55rem; font-family: var(--font-serif); font-style: italic; font-size: 0.95rem; color: #2b3330; }
+/* Community: the steps as pins along a dashed walking trail. */
+.trail-line { position: absolute; left: 1.4rem; right: 1.4rem; top: 1.4rem; border-top: 2px dashed color-mix(in oklab, var(--c-accent-ink) 45%, transparent); }
+[data-theme="dark"] .trail-line { border-top-color: color-mix(in oklab, var(--c-accent) 55%, transparent); }
+.trail-pin { position: relative; display: grid; place-items: center; width: 2.8rem; height: 2.8rem; border-radius: 999px 999px 999px 4px; transform: rotate(-45deg); background: var(--c-accent-ink); color: #fff; box-shadow: 0 6px 14px -6px rgb(0 0 0 / 0.5); }
+.trail-pin > span { transform: rotate(45deg); font-family: var(--font-serif); font-size: 1.25rem; }
+[data-theme="dark"] .trail-pin { background: var(--c-accent); color: #062520; }
+
+/* Commercial: the hero as one wide photo with the words across it (dark wash, white text, in both themes). */
+.photo-hero { position: relative; isolation: isolate; overflow: hidden; color: #f3f7f4; }
+.photo-hero::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(100deg, rgb(6 22 18 / 0.88) 0%, rgb(6 22 18 / 0.7) 45%, rgb(6 22 18 / 0.15) 100%); }
+.photo-hero > :not(picture) { position: relative; z-index: 2; }
+.photo-hero .photo-hero-img { position: absolute; inset: 0; z-index: 0; }
+.photo-hero .eyebrow { color: #a7e3c4; }
+.photo-hero .eyebrow::before { background: #a7e3c4; }
+.btn-on-photo { border: 1.5px solid rgb(255 255 255 / 0.7); color: #fff; background: rgb(255 255 255 / 0.06); }
+.btn-on-photo:hover { background: rgb(255 255 255 / 0.16); }
+/* Commercial: an example waste transfer note, as a sheet of paper (paper in both themes). */
+.wtn { background: #fbfaf6; color: #1d2421; border-radius: 6px; box-shadow: 0 24px 50px -24px rgb(0 0 0 / 0.5), 0 2px 6px rgb(0 0 0 / 0.1); transform: rotate(1.2deg); }
+.wtn dt { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6b7570; }
+.wtn dd { margin: 0.15rem 0 0; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 0.9rem; }
+.wtn .wtn-row { border-bottom: 1px dashed #cfd4cf; padding-block: 0.6rem; }
+.wtn .wtn-stamp { border: 2px solid #b45309; color: #b45309; transform: rotate(-8deg); font-weight: 800; letter-spacing: 0.12em; }

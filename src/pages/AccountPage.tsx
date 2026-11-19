@@ -15,6 +15,7 @@ import { ReporterAuthProvider, useReporterAuth } from '../lib/reporterAuth'
 import { STATUS_LABELS, statusGroup } from '../lib/status'
 import { supabase } from '../lib/supabase'
 import type { Report } from '../types'
+import { BackLink } from '../components/ui/BackLink'
 
 const TYPE_ICON: Record<string, IconName> = { 'fly-tipping': 'trash', pothole: 'road', graffiti: 'spray', 'abandoned-vehicle': 'car', 'damaged-infrastructure': 'lamp', other: 'more' }
 
@@ -65,9 +66,9 @@ function ForgotPasswordForm({ onBack }: { onBack: () => void }) {
       <button type="submit" className="btn btn-primary w-full" disabled={busy}>
         {busy ? 'Sending…' : 'Send reset link'}
       </button>
-      <button type="button" className="block w-full text-center text-sm font-semibold text-soft hover:text-ink" onClick={onBack}>
-        Back to sign in
-      </button>
+      <div className="flex justify-center">
+        <BackLink onClick={onBack}>Back to sign in</BackLink>
+      </div>
     </form>
   )
 }

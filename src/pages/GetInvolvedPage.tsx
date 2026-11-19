@@ -109,6 +109,14 @@ export function GetInvolvedPage() {
               ))}
             </div>
           </div>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Link to="/app/community" className="btn btn-primary">
+              Find a group near you <Icon name="arrow" className="size-4" />
+            </Link>
+            <Link to="/app/community/new?kind=community" className="btn btn-ghost">
+              Start a group
+            </Link>
+          </div>
         </Reveal>
 
         <Reveal className="panel-tint mt-14 rounded-3xl p-8 sm:p-10">

@@ -6,6 +6,7 @@ import { GoogleIcon } from '../components/ui/GoogleIcon'
 import { useAuthOptions } from '../lib/authOptions'
 import { PasswordField } from '../components/ui/PasswordField'
 import { useStaffAuth } from './auth'
+import { BackLink } from '../components/ui/BackLink'
 
 export function Frame({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -69,9 +70,9 @@ function StaffForgotPassword({ onBack }: { onBack: () => void }) {
           <button type="submit" className="btn btn-primary w-full" disabled={busy}>
             {busy ? 'Sending…' : 'Send reset link'}
           </button>
-          <button type="button" className="block w-full text-center text-sm font-semibold text-soft hover:text-ink" onClick={onBack}>
-            Back to sign in
-          </button>
+          <div className="flex justify-center">
+            <BackLink onClick={onBack}>Back to sign in</BackLink>
+          </div>
         </form>
       )}
     </Frame>

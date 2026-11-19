@@ -158,7 +158,7 @@ export function IntroSplash() {
     if (variant === 'path') {
       const len = brush.getTotalLength()
       gsap.set(wBrush, { attr: { mask: `url(#${id}-brush)` } })
-      gsap.set(brush, { strokeDasharray: len, strokeDashoffset: len })
+      gsap.set(brush, { strokeDasharray: `${len} ${len + 120}`, strokeDashoffset: len + 40 })
       gsap.set(leafL, { scale: 0, svgOrigin: LL_BASE })
       gsap.set(leafR, { scale: 0, svgOrigin: LR_BASE })
       gsap.set(pin, { y: -120, autoAlpha: 0 })
@@ -223,7 +223,9 @@ export function IntroSplash() {
           </g>
         </g>
         <path className="i-pin" d={PIN_PATH} fill="var(--c-logo-mark)" fillRule="evenodd" />
-        <line className="i-levelLine" x1="-10" y1="223" x2="210" y2="223" stroke="#fff" strokeWidth="2.5" clipPath={`url(#${id}-shape)`} />
+        <g clipPath={`url(#${id}-shape)`}>
+          <line className="i-levelLine" x1="-10" y1="223" x2="210" y2="223" stroke="#fff" strokeWidth="2.5" />
+        </g>
         <g fill="none" stroke="var(--c-accent)" strokeWidth="2.4" strokeLinejoin="round">
           {[R_PATH, LEAF_LEFT_PATH, LEAF_RIGHT_PATH, PIN_PATH].map((d, i) => (
             <path key={i} className="i-o" d={d} />

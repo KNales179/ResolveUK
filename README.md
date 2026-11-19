@@ -33,13 +33,24 @@ schedule and clear it), Resolve reviewers (verify or reopen a cleared report), a
 
 ## Database
 
-The database is in three files. Run them once each, in this order, in the SQL Editor of the Supabase
-project. All three are safe to run again.
+Run these once each, in this order, in the SQL Editor of the Supabase project. All of them are safe
+to run again.
 
 1. `supabase/schema.sql`: issue types, councils and contractors, reports, history, photo storage.
 2. `supabase/community.sql`: the "is this the same problem?" search and backing a report.
 3. `supabase/dashboard.sql`: staff sign-in, roles, and claiming, acknowledging, scheduling, clearing,
    verifying and reopening a report.
+4. `supabase/security-update.sql`
+5. `supabase/v2-concept.sql`
+6. `supabase/flexible-bodies.sql`
+7. `supabase/reporter-profile-fields.sql`
+8. `supabase/staff-profile-fields.sql`
+9. `supabase/app-roles.sql`: tells the app at `/app` whether someone is a resident, staff or an admin.
+10. `supabase/stories.sql`: stories people post about a report, shown publicly once an admin approves them.
+11. `supabase/organisations.sql`: community groups and clearance companies, the areas they cover, and joining a group.
+12. `supabase/jobs.sql`: offering a report to a group or company as a job, progress updates and resolved stories, the reporter confirming it's clear, following reports and notifications.
+13. `supabase/comments.sql`: comments and thanks on posts, with reporting and hiding.
+14. `supabase/requests.sql`: private land clearance requests and quotes from licensed clearance companies.
 
 Then, once only: link the first Resolve admin account. See `supabase/staff-members.sql` for the
 steps — you create their sign-in in Authentication > Users first, then run that file.

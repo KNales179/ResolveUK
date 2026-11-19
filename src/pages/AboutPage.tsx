@@ -10,7 +10,7 @@ import { openInstallDialog } from '../lib/install'
 
 const TODAY_TILES: Array<[IconName, string, string]> = [
   ['camera', 'Report it', 'Anyone can report fly-tipping, potholes, graffiti, abandoned vehicles and damaged street infrastructure, with a photo and a location.'],
-  ['user', 'Staff handle it', 'Councils, contractors and Resolve reviewers have their own sign-in to claim, acknowledge, schedule and clear reports, and to verify that a cleared report was genuinely fixed.'],
+  ['user', 'The right people handle it', 'The council or contractor responsible takes it on, schedules it and clears it, or hands a safe job to a checked local group. On private land, licensed clearance companies quote for it.'],
   ['eye', 'Everyone can see it', 'The same public record of what has been reported and where it stands is visible to anyone, not just the people handling it.'],
 ]
 
@@ -19,14 +19,14 @@ const TODAY_TILES: Array<[IconName, string, string]> = [
 const RESOLUTION: Array<[IconName, string, string]> = [
   ['rotate', 'Fewer steps between seeing it and fixing it', 'One report reaches the people responsible, with the photo and exact spot they need to act. If the same problem has already been reported, you add your support instead of starting again, so nobody waits on a pile of duplicates.'],
   ['map', 'Public land and private land', 'Not every problem is the council’s to fix. Rubbish on a road goes to the council or its contractor; rubbish on a supermarket car park is the landowner’s. Resolve UK follows the problem to whoever is actually responsible, wherever it is.'],
-  ['users', 'With the community', 'Local groups will be able to take on safe jobs like litter in their own area, and residents to confirm a fix with a photo of their own. The quickest way to get something cleared is often the people who live next to it.'],
+  ['users', 'With the community', 'Checked local groups take on safe jobs like litter in their own area and show the result with before-and-after photos, and the person who reported it confirms it is really clear. The quickest way to get something cleared is often the people who live next to it.'],
 ]
 
 const FAQS: Array<[string, string]> = [
   ['Is this a council website?', 'No. Resolve UK is not run by a council. It sends a report to the council or contractor responsible for the area, the same as writing to them yourself would.'],
-  ['Do I need an account to report something?', 'No. Anyone can report a problem without signing in. An account is optional: it keeps the reports you have sent together so you can follow them. Council and contractor staff have their own separate sign-in.'],
+  ['Do I need an account to report something?', 'No. Anyone can report a problem without signing in. An account is optional: it keeps your reports together and tells you when they move on, and it lets you follow other reports, comment, join a community group, or ask for quotes to clear private land.'],
   ["What shouldn't I report here?", "Anything urgent or dangerous, such as a gas leak, a dangerous structure, or a fallen tree blocking a road, should go straight to the emergency services or the relevant utility, not through this site. Anything that isn't a physical problem in a public place, such as noise, a missed bin collection, or a complaint about a council decision, should go directly to the council instead."],
-  ['What can council and contractor staff do?', 'Staff have their own sign-in, separate from the public site. Once a report is claimed for their council or contractor, they can acknowledge it, schedule the work and mark it cleared. A Resolve reviewer then checks a cleared report before it counts as verified. Staff can only act on a report; they cannot change what the public sees was originally reported.'],
+  ['What can council and contractor staff do?', 'Staff sign in to the same app, where they see the reports for their council or contractor. They take each one on, schedule the work and mark it cleared, post official updates, or offer a safe job to a local group. The person who reported it is then asked to confirm it is really clear. Staff cannot change what was originally reported.'],
   ['Is there an app?', 'Resolve UK is a website, but you can install it like an app on a phone, tablet or computer. It gets its own icon and opens full screen, with nothing to download from an app store. Use the Install button further up this page for the steps on your device.'],
 ]
 

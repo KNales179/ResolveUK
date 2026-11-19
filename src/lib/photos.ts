@@ -5,6 +5,6 @@ import { supabase } from './supabase'
 // images rather than a Supabase storage key) is returned as-is instead of being run through the
 // storage client.
 export function photoUrl(path: string): string {
-  if (path.startsWith('/') || path.startsWith('http')) return path
+  if (path.startsWith('/') || path.startsWith('http') || path.startsWith('blob:')) return path
   return supabase.storage.from('report-photos').getPublicUrl(path).data.publicUrl
 }

@@ -22,7 +22,7 @@ function Field({ id, label, children }: { id: string; label: string; children: R
   )
 }
 
-function AddBody({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () => void }) {
+function AddBody({ bodies, onAdded, add = addBody }: { bodies: ResponsibleBody[]; onAdded: () => void; add?: typeof addBody }) {
   const [name, setName] = useState('')
   const [kind, setKind] = useState<'council' | 'contractor' | 'other'>('council')
   const [tier, setTier] = useState('unitary')
@@ -37,9 +37,9 @@ function AddBody({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () =
     setBusy(true)
     setError('')
     try {
-      if (kind === 'council') await addBody({ name: name.trim(), kind, tier, works_for_id: null })
-      else if (kind === 'contractor') await addBody({ name: name.trim(), kind, tier: null, works_for_id: worksFor || null })
-      else await addBody({ name: name.trim(), kind, tier: null, works_for_id: null })
+      if (kind === 'council') await add({ name: name.trim(), kind, tier, works_for_id: null })
+      else if (kind === 'contractor') await add({ name: name.trim(), kind, tier: null, works_for_id: worksFor || null })
+      else await add({ name: name.trim(), kind, tier: null, works_for_id: null })
       setName('')
       onAdded()
     } catch (err) {
@@ -90,7 +90,7 @@ function AddBody({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () =
   )
 }
 
-function AddStaff({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () => void }) {
+function AddStaff({ bodies, onAdded, link = linkStaff }: { bodies: ResponsibleBody[]; onAdded: () => void; link?: typeof linkStaff }) {
   const [email, setEmail] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [role, setRole] = useState<StaffRole>('staff')
@@ -105,7 +105,7 @@ function AddStaff({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () 
     setError('')
     setOk('')
     try {
-      await linkStaff(email.trim(), role, role === 'staff' ? bodyId : null, displayName.trim())
+      await link(email.trim(), role, role === 'staff' ? bodyId : null, displayName.trim())
       setOk(`${displayName.trim()} is now linked as ${ROLE_LABEL[role].toLowerCase()}.`)
       setEmail('')
       setDisplayName('')
@@ -151,13 +151,33 @@ function AddStaff({ bodies, onAdded }: { bodies: ResponsibleBody[]; onAdded: () 
   )
 }
 
+// The staff area's own page: the signed-in admin's view of councils, contractors and staff.
 export function StaffManage() {
   const me = useStaffMe()
-  const [bodies, setBodies] = useState<ResponsibleBody[]>([])
-  const [staff, setStaff] = useState<StaffProfile[]>([])
+  return <ManagePeople meId={me.id} />
+}
+
+const DEMO_BODIES: ResponsibleBody[] = [
+  { id: 'sample-body-1', name: 'Sample District Council', kind: 'council', tier: 'district', works_for_id: null, functions: ['waste', 'streetscene'], active: true },
+  { id: 'sample-body-2', name: 'Sample Clearance Ltd.', kind: 'contractor', tier: null, works_for_id: 'sample-body-1', functions: ['waste'], active: true },
+  { id: 'sample-body-3', name: 'Sample County Council', kind: 'council', tier: 'county', works_for_id: null, functions: ['highways'], active: true },
+]
+const DEMO_STAFF: StaffProfile[] = [
+  { id: 'demo', body_id: null, role: 'resolve_admin', display_name: 'Sam (demo)', bio: null, avatar_path: null, active: true, must_change_password: false },
+  { id: 'demo-2', body_id: 'sample-body-1', role: 'staff', display_name: 'Priya Shah', bio: null, avatar_path: null, active: true, must_change_password: false },
+  { id: 'demo-3', body_id: 'sample-body-2', role: 'staff', display_name: 'Dev Clarke', bio: null, avatar_path: null, active: true, must_change_password: false },
+  { id: 'demo-4', body_id: null, role: 'reviewer', display_name: 'Morgan Ellis', bio: null, avatar_path: null, active: false, must_change_password: false },
+]
+
+// Councils, contractors and staff accounts: used by the staff area and by the app's Admin page.
+// In the demo it works on sample people and nothing is saved.
+export function ManagePeople({ meId, demo = false }: { meId: string; demo?: boolean }) {
+  const [bodies, setBodies] = useState<ResponsibleBody[]>(demo ? DEMO_BODIES : [])
+  const [staff, setStaff] = useState<StaffProfile[]>(demo ? DEMO_STAFF : [])
   const [error, setError] = useState('')
 
   const reload = async () => {
+    if (demo) return
     try {
       const [b, s] = await Promise.all([listBodies(), listStaff()])
       setBodies(b)
@@ -169,10 +189,24 @@ export function StaffManage() {
 
   useEffect(() => {
     void reload()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // In the demo, adding and switching people only changes this screen.
+  const demoAddBody: typeof addBody = async (b) => {
+    setBodies((list) => [...list, { id: `demo-body-${Date.now()}`, functions: [], active: true, ...b } as ResponsibleBody])
+  }
+  const demoLink: typeof linkStaff = async (email, role, bodyId, name) => {
+    void email
+    setStaff((list) => [...list, { id: `demo-${Date.now()}`, body_id: bodyId, role: role as StaffRole, display_name: name, bio: null, avatar_path: null, active: true, must_change_password: true }])
+  }
 
   async function toggle(id: string, active: boolean) {
     setError('')
+    if (demo) {
+      setStaff((list) => list.map((p) => (p.id === id ? { ...p, active } : p)))
+      return
+    }
     try {
       await setStaffActive(id, active)
       await reload()
@@ -182,9 +216,9 @@ export function StaffManage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="grid items-start gap-5 xl:grid-cols-2">
       {error && (
-        <p className="msg msg-error" role="alert">
+        <p className="msg msg-error xl:col-span-2" role="alert">
           {error}
         </p>
       )}
@@ -200,7 +234,7 @@ export function StaffManage() {
               <div className="min-w-0 flex-1">
                 <p className="truncate font-semibold">{b.name}</p>
                 <p className="mt-0.5 text-sm text-soft">
-                  {b.kind === 'council' ? b.tier : b.kind === 'contractor' ? `Contractor for ${bodies.find((c) => c.id === b.works_for_id)?.name ?? '—'}` : 'Other, handled manually'}
+                  {b.kind === 'council' ? (b.tier ? `${b.tier.charAt(0).toUpperCase()}${b.tier.slice(1)} council` : 'Council') : b.kind === 'contractor' ? `Contractor for ${bodies.find((c) => c.id === b.works_for_id)?.name ?? '—'}` : 'Other, handled manually'}
                 </p>
                 {!b.active && <span className="pill pill-closed mt-2">Retired</span>}
               </div>
@@ -208,7 +242,7 @@ export function StaffManage() {
           ))}
           {bodies.length === 0 && <li className="text-soft">None yet.</li>}
         </ul>
-        <AddBody bodies={bodies} onAdded={reload} />
+        <AddBody bodies={bodies} onAdded={reload} add={demo ? demoAddBody : undefined} />
       </section>
 
       <section className="staff-section card rounded-3xl p-6 sm:p-8">
@@ -231,7 +265,7 @@ export function StaffManage() {
                 </p>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   {!s.active && <span className="pill pill-closed">Switched off</span>}
-                  {s.id !== me.id && (
+                  {s.id !== meId && (
                     <button type="button" className="btn btn-ghost btn-sm" onClick={() => toggle(s.id, !s.active)}>
                       {s.active ? 'Switch off' : 'Switch back on'}
                     </button>
@@ -242,7 +276,7 @@ export function StaffManage() {
           ))}
           {staff.length === 0 && <li className="text-soft">None yet.</li>}
         </ul>
-        <AddStaff bodies={bodies.filter((b) => b.active)} onAdded={reload} />
+        <AddStaff bodies={bodies.filter((b) => b.active)} onAdded={reload} link={demo ? demoLink : undefined} />
       </section>
     </div>
   )

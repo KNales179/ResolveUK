@@ -88,7 +88,7 @@ export function ReporterAuthProvider({ children }: { children: ReactNode }) {
         const { error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
-          options: { data: { display_name: displayName.trim() || 'Reporter' } },
+          options: { data: { display_name: displayName.trim() || 'Reporter' }, emailRedirectTo: `${window.location.origin}/app` },
         })
         return error ? error.message : null
       },
@@ -101,7 +101,7 @@ export function ReporterAuthProvider({ children }: { children: ReactNode }) {
         // Navigates away to Google and back, so this only ever resolves with an error — a request
         // that never even started (e.g. the Google provider is not switched on for this Supabase
         // project yet). There is nothing to await on success; the page leaves first.
-        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/account` } })
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/app` } })
         return error ? error.message : null
       },
       async resetPassword(email) {

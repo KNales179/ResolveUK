@@ -12,6 +12,7 @@ import { UpdateBanner } from './UpdateBanner'
 import { WhatsNewModal } from './WhatsNewModal'
 import { InstallDialog } from './InstallDialog'
 import { InstallNudge } from './InstallNudge'
+import { Backdrop, VeinsSync } from './Backdrop'
 import { APP_VERSION } from '../../lib/changelog'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
@@ -95,7 +96,7 @@ function Nav() {
             <AboutMenu />
           </div>
           <div className="flex items-center gap-2">
-            <Link className="icon-btn hidden sm:inline-flex" to="/account" aria-label="Your account">
+            <Link className="icon-btn hidden sm:inline-flex" to="/app" aria-label="Your account">
               <Icon name="user" />
             </Link>
             <button
@@ -143,7 +144,7 @@ function Nav() {
               <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/get-involved">
                 Get involved
               </Link>
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/account">
+              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/app">
                 Your account
               </Link>
               <Link className="btn btn-primary mt-1" to="/report">
@@ -159,7 +160,7 @@ function Nav() {
 
 function Footer() {
   return (
-    <footer className="grid-texture grid-shimmer border-t border-line bg-surface/60">
+    <footer className="site-footer border-t border-line bg-surface/60">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-12 sm:px-8 sm:grid-cols-2 lg:grid-cols-[1.1fr_1.6fr_1fr_1fr]">
         <div>
           <Link to="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
@@ -224,7 +225,7 @@ function Footer() {
               </Link>
             </CornerHover>
             <CornerHover as="li">
-              <Link className="block px-3 py-1.5 hover:text-ink" to="/account">
+              <Link className="block px-3 py-1.5 hover:text-ink" to="/app">
                 Your account
               </Link>
             </CornerHover>
@@ -234,7 +235,7 @@ function Footer() {
           <p className="font-semibold">For councils</p>
           <ul className="mt-3 -mx-3 space-y-1 text-soft">
             <CornerHover as="li">
-              <Link className="block px-3 py-1.5 hover:text-ink" to="/staff">
+              <Link className="block px-3 py-1.5 hover:text-ink" to="/app/sign-in">
                 Staff sign-in
               </Link>
             </CornerHover>
@@ -249,11 +250,6 @@ function Footer() {
   )
 }
 
-// Drives the grid shimmer: on every section carrying `.grid-shimmer`, sets --spot-x/--spot-y to
-// the cursor's position *local to that section* (not the viewport), so the small masked circle in
-// its ::after (see .grid-shimmer in index.css) lands exactly on that section's own grid lines
-// regardless of scroll position. Renders nothing itself — it only ever writes CSS custom
-// properties. Throttled to one update per animation frame; skipped for reduced motion.
 // Keeps the visitor's chosen background shade (BgSwatchPicker) in step with the theme: when they
 // switch light/dark, the shade they picked for that theme (or the default) is applied, on any page.
 function BgPreviewSync() {
@@ -262,35 +258,10 @@ function BgPreviewSync() {
   return null
 }
 
-function CursorGlow() {
-  useEffect(() => {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let raf = 0
-    const onMove = (e: MouseEvent) => {
-      if (raf) return
-      raf = requestAnimationFrame(() => {
-        raf = 0
-        document.querySelectorAll<HTMLElement>('.grid-shimmer').forEach((el) => {
-          const r = el.getBoundingClientRect()
-          el.style.setProperty('--spot-x', `${e.clientX - r.left}px`)
-          el.style.setProperty('--spot-y', `${e.clientY - r.top}px`)
-        })
-      })
-    }
-    window.addEventListener('mousemove', onMove)
-    return () => {
-      window.removeEventListener('mousemove', onMove)
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [])
-
-  return null
-}
-
 export function SiteShell() {
   return (
     <>
-      <CursorGlow />
+      <VeinsSync />
       <BgPreviewSync />
       <Nav />
       <PageTransition />
@@ -309,10 +280,5 @@ export function SiteShell() {
 // down the full length of the page. The page using this must wrap its own content in a
 // `relative` element for this to size against (see each page's outer <div>).
 export function PageBackdrop() {
-  return (
-    <>
-      <div className="page-bg absolute inset-0 -z-20" aria-hidden="true" />
-      <div className="absolute inset-0 -z-10" style={{ background: 'linear-gradient(0deg,var(--c-bg) 4%,color-mix(in oklab,var(--c-bg) 55%,transparent))' }} aria-hidden="true" />
-    </>
-  )
+  return <Backdrop kind="public" />
 }

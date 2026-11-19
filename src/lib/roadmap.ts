@@ -26,6 +26,6 @@ export const PLANNED = [
 // The three ways a problem gets resolved: shown on the Get involved page.
 export const ROUTES: Array<{ icon: IconName; title: string; text: string; href: string; cta: string; live: boolean }> = [
   { icon: 'map', title: 'Public', text: 'A report on public land goes to the council or contractor responsible for it. This is what already works today.', href: '/report', cta: 'Report a problem', live: true },
-  { icon: 'users', title: 'Community', text: 'A safe, non-hazardous problem, such as litter, can be claimed and cleared by a registered local group instead of waiting on a council.', href: '/community', cta: 'See how it would work', live: false },
-  { icon: 'building', title: 'Commercial', text: 'On private land, where a council has no duty to clear it, registered waste carriers can quote a price and the landowner picks one.', href: '/commercial', cta: 'See how it would work', live: false },
+  { icon: 'users', title: 'Community', text: 'A safe, non-hazardous problem, such as litter, can be offered by the council to a checked local group, which clears it and shows how with photos.', href: '/community', cta: 'How community groups work', live: true },
+  { icon: 'building', title: 'Commercial', text: 'On private land, where a council has no duty to clear it, licensed waste carriers covering the spot quote a price and the landowner picks one.', href: '/commercial', cta: 'How private land quotes work', live: true },
 ]

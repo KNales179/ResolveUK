@@ -7,12 +7,18 @@ export function PasswordField({
   autoComplete,
   value,
   onChange,
+  onBlur,
+  invalid,
+  describedBy,
 }: {
   id: string
   label: string
   autoComplete: string
   value: string
   onChange: (value: string) => void
+  onBlur?: () => void
+  invalid?: boolean
+  describedBy?: string
 }) {
   const [shown, setShown] = useState(false)
 
@@ -30,6 +36,9 @@ export function PasswordField({
           required
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onBlur={onBlur}
+          aria-invalid={invalid || undefined}
+          aria-describedby={describedBy}
         />
         <button
           type="button"
