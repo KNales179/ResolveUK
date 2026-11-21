@@ -7,7 +7,7 @@ import { centreOf, type Org, type Polygon } from '../../lib/orgs'
 
 const STYLES: Record<ThemeName, string> = {
   light: 'https://tiles.openfreemap.org/styles/liberty',
-  dark: 'https://tiles.openfreemap.org/styles/fiord',
+  dark: 'https://tiles.openfreemap.org/styles/liberty', // darkened by a CSS filter, see MapPicker
 }
 const COLOR = { community: '#2f9e44', commercial: '#1d4ed8' }
 
@@ -25,7 +25,16 @@ function centresGeoJSON(orgs: Org[]) {
   }
 }
 
-const kindColour = ['match', ['get', 'kind'], 'commercial', COLOR.commercial, COLOR.community] as unknown as string
+// The organisation (id) under a point on the map, if any. Asks only for layers that exist right
+// now: hovering before the map style has loaded (or while a theme change swaps it) used to ask for
+// layers that weren't there yet, which made the map throw an error on every mouse move.
+export function areaAt(m: MapLibreMap, point: { x: number; y: number }): string | undefined {
+  const layers = ['org-areas-fill', 'org-centres-dot'].filter((l) => m.getLayer(l))
+  if (!layers.length) return undefined
+  return m.queryRenderedFeatures([point.x, point.y], { layers })[0]?.properties?.id as string | undefined
+}
+
+const kindColour =['match', ['get', 'kind'], 'commercial', COLOR.commercial, COLOR.community] as unknown as string
 
 // Adds (or refreshes) the organisations' areas on a map: shaded green for community groups, blue
 // for clearance companies, each outlined. Zoomed out to the whole country an area is only a few
@@ -55,9 +64,9 @@ export function setAreas(m: MapLibreMap, orgs: Org[], visible = true) {
     type: 'symbol',
     source: 'org-centres',
     layout: { 'text-field': ['get', 'name'], 'text-size': 12, 'text-font': ['Noto Sans Bold'], 'text-variable-anchor': ['left', 'right', 'top', 'bottom'], 'text-radial-offset': 0.9, 'text-justify': 'auto' },
-    // Names read dark-on-light on the light map and light-on-dark on the dark one (a theme change
-    // swaps the map style, which re-adds these layers, so this is read fresh each time).
-    paint: document.documentElement.dataset.theme === 'dark' ? { 'text-color': '#e8f3ee', 'text-halo-color': '#1b2a3a', 'text-halo-width': 1.6 } : { 'text-color': '#0b3d36', 'text-halo-color': '#ffffff', 'text-halo-width': 1.6 },
+    // Always dark-on-light: in dark mode the whole map canvas is colour-inverted by CSS, which
+    // turns these into light names on a dark halo.
+    paint: { 'text-color': '#0b3d36', 'text-halo-color': '#ffffff', 'text-halo-width': 1.6 },
   })
 }
 
@@ -85,15 +94,12 @@ export function AreaMap({ orgs, focus, onPick, className = '' }: { orgs: Org[]; 
       }
     }
     m.on('style.load', draw)
-    m.on('click', ['org-areas-fill', 'org-centres-dot'], (e) => {
-      const id = e.features?.[0]?.properties?.id as string | undefined
+    m.on('click', (e) => {
+      const id = areaAt(m, e.point)
       if (id) latest.current.onPick?.(id)
     })
-    m.on('mouseenter', ['org-areas-fill', 'org-centres-dot'], () => {
-      if (latest.current.onPick) m.getCanvas().style.cursor = 'pointer'
-    })
-    m.on('mouseleave', ['org-areas-fill', 'org-centres-dot'], () => {
-      m.getCanvas().style.cursor = ''
+    m.on('mousemove', (e) => {
+      m.getCanvas().style.cursor = latest.current.onPick && areaAt(m, e.point) ? 'pointer' : ''
     })
     const ro = new ResizeObserver(() => m.resize())
     ro.observe(box.current)

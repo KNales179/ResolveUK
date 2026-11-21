@@ -7,6 +7,7 @@ import { KIND_LABEL } from '../../lib/orgs'
 import { StoryCard } from '../components/StoryCard'
 import { useOrgs } from '../orgsData'
 import { fetchMyThanks } from '../../lib/comments'
+import { SkeletonCard } from '../../components/ui/Skeleton'
 
 function greeting(): string {
   const h = new Date().getHours()
@@ -112,12 +113,12 @@ export function AppHome() {
 
         {/* The feed */}
         <section className="mx-auto w-full max-w-[640px] min-w-0" aria-labelledby="feed-title">
-          <p className="text-sm font-semibold text-soft">
+          <p className="text-sm font-semibold text-honey-text">
             {greeting()}
             {first ? `, ${first}` : ''}
           </p>
           <h1 id="feed-title" className="mt-0.5 font-serif text-3xl sm:text-4xl">
-            What's happening near you
+            What's happening <span className="hl">near you</span>
           </h1>
 
           {/* Shortcuts as a strip on phones and tablets */}
@@ -162,7 +163,7 @@ export function AppHome() {
           </div>
 
           <div className="mt-4 grid gap-4">
-            {stories === null && [0, 1].map((i) => <div key={i} className="card h-96 animate-pulse rounded-2xl" />)}
+            {stories === null && [0, 1].map((i) => <SkeletonCard key={i} media />)}
             {shown.map((st) => (
               <StoryCard key={st.id} story={st} variant="feed" thanked={thanked.has(st.id)} />
             ))}
@@ -198,7 +199,7 @@ export function AppHome() {
                 </li>
               ))}
             </ul>
-            <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-soft">Coming next</h3>
+            <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-honey-text">Coming next</h3>
             <ul className="mt-2 grid gap-2">
               {COMING[s.role].map((line) => (
                 <li key={line} className="flex gap-2.5 text-sm leading-snug">

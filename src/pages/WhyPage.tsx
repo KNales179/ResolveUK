@@ -26,7 +26,7 @@ export function WhyPage() {
       <main className="cv grid-texture grid-shimmer mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
         <Reveal className="accent-panel rounded-3xl p-8 sm:p-12">
           <p className="eyebrow">Why Resolve UK exists</p>
-          <h1 className="mt-4 max-w-2xl text-4xl sm:text-5xl">Reported isn't the same as fixed.</h1>
+          <h1 className="mt-4 max-w-2xl text-4xl sm:text-5xl">Reported isn't the same as <span className="hl">fixed.</span></h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed opacity-90">
             Fly-tipping, potholes, litter and abandoned vehicles aren't rare. They're some of the most reported problems in the country, and some of the hardest to see through to the end. Resolve UK exists to close that gap: not just to collect a report, but to show what happened to it.
           </p>
@@ -64,7 +64,7 @@ export function WhyPage() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold uppercase tracking-widest text-soft">{title}</p>
-                    <p className="font-serif text-2xl">{stat}</p>
+                    <p className="font-serif text-2xl text-honey-display">{stat}</p>
                     <p className="mt-1 text-sm leading-relaxed text-soft">{detail}</p>
                     <a href={url} target="_blank" rel="noreferrer" className="mt-1.5 inline-block text-xs font-semibold text-accent hover:underline">
                       {source} ↗
@@ -81,7 +81,7 @@ export function WhyPage() {
                       <Icon name={icon} className="size-5" />
                     </span>
                     <p className="mt-4 text-xs font-bold uppercase tracking-widest text-soft">{title}</p>
-                    <p className="mt-1 font-serif text-3xl">{stat}</p>
+                    <p className="mt-1 font-serif text-3xl text-honey-display">{stat}</p>
                     <p className="mt-2 leading-relaxed text-soft">{detail}</p>
                     <a href={url} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs font-semibold text-accent hover:underline">
                       {source} ↗
@@ -96,7 +96,7 @@ export function WhyPage() {
         {/* ---- Fly-tipping in numbers: four kinds of chart, one official source ---- */}
         <section className="mt-16">
           <Reveal className="panel-tint max-w-3xl rounded-3xl p-6 sm:p-8">
-            <h2 className="text-3xl sm:text-4xl">Fly-tipping, in numbers</h2>
+            <h2 className="text-3xl sm:text-4xl">Fly-tipping, <span className="hl">in numbers</span></h2>
             <p className="mt-3 leading-relaxed text-soft">
               All four charts use the government's own figures for England. Point at any part of a chart for the exact number, or open it as a table.
             </p>

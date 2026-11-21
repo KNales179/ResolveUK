@@ -100,8 +100,9 @@ function ThemeIcon() {
 function Showcase() {
   const host = useRef<HTMLDivElement>(null)
   const [line, setLine] = useState(0)
+  const theme = useThemeName()
 
-  // Contour lines across the panel, drawn once per size.
+  // Contour lines across the panel, drawn once per size and theme.
   useEffect(() => {
     const el = host.current
     if (!el) return
@@ -114,7 +115,7 @@ function Showcase() {
       c.className = 'auth-contours'
       const ctx = c.getContext('2d')!
       ctx.scale(dpr, dpr)
-      drawContours(ctx, r.width, r.height, '#94c690', 0.12)
+      drawContours(ctx, r.width, r.height, theme === 'dark' ? '#94c690' : '#1f6b4f', theme === 'dark' ? 0.12 : 0.14)
       el.querySelector('canvas')?.remove()
       el.prepend(c)
     }
@@ -122,7 +123,7 @@ function Showcase() {
     const ro = new ResizeObserver(() => draw())
     ro.observe(el)
     return () => ro.disconnect()
-  }, [])
+  }, [theme])
 
   useEffect(() => {
     if (reducedMotion()) return
@@ -133,7 +134,7 @@ function Showcase() {
   return (
     <div ref={host} className="auth-showcase relative flex h-full flex-col items-center justify-center overflow-hidden rounded-[2rem] p-10 text-center">
       <ShowcaseMark>
-        <p key={line} className="auth-tagline relative mt-10 font-serif text-3xl leading-snug text-[#f0f5ec]">
+        <p key={line} className="auth-tagline relative mt-10 font-serif text-3xl leading-snug text-[var(--sc-ink)]">
           {TAGLINES[line]}
         </p>
       </ShowcaseMark>

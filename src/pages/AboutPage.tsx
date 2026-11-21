@@ -38,7 +38,7 @@ export function AboutPage() {
         <Reveal className="accent-panel grid gap-8 rounded-3xl p-8 sm:p-12 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
           <div>
             <p className="eyebrow">About</p>
-            <h1 className="mt-4 text-4xl sm:text-5xl">A plain record of local problems, from reported to fixed.</h1>
+            <h1 className="mt-4 text-4xl sm:text-5xl">A plain record of local problems, from reported to <span className="hl">fixed.</span></h1>
           </div>
           <div>
             <p className="leading-relaxed opacity-90">
@@ -54,7 +54,7 @@ export function AboutPage() {
 
         {/* ---- Purpose, mission, vision ---- */}
         <div className="mt-6">
-          <StorySection id="purpose" label="Our purpose" title="Reporting shouldn't be the end of the story" art={<PurposeArt />}>
+          <StorySection id="purpose" label="Our purpose" title={<>Reporting shouldn't be <span className="hl">the end of the story</span></>} art={<PurposeArt />}>
             <p>
               Everyone has walked past the same mattress in the same lay-by for weeks. Someone probably reported it. Did they? Did anything happen? Was it actually cleared, or just marked as done? Once a report is sent, the answers usually disappear into an inbox.
             </p>
@@ -78,7 +78,7 @@ export function AboutPage() {
           <section id="resolution" className="panel-tint scroll-mt-28 grid gap-10 rounded-3xl p-8 sm:p-12 lg:grid-cols-[.9fr_1.1fr]">
             <div>
               <p className="eyebrow">Our focus</p>
-              <h2 className="mt-3 text-3xl sm:text-4xl">Getting it resolved, and quickly</h2>
+              <h2 className="mt-3 text-3xl sm:text-4xl">Getting it resolved, <span className="hl">and quickly</span></h2>
               <p className="mt-5 leading-relaxed text-soft">
                 Plenty of ways already exist to report a problem. What's missing is knowing it actually gets fixed, and how long it takes. That is the part Resolve UK is built around: not collecting reports, but making sure each one reaches the right people and ends in a real fix, as quickly as possible.
               </p>
@@ -137,7 +137,7 @@ export function AboutPage() {
         {/* ---- The meaning behind the logo ---- */}
         <Reveal className="story-glass mt-16">
           <p className="eyebrow">The mark</p>
-          <h2 className="mt-3 text-3xl sm:text-4xl">What the logo stands for</h2>
+          <h2 className="mt-3 text-3xl sm:text-4xl">What the logo <span className="hl">stands for</span></h2>
           <p className="mt-3 max-w-2xl leading-relaxed text-soft">Four shapes, one idea. Point at each one to see where it sits in the mark.</p>
           <div className="mt-8">
             <LogoMeaning />
@@ -148,7 +148,7 @@ export function AboutPage() {
         <section id="app" className="mt-20 scroll-mt-28">
           <Reveal className="mx-auto max-w-2xl text-center">
             <p className="eyebrow justify-center">Any device</p>
-            <h2 className="mt-3 text-3xl sm:text-4xl">Resolve UK on every screen</h2>
+            <h2 className="mt-3 text-3xl sm:text-4xl">Resolve UK on <span className="hl">every screen</span></h2>
             <p className="mt-3 leading-relaxed text-soft">A laptop at home, a tablet on the sofa, your phone in the lay-by: the same reports and the same record everywhere. Install it and it works like an app.</p>
           </Reveal>
           <div className="mt-12">
@@ -166,11 +166,11 @@ export function AboutPage() {
         <section className="mx-auto mt-20 max-w-3xl">
           <Reveal className="text-center">
             <p className="eyebrow justify-center">Questions</p>
-            <h2 className="mt-3 text-3xl sm:text-4xl">Questions, answered</h2>
+            <h2 className="mt-3 text-3xl sm:text-4xl">Questions, <span className="hl">answered</span></h2>
           </Reveal>
           <div className="mt-8 space-y-3">
             {FAQS.map(([q, a]) => (
-              <details key={q} className="faq card rounded-2xl">
+              <details key={q} className="faq acc card rounded-2xl">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 font-semibold">
                   {q}
                   <Icon name="chevron" className="dd-chevron size-5 shrink-0 text-soft transition-transform" />
@@ -184,7 +184,7 @@ export function AboutPage() {
         {/* ---- Where it stands ---- */}
         <Reveal className="stand-panel mt-20 rounded-3xl px-6 py-12 text-center sm:px-12">
           <Logo className="mx-auto !h-14" />
-          <h2 className="mt-4 font-serif text-3xl">Where it stands</h2>
+          <h2 className="mt-4 font-serif text-3xl">Where it <span className="hl">stands</span></h2>
           <p className="mx-auto mt-3 max-w-xl leading-relaxed text-soft">
             Resolve UK is an early prototype, built in stages and tested with sample data. Report data is hosted in the UK. It is not yet connected to real councils, and nothing on it should be treated as a finished product.
           </p>

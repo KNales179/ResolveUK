@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { gsap, reducedMotion } from '../lib/gsap'
 import { Link } from 'react-router-dom'
 import { PageBackdrop } from '../components/site/SiteShell'
 import { Icon } from '../components/ui/Icon'
@@ -18,6 +19,54 @@ const STEPS: Array<[string, string]> = [
 // "duty of care" panel, and a plain band about paying. Quoting happens in the app.
 export function CommercialPage() {
   const [companies, setCompanies] = useState<Org[] | null>(null)
+  const wtnRef = useRef<HTMLDivElement>(null)
+
+  // The example waste transfer note: when it first comes into view the sheet slides onto the
+  // table, then the EXAMPLE stamp comes down hard, the paper jolts, and a ring of ink spreads.
+  useEffect(() => {
+    const el = wtnRef.current
+    const stamp = el?.querySelector<HTMLElement>('.wtn-stamp')
+    if (!el || !stamp || reducedMotion()) return
+    // Started by an IntersectionObserver when the sheet is really on screen: a scroll position
+    // measured on load went stale as photos above it loaded, so it used to play out of sight.
+    const press = (tl: gsap.core.Timeline) =>
+      tl
+        .fromTo(stamp, { scale: 3.2, rotation: -26, opacity: 0 }, { scale: 1, rotation: -8, opacity: 1, duration: 0.3, ease: 'power4.in', immediateRender: false })
+        .to(el, { y: 3, duration: 0.05, yoyo: true, repeat: 1, ease: 'power1.out' })
+        .fromTo(stamp, { boxShadow: '0 0 0 0 rgb(180 83 9 / 0.55)' }, { boxShadow: '0 0 0 18px rgb(180 83 9 / 0)', duration: 0.6, ease: 'power2.out', clearProps: 'boxShadow' }, '<')
+    let played = false
+    let busy: gsap.core.Timeline | null = null
+    const ctx = gsap.context(() => {
+      gsap.set(el, { y: 60, rotation: -5, opacity: 0 })
+      gsap.set(stamp, { opacity: 0 })
+    }, el)
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting || played) return
+        played = true
+        io.disconnect()
+        ctx.add(() => {
+          busy = press(gsap.timeline().to(el, { y: 0, rotation: 1.2, opacity: 1, duration: 0.85, ease: 'power3.out' }).addLabel('stamp', '+=0.15'))
+        })
+      },
+      { threshold: 0.45 },
+    )
+    io.observe(el)
+    // Hovering the note presses the stamp again.
+    const again = () => {
+      if (!played || busy?.isActive()) return
+      ctx.add(() => {
+        busy = press(gsap.timeline())
+      })
+    }
+    el.addEventListener('mouseenter', again)
+    return () => {
+      io.disconnect()
+      el.removeEventListener('mouseenter', again)
+      ctx.revert()
+    }
+  }, [])
+
   useEffect(() => {
     let alive = true
     void fetchOrgs().then((list) => {
@@ -36,7 +85,7 @@ export function CommercialPage() {
         <Reveal className="photo-hero rounded-3xl p-8 sm:p-12 lg:min-h-[460px]">
           <Pic name="somerset-levels" widths={[400, 1093]} width={1093} height={729} alt="" className="photo-hero-img size-full object-cover" sizes="100vw" eager />
           <p className="eyebrow">Private land</p>
-          <h1 className="mt-4 max-w-2xl text-4xl sm:text-6xl">On private land, the landowner picks who clears it.</h1>
+          <h1 className="mt-4 max-w-2xl text-4xl sm:text-6xl">On private land, the landowner <span className="hl">picks who clears it.</span></h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/85">
             Councils clear fly-tipping from roads and public land. Rubbish dumped on a farm, a car park or a business's yard is the landowner's to clear, which is why so much of it stays. Resolve puts landowners in touch with licensed clearance companies nearby, who quote for the job.
           </p>
@@ -53,7 +102,7 @@ export function CommercialPage() {
         {/* How it works, beside the one document worth asking for */}
         <Reveal className="mt-14 grid items-center gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-12">
           <div className="panel-neutral rounded-3xl p-7 sm:p-9">
-            <h2 className="text-3xl">How it works</h2>
+            <h2 className="text-3xl">How it <span className="hl">works</span></h2>
             <ol className="mt-6 grid gap-6">
               {STEPS.map(([title, text], i) => (
                 <li key={title} className="grid grid-cols-[3.25rem_1fr] gap-4">
@@ -67,7 +116,7 @@ export function CommercialPage() {
             </ol>
           </div>
           <figure className="mx-auto w-full max-w-md">
-            <div className="wtn relative p-6 sm:p-7" aria-label="An example waste transfer note">
+            <div ref={wtnRef} className="wtn relative p-6 sm:p-7" aria-label="An example waste transfer note">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-serif text-2xl leading-tight">Waste transfer note</p>
@@ -90,7 +139,7 @@ export function CommercialPage() {
         {/* Who quotes, beside what you need to know */}
         <Reveal className="mt-14 grid items-start gap-5 lg:grid-cols-[1.4fr_1fr]">
           <section>
-            <h2 className="text-3xl">Clearance companies on Resolve</h2>
+            <h2 className="text-3xl">Clearance companies <span className="hl">on Resolve</span></h2>
             {companies === null ? (
               <div className="mt-5 h-32 animate-pulse rounded-3xl bg-[var(--c-field)]" />
             ) : companies.length === 0 ? (
@@ -119,7 +168,7 @@ export function CommercialPage() {
             <span className="caution-icon inline-grid size-11 place-items-center rounded-xl">
               <Icon name="shield" className="size-5" />
             </span>
-            <h2 className="mt-4 text-2xl">Your duty of care</h2>
+            <h2 className="mt-4 text-2xl">Your <span className="hl">duty of care</span></h2>
             <p className="mt-3 leading-relaxed">
               If you hand waste to someone who dumps it, you can be fined as well. Only use a registered waste carrier, and ask for a waste transfer note when it's collected. Every company on Resolve gives its registration number, and you can check it yourself on the Environment Agency's public register.
             </p>

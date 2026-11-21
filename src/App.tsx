@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import { PageSkeleton } from './components/ui/Skeleton'
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import Home from './Home'
 import { SiteShell } from './components/site/SiteShell'
@@ -41,7 +42,12 @@ const AppCommunity = lazy(() => import('./app/pages/AppCommunity').then((m) => (
 const AppOrg = lazy(() => import('./app/pages/AppOrg').then((m) => ({ default: m.AppOrg })))
 const AppRegisterOrg = lazy(() => import('./app/pages/AppRegisterOrg').then((m) => ({ default: m.AppRegisterOrg })))
 
-const Blank = <div className="min-h-svh" aria-busy="true" />
+// While a page's code downloads: a skeleton of a page, never a blank screen or a spinner.
+const Blank = (
+  <div className="min-h-svh pt-24">
+    <PageSkeleton />
+  </div>
+)
 
 export default function App() {
   return (

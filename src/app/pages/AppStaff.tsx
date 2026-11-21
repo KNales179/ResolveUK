@@ -72,6 +72,7 @@ export function AppStaff() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
+          <p className="eyebrow mb-2">Your queue</p>
           <h1 className="font-serif text-4xl sm:text-5xl">Staff</h1>
           <p className="mt-2 text-soft">
             {me ? (
@@ -109,7 +110,7 @@ export function AppStaff() {
                 {t.label}
                 <Icon name={t.icon} className="size-4" />
               </span>
-              <span className={`num mt-1 block font-serif text-4xl leading-none ${t.warn ? 'stat-warn' : ''}`}>{reports ? t.value : '·'}</span>
+              <span className={`num mt-1 block font-serif text-4xl leading-none ${t.warn ? 'stat-warn' : 'text-honey-display'}`}>{reports ? t.value : '·'}</span>
               <span className="mt-2 block text-xs text-soft">{t.hint}</span>
             </>
           )
@@ -179,7 +180,7 @@ export function AppStaff() {
           <h2 className="font-serif text-2xl">Jobs with groups</h2>
           <p className="mt-1 text-sm text-soft">Reports offered to community groups and clearance companies. Open a report to offer one.</p>
           <ul className="mt-4 grid gap-3">
-            {jobs === null && <li className="h-16 animate-pulse rounded-xl bg-[var(--c-field)]" />}
+            {jobs === null && <li className="skeleton h-16 rounded-xl" aria-hidden="true" />}
             {jobs && (jobs.filter((j) => !isStaff || scope.some((r) => r.id === j.report_id)).length === 0) && <li className="text-sm text-soft">No jobs offered yet.</li>}
             {(jobs ?? [])
               .filter((j) => !isStaff || scope.some((r) => r.id === j.report_id))

@@ -10,12 +10,12 @@ import { STATUS_LABELS, statusGroup, type StatusGroup } from '../../lib/status'
 import { timeAgo } from '../../lib/format'
 import { Icon } from '../../components/ui/Icon'
 import { useAppSession } from '../session'
-import { setAreas } from '../components/AreaMap'
+import { areaAt, setAreas } from '../components/AreaMap'
 import { useOrgs } from '../orgsData'
 
 const STYLES: Record<ThemeName, string> = {
   light: 'https://tiles.openfreemap.org/styles/liberty',
-  dark: 'https://tiles.openfreemap.org/styles/fiord',
+  dark: 'https://tiles.openfreemap.org/styles/liberty', // darkened by a CSS filter, see MapPicker
 }
 
 const GROUPS: Array<{ id: StatusGroup; label: string }> = [
@@ -66,12 +66,13 @@ export function AppMap() {
     m.on('load', () => m.resize())
     // Areas are a map layer, which a theme change (a new map style) wipes; redraw them each time.
     m.on('style.load', () => setAreas(m, areaState.current.orgs, areaState.current.on))
-    m.on('click', ['org-areas-fill', 'org-centres-dot'], (e) => {
-      const id = e.features?.[0]?.properties?.id as string | undefined
+    m.on('click', (e) => {
+      const id = areaAt(m, e.point)
       if (id) navigate(`/app/community/${id}`)
     })
-    m.on('mouseenter', ['org-areas-fill', 'org-centres-dot'], () => (m.getCanvas().style.cursor = 'pointer'))
-    m.on('mouseleave', ['org-areas-fill', 'org-centres-dot'], () => (m.getCanvas().style.cursor = ''))
+    m.on('mousemove', (e) => {
+      m.getCanvas().style.cursor = areaAt(m, e.point) ? 'pointer' : ''
+    })
     const ro = new ResizeObserver(() => m.resize())
     ro.observe(box.current)
     return () => {
@@ -114,6 +115,7 @@ export function AppMap() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
+          <p className="eyebrow mb-2">Every report</p>
           <h1 className="font-serif text-4xl sm:text-5xl">Map</h1>
           <p className="mt-2 text-soft">Every report, where it is and where it stands.</p>
         </div>

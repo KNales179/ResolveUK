@@ -20,6 +20,60 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '3.13.6',
+    date: '2026-11-21',
+    title: 'Smoother pages, clearer maps and the right logo colours',
+    highlights: [
+      {
+        icon: 'sparkles',
+        title: 'Every page moves like the homepage',
+        body: 'Opening any page, on the website or in the app, now brings the heading, text and buttons in with a quick rise, and cards fade up as you scroll to them.',
+      },
+      {
+        icon: 'map',
+        title: 'Easier dark mode maps',
+        body: 'Maps in dark mode now use the same clear map as light mode, darkened, instead of the navy style that was hard to look at. Pins grow on hover without moving off their spot, and hovering the map no longer causes errors.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'Logo and sign-in panel',
+        body: 'In light mode the logo is deep green with green leaves everywhere, not pale sage. The app icon no longer has white corners, and the sign-in screen panel now has a light version too.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'More life on every page',
+        body: 'Sections and cards ease in the first time you reach them, and cards lift under the mouse. On Reported problems the report you point at comes forward while the rest dim. The Community photos straighten and lift like the homepage prints and drop in one at a time, the example waste transfer note on Commercial slides in and gets its EXAMPLE stamp pressed on, and the FAQ and Updates lists open and close smoothly.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'Devices that scroll, and no more blank loading',
+        body: 'On the About page, the laptop, tablet and phone each act out a short visit on a loop: scrolling the way a person does, tapping a real button, and opening the next page (Reported problems, a report, the map). While anything loads, the site now shows grey placeholder shapes in the layout of what is coming, never a blank screen or a "Loading…" line.',
+      },
+      {
+        icon: 'chat',
+        title: 'Shorter hover tags',
+        body: 'The little tag that follows the mouse no longer spells out a whole card. Long ones say "Open" instead.',
+      },
+    ],
+  },
+  {
+    version: '3.12.6',
+    date: '2026-11-20',
+    title: 'A warm honey highlight',
+    highlights: [
+      {
+        icon: 'sparkles',
+        title: 'Honey beside the green',
+        body: 'A warm honey colour now picks out one phrase in the main heading of every page and every big section, the small section labels, the key word in the homepage headline, the step numbers, the big figures on the Why page, the Sample tag, staff counts and clearance prices. Green stays for buttons and links. "Reported" is now red-orange so it never looks like the highlight.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'Calmer green panels in dark mode',
+        body: 'In dark mode the big green panels at the top of each page are a deeper brand green with light text instead of bright mint, so the honey highlight is easy to read. The app pages now carry honey too, and the device pictures on the About page show the latest look, with the signed-in home on the phone.',
+      },
+    ],
+  },
+  {
     version: '3.11.0',
     date: '2026-11-19',
     title: 'Community and Commercial, each with their own look',

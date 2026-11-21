@@ -1,10 +1,11 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAppSession } from './session'
+import { PageSkeleton } from '../components/ui/Skeleton'
 
 function Loading() {
   return (
-    <div className="grid min-h-svh place-items-center" aria-busy="true">
-      <span className="text-sm text-soft">Loading…</span>
+    <div className="min-h-svh pt-16">
+      <PageSkeleton />
     </div>
   )
 }

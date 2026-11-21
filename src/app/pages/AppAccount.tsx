@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Icon } from '../../components/ui/Icon'
 import { ROLES, useAppSession } from '../session'
+import { SkeletonLines } from '../../components/ui/Skeleton'
 
 const AccountPage = lazy(() => import('../../pages/AccountPage').then((m) => ({ default: m.AccountPage })))
 
@@ -13,7 +14,7 @@ export function AppAccount() {
   const navigate = useNavigate()
   if (!s.demo)
     return (
-      <Suspense fallback={<div className="min-h-[60svh]" aria-busy="true" />}>
+      <Suspense fallback={<div className="min-h-[60svh]" aria-busy="true"><SkeletonLines lines={4} className="max-w-lg" /></div>}>
         <div className="app-embedded-account">
           <AccountPage />
         </div>
@@ -26,7 +27,7 @@ export function AppAccount() {
           <span className="app-avatar size-16 text-2xl">S</span>
           <div>
             <h1 className="font-serif text-3xl">{s.name}</h1>
-            <p className="text-soft">{s.email}</p>
+            <p className="text-honey-text">{s.email}</p>
           </div>
         </div>
         <p className="mt-6 leading-relaxed text-soft">

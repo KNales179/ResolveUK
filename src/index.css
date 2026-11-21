@@ -21,7 +21,12 @@
   /* The logo's own R colour, kept separate from --c-ink: the brand kit's own Sage Green artwork
      shows the R in Sage Green itself, not the darker ink/text colour, so the mark gets its own
      token instead of borrowing the text colour's role. */
-  --c-logo-mark: var(--c-sage-green);
+  /* Light mode logo everywhere: the R in the brand's deep green, the leaves in deeper shades of
+     their own greens (the version that sat only in the header before). Plain Sage Green on the
+     light page was too pale and read as washed out. */
+  --c-logo-mark: var(--c-ink);
+  --c-logo-leaf-r: color-mix(in oklab, var(--c-sage-green) 55%, var(--c-ink));
+  --c-logo-leaf-l: color-mix(in oklab, var(--c-soft-olive) 75%, var(--c-ink));
   /* The second accent, for whatever sits beside the primary one (the logo's second leaf, a
      secondary tile tint) — now literally Soft Olive, the fourth brand colour, instead of a
      hand-picked green that wasn't actually in the decided set. */
@@ -48,6 +53,16 @@
   --c-field: #ffffff;
   --c-icon-tile: color-mix(in oklab, var(--c-accent) 28%, #ffffff);
   --c-icon-fg: var(--c-ink);
+  /* Honey: the warm highlight beside the greens, used sparingly (about 10% of a page): one word
+     per big heading, big numbers, dates and group badges. Never on buttons, so green keeps
+     meaning "action". --c-honey is for fills, --c-honey-text is the darker shade safe for text. */
+  --c-honey: #c08a2e;
+  /* Two text shades so light mode never looks brown: a bright golden for big text (headings,
+     big numbers; 3.4:1 on the page, fine for large type) and a warm gold for small text (4.5:1). */
+  --c-honey-text: #96660a;
+  --c-honey-display: #b07a12;
+  --c-honey-soft: #f5e9d2;
+  --c-honey-ink: #2b1d05;
   color-scheme: light;
 }
 
@@ -75,6 +90,8 @@
      Deep Green scheme's own lightest colour, to stay the same kind of "bright, legible mark on a
      dark backing" rather than reproducing a hex that would vanish here. */
   --c-logo-mark: var(--c-clean-white);
+  --c-logo-leaf-r: var(--c-mint-green);
+  --c-logo-leaf-l: color-mix(in oklab, var(--c-deep-green) 40%, var(--c-mint-green));
   --c-accent-display: color-mix(in oklab, var(--c-deep-green) 40%, var(--c-mint-green));
   --c-accent-ink: var(--c-deep-green);
   --c-accent-vivid: var(--c-accent);
@@ -85,6 +102,11 @@
   --c-field: color-mix(in oklab, var(--c-near-black-green) 75%, var(--c-deep-green));
   --c-icon-tile: color-mix(in oklab, var(--c-mint-green) 20%, var(--c-near-black-green));
   --c-icon-fg: var(--c-mint-green);
+  --c-honey: #e3b25c;
+  --c-honey-text: #e8bd6e;
+  --c-honey-display: #e8bd6e;
+  --c-honey-soft: #2e2618;
+  --c-honey-ink: #2b1d05;
   color-scheme: dark;
 }
 
@@ -108,6 +130,11 @@
   --color-accent-display: var(--c-accent-display);
   --color-accent-ink: var(--c-accent-ink);
   --color-accent-vivid: var(--c-accent-vivid);
+  --color-honey: var(--c-honey);
+  --color-honey-text: var(--c-honey-text);
+  --color-honey-display: var(--c-honey-display);
+  --color-honey-soft: var(--c-honey-soft);
+  --color-honey-ink: var(--c-honey-ink);
 }
 
 /* ---- Base ---- */
@@ -158,8 +185,8 @@
     box-shadow: 0 1px 2px rgb(var(--c-shadow) / 0.05);
   }
 
-  .eyebrow { display: flex; align-items: center; gap: 0.75rem; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--c-soft); }
-  .eyebrow::before { content: ""; width: 1.75rem; height: 1px; background: var(--c-accent); }
+  .eyebrow { display: flex; align-items: center; gap: 0.75rem; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--c-honey-text); }
+  .eyebrow::before { content: ""; width: 1.75rem; height: 2px; border-radius: 1px; background: var(--c-honey); }
 
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
@@ -230,17 +257,19 @@
 
   .pill { display: inline-flex; align-items: center; gap: 0.4rem; border-radius: 999px; padding: 0.25rem 0.7rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.01em; background-color: var(--c-surface); background-image: linear-gradient(var(--pill-bg), var(--pill-bg)); color: var(--pill-fg); }
   .pill::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
-  .pill-reported { --pill-bg: #fef3c7; --pill-fg: #92400e; }
+  /* Red-orange, not amber, so "Reported" never looks like the honey highlight. */
+  .pill-reported { --pill-bg: #ffedd5; --pill-fg: #9a3412; }
   .pill-progress { --pill-bg: #dbeafe; --pill-fg: #1d4ed8; }
   .pill-cleared { --pill-bg: #d1fae5; --pill-fg: #047857; }
   .pill-verified { --pill-bg: #a7f3d0; --pill-fg: #065f46; }
   .pill-closed { --pill-bg: var(--c-surface2); --pill-fg: var(--c-soft); }
-  [data-theme="dark"] .pill-reported { --pill-bg: rgb(251 191 36 / 0.14); --pill-fg: #fcd34d; }
+  [data-theme="dark"] .pill-reported { --pill-bg: rgb(251 127 79 / 0.16); --pill-fg: #fdba74; }
   [data-theme="dark"] .pill-progress { --pill-bg: rgb(96 165 250 / 0.16); --pill-fg: #93c5fd; }
   [data-theme="dark"] .pill-cleared { --pill-bg: rgb(52 211 153 / 0.15); --pill-fg: #6ee7b7; }
   [data-theme="dark"] .pill-verified { --pill-bg: rgb(52 211 153 / 0.24); --pill-fg: #a7f3d0; }
 
   .skeleton { border-radius: 0.5rem; background: linear-gradient(90deg, var(--c-surface2) 25%, color-mix(in oklab, var(--c-surface2) 60%, var(--c-line)) 50%, var(--c-surface2) 75%); background-size: 200% 100%; animation: shimmer 1.8s linear infinite; }
+  @media (prefers-reduced-motion: reduce) { .skeleton { animation: none; } }
   .placeholder-box { border-radius: 0.8rem; border: 1.5px dashed var(--c-line); background: color-mix(in oklab, var(--c-surface2) 60%, transparent); }
   .map-grid { background-image: linear-gradient(var(--c-line) 1px, transparent 1px), linear-gradient(90deg, var(--c-line) 1px, transparent 1px); background-size: 34px 34px; }
 }
@@ -335,10 +364,10 @@
 .stack-tint-2 { background: color-mix(in oklab, var(--c-soft) 45%, var(--c-surface)); }
 .stack-tint-3 { background: color-mix(in oklab, var(--c-accent-display) 55%, var(--c-surface)); }
 
-.accent-panel .eyebrow { color: var(--c-accent-ink); opacity: 0.75; }
+.accent-panel .eyebrow { color: #f0c674; }
 /* An icon tile on a green panel: the default accent-coloured icon would vanish into the panel. */
 .accent-panel .tile-icon { color: var(--c-accent-ink); background: color-mix(in oklab, var(--c-accent-ink) 12%, transparent); }
-.accent-panel .eyebrow::before { background: var(--c-accent-ink); opacity: 0.55; }
+.accent-panel .eyebrow::before { background: #e3b25c; }
 
 /* ---- One consistent treatment for every section below the hero: the plain grid
    (.grid-texture), the cursor shimmer on top of that (.grid-shimmer), and one continuous hill
@@ -508,7 +537,9 @@
   --ch-color: var(--c-accent); --ch-tint: color-mix(in oklab, var(--c-accent) 14%, transparent);
 }
 .accent-panel .corner-hover { --ch-color: var(--c-accent-ink); --ch-tint: color-mix(in oklab, var(--c-accent-ink) 16%, transparent); }
-.corner-hover:hover, .corner-hover:focus-within { background: var(--ch-tint); }
+/* The tint is laid over the element's own background (background-image), never in place of it:
+   replacing it made solid cards turn see-through on hover. */
+.corner-hover:hover, .corner-hover:focus-within { background-image: linear-gradient(var(--ch-tint), var(--ch-tint)); }
 .ch-corner { position: absolute; width: 18px; height: 18px; border-color: var(--ch-color); border-style: solid; border-width: 0; opacity: 0; transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none; }
 /* The brackets sit just outside the row's edge (never inside it, where they read as a square
    drawn over the content), sliding outward into place. */
@@ -568,6 +599,16 @@ label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::a
   --c-logo-leaf-r: color-mix(in oklab, var(--c-accent-ink) 72%, var(--c-accent));
   --c-logo-leaf-l: color-mix(in oklab, var(--c-accent-ink) 50%, var(--c-accent));
 }
+/* Dark mode: the panel was bright mint with dark text, which washed out the honey highlight.
+   It is now the brand's mid green with light text: still clearly a green panel, not as loud,
+   and honey reads on it. Everything inside follows through the two tokens redefined here. */
+/* Light mode now matches: the light sage panel could not carry honey text at all (no gold is
+   readable on it), so both themes use the brand's mid green with light text, and honey is plain
+   golden text on it, the same as dark mode. */
+.accent-panel { --c-accent: #1f6b4f; --c-accent-ink: #eef4f0; }
+.accent-panel .btn-ink,
+.accent-panel .btn-primary { background: #4fd1a0; color: #06231c; }
+.accent-panel .hl { color: #f0c674; }
 /* Homepage fly-tipping chart. Bar greens checked with the dataviz palette validator: in the
    lightness band, not greyish, and at least 3:1 against the panel in each theme. */
 :root { --c-chart-bar: #24804f; --c-chart-grid: color-mix(in oklab, var(--c-ink) 12%, transparent); }
@@ -722,13 +763,26 @@ label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::a
 .app-embedded-account .site-backdrop, .app-embedded-account .site-grain { display: none; }
 
 /* Account screens: the deep green showcase panel on the right. */
-.auth-showcase { background: radial-gradient(120% 90% at 20% 10%, #12554a 0%, #0b3d36 55%, #072a25 100%); box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.5); }
+/* The sign-in showcase panel: its own light and dark palettes (it used to be dark green in both). */
+:root {
+  --sc-bg: radial-gradient(120% 90% at 20% 10%, #f8fbf5 0%, #e7efe1 55%, #d5e3cb 100%);
+  --sc-ink: #0b3d36; --sc-mint: #1f8a55; --sc-sage: #7fa86c; --sc-soft: #4d5c52;
+  --sc-card: rgb(255 255 255 / 0.72); --sc-card-line: rgb(11 61 54 / 0.12); --sc-bar-off: rgb(11 61 54 / 0.14);
+  --sc-rep: #c2410c; --sc-prog: #1d4ed8; --sc-clear: #1f8a55; --sc-ver: #0b3d36; --sc-shadow: rgb(11 61 54 / 0.22);
+}
+[data-theme="dark"] {
+  --sc-bg: radial-gradient(120% 90% at 20% 10%, #12554a 0%, #0b3d36 55%, #072a25 100%);
+  --sc-ink: #f0f5ec; --sc-mint: #4fd1a0; --sc-sage: #94c690; --sc-soft: #b9d1c6;
+  --sc-card: rgb(255 255 255 / 0.08); --sc-card-line: rgb(255 255 255 / 0.14); --sc-bar-off: rgb(255 255 255 / 0.2);
+  --sc-rep: #fb7f4f; --sc-prog: #8ec5ff; --sc-clear: #4fd1a0; --sc-ver: #a5e3c8; --sc-shadow: rgb(0 0 0 / 0.5);
+}
+.auth-showcase { background: var(--sc-bg); box-shadow: 0 30px 60px -30px var(--sc-shadow); }
 .auth-showcase .auth-contours { position: absolute; inset: 0; width: 100%; height: 100%; }
 .auth-mark { animation: auth-float 7s ease-in-out infinite alternate; filter: drop-shadow(0 18px 30px rgb(0 0 0 / 0.35)); }
 @keyframes auth-float { from { transform: translateY(-6px); } to { transform: translateY(6px); } }
 .auth-tagline { animation: auth-in 0.6s ease-out both; text-wrap: balance; }
 @keyframes auth-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.auth-sample { background: rgb(255 255 255 / 0.08); border: 1px solid rgb(255 255 255 / 0.14); backdrop-filter: blur(6px); }
+.auth-sample { background: var(--sc-card); border: 1px solid var(--sc-card-line); backdrop-filter: blur(6px); }
 .auth-swap { animation: auth-in 0.45s ease-out both; }
 .auth-bar { transition: background-color 0.45s ease; }
 /* Password strength bar and the one-off shake on a field that needs fixing. */
@@ -744,10 +798,17 @@ label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::a
 /* "Tell the neighbourhood" box inside a report's panel: a tinted box so it reads as its own step. */
 .story-box { background: color-mix(in oklab, var(--c-accent) 14%, var(--c-surface)); border: 1px solid color-mix(in oklab, var(--c-accent) 40%, var(--c-line)); }
 /* Map pins and list dots, coloured by where a report stands (same colours as the status labels). */
-:root { --pin-reported: #b45309; }
-[data-theme="dark"] { --pin-reported: #fbbf24; }
-.report-pin { color: var(--pin-reported); cursor: pointer; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.3)); transition: scale 0.15s ease; transform-origin: 50% 100%; }
-.report-pin:hover, .report-pin:focus-visible { scale: 1.18; }
+/* Reported is red-orange, not amber, so it is never mistaken for the honey highlight. */
+:root { --pin-reported: #c2410c; }
+[data-theme="dark"] { --pin-reported: #fb7f4f; }
+/* The pin element itself is positioned by the map (its transform), so it is never scaled or moved
+   by CSS; only the drawing inside it grows on hover, from its tip, so the pin stays on its spot. */
+.report-pin { color: var(--pin-reported); cursor: pointer; filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.3)); }
+.report-pin svg { display: block; transition: transform 0.15s ease; transform-origin: 50% 100%; }
+.report-pin:hover svg, .report-pin:focus-visible svg { transform: scale(1.18); }
+/* Dark mode maps: the clear light map, darkened. Inverting and turning the hues back round keeps
+   water blue and parks green while making the land dark and the labels light. */
+[data-theme="dark"] .maplibregl-canvas { filter: invert(0.92) hue-rotate(180deg) saturate(0.75) brightness(0.92) contrast(0.95); }
 .report-pin::after { content: none !important; }
 .report-pin-progress { color: var(--pin-progress); } .report-pin-cleared { color: var(--pin-cleared); } .report-pin-verified { color: var(--pin-verified); }
 .report-dot-reported { background: var(--pin-reported); } .report-dot-progress { background: var(--pin-progress); }
@@ -852,9 +913,10 @@ a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(-
 /* The glow: the lines drawn again in the accent colour, shown only in a soft circle around the
    pointer (page coordinates, less the strip's own top), so just the lines near it light up. */
 .contour-strip .backdrop-contours-glow {
-  filter: blur(0.6px);
-  -webkit-mask-image: radial-gradient(circle 170px at var(--spot-x, -9999px) calc(var(--spot-y, -9999px) - var(--top, 0px)), black 0%, transparent 100%);
-  mask-image: radial-gradient(circle 170px at var(--spot-x, -9999px) calc(var(--spot-y, -9999px) - var(--top, 0px)), black 0%, transparent 100%);
+  /* Stronger glow: brighter lines, a wider circle (240px), and a solid core before the fade. */
+  filter: blur(0.5px);
+  -webkit-mask-image: radial-gradient(circle 240px at var(--spot-x, -9999px) calc(var(--spot-y, -9999px) - var(--top, 0px)), black 30%, transparent 100%);
+  mask-image: radial-gradient(circle 240px at var(--spot-x, -9999px) calc(var(--spot-y, -9999px) - var(--top, 0px)), black 30%, transparent 100%);
 }
 
 /* ---- Public explainer pages (Community, Commercial): each kind of block gets its own look, so a
@@ -884,9 +946,43 @@ a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(-
 [data-theme="dark"] .mark-dont { color: #fca5a5; }
 
 /* Community: photo prints scattered like snapshots from a litter pick. */
-.snap { position: absolute; background: #fbfaf6; padding: 0.55rem 0.55rem 2.1rem; border-radius: 4px; box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.12); }
-.snap picture { display: block; height: 100%; }
-.snap img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
+.snap { position: absolute; background: #fbfaf6; padding: 0.55rem 0.55rem 2.1rem; border-radius: 4px; box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.12); transition: rotate 0.4s ease, scale 0.4s ease, box-shadow 0.4s ease; }
+.snap picture { display: block; height: 100%; overflow: hidden; border-radius: 2px; }
+.snap img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; transition: transform 0.7s ease; }
+/* The same as the homepage prints: hovering one straightens it, lifts it to the top and zooms the
+   photo a little. */
+.snap:hover { rotate: 0deg; scale: 1.06; z-index: 5; box-shadow: 0 28px 50px -20px rgb(0 0 0 / 0.55), 0 3px 8px rgb(0 0 0 / 0.14); }
+.snap:hover img { transform: scale(1.06); }
+/* When the section comes into view the prints are dropped on one at a time, like snapshots. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal.in .snap { animation: snap-drop 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+  .js .reveal.in .snap:nth-of-type(2) { animation-delay: 0.15s; }
+  .js .reveal.in .snap:nth-of-type(3) { animation-delay: 0.3s; }
+}
+@keyframes snap-drop { from { opacity: 0; translate: 0 -36px; scale: 1.18; } }
+
+/* Reported problems: hovering a report brings it forward and quietly dims the others, so the eye
+   goes to the one under the pointer. Uses translate/scale (not transform) so it never fights the
+   page's GSAP entrance. */
+.report-grid > li { transition: opacity 0.3s ease, filter 0.3s ease, scale 0.3s ease, translate 0.3s ease, box-shadow 0.3s ease; }
+.report-grid > li:hover, .report-grid > li:focus-within { translate: 0 -6px; box-shadow: 0 24px 44px -22px rgb(var(--c-shadow) / 0.55); border-radius: 1.5rem; }
+/* The others step back without turning see-through: greyer and a touch darker, never fainter. */
+.report-grid:has(> li:hover) > li:not(:hover) { filter: saturate(0.45) brightness(0.9); scale: 0.98; }
+.report-grid > li img { transition: transform 0.7s ease; }
+.report-grid > li:hover img { transform: scale(1.05); }
+
+/* Every page apart from the homepage: cards lift a little under the pointer. */
+.page-fx .card:not(.faq):not(.report-grid .card):not(.report-grid > li), .page-fx .panel-neutral { transition: translate 0.3s ease, box-shadow 0.3s ease; }
+.page-fx .card:not(.faq):not(.report-grid .card):not(.report-grid > li):hover { translate: 0 -3px; box-shadow: 0 18px 36px -22px rgb(var(--c-shadow) / 0.5); }
+
+/* FAQ and update lists open and close smoothly (browsers without ::details-content just snap). */
+:root { interpolate-size: allow-keywords; }
+@media (prefers-reduced-motion: no-preference) {
+  details.acc::details-content { block-size: 0; overflow: clip; transition: block-size 0.38s cubic-bezier(0.2, 0.7, 0.2, 1), content-visibility 0.38s allow-discrete; }
+  details.acc[open]::details-content { block-size: auto; }
+  details.acc > :not(summary) { opacity: 0; translate: 0 -6px; transition: opacity 0.3s ease 0.06s, translate 0.3s ease 0.06s; }
+  details.acc[open] > :not(summary) { opacity: 1; translate: 0 0; }
+}
 .snap figcaption { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.55rem; font-family: var(--font-serif); font-style: italic; font-size: 0.95rem; color: #2b3330; }
 /* Community: the steps as pins along a dashed walking trail. */
 .trail-line { position: absolute; left: 1.4rem; right: 1.4rem; top: 1.4rem; border-top: 2px dashed color-mix(in oklab, var(--c-accent-ink) 45%, transparent); }
@@ -900,8 +996,13 @@ a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(-
 .photo-hero::before { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(100deg, rgb(6 22 18 / 0.88) 0%, rgb(6 22 18 / 0.7) 45%, rgb(6 22 18 / 0.15) 100%); }
 .photo-hero > :not(picture) { position: relative; z-index: 2; }
 .photo-hero .photo-hero-img { position: absolute; inset: 0; z-index: 0; }
-.photo-hero .eyebrow { color: #a7e3c4; }
-.photo-hero .eyebrow::before { background: #a7e3c4; }
+/* .hl: the one honey phrase in a page or section heading (like "Resolve it." on the homepage).
+   One per heading, so every page carries about the same amount of honey. */
+.hl { color: var(--c-honey-display); font-style: italic; }
+.photo-hero .hl { color: #e8bd6e; }
+/* On a photo the page's own honey shade may be the dark one, so use the bright honey in both themes. */
+.photo-hero .eyebrow { color: #e8bd6e; }
+.photo-hero .eyebrow::before { background: #e3b25c; }
 .btn-on-photo { border: 1.5px solid rgb(255 255 255 / 0.7); color: #fff; background: rgb(255 255 255 / 0.06); }
 .btn-on-photo:hover { background: rgb(255 255 255 / 0.16); }
 /* Commercial: an example waste transfer note, as a sheet of paper (paper in both themes). */

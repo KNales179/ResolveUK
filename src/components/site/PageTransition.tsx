@@ -1,5 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useLocation, useOutlet } from 'react-router-dom'
+import { usePageIntro } from '../../lib/usePageIntro'
 
 const scrollForLocation = (hash: string) => {
   if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
@@ -12,6 +13,9 @@ const scrollForLocation = (hash: string) => {
 export function PageTransition() {
   const location = useLocation()
   const outlet = useOutlet()
+  const root = useRef<HTMLDivElement>(null)
+  // Every public page gets the homepage's kind of entrance; the homepage keeps its own.
+  usePageIntro(root, location.pathname, location.pathname !== '/')
 
   useEffect(() => {
     scrollForLocation(location.hash)
@@ -20,5 +24,10 @@ export function PageTransition() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.key])
 
-  return outlet
+  // display: contents, so the wrapper adds nothing to the layout.
+  return (
+    <div ref={root} className={`contents ${location.pathname !== '/' ? 'page-fx' : ''}`}>
+      {outlet}
+    </div>
+  )
 }

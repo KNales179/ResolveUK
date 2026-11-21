@@ -7,13 +7,18 @@ import { gsap, reducedMotion } from '../../lib/gsap'
 // richer version of this same idea (the hero card stack, .stack-idle).
 const SELECTOR = 'a:not([data-no-tag]), button:not([data-no-tag]):not(:disabled), label.tile:not([data-no-tag]), label.dropzone:not([data-no-tag])'
 
+// The tag is a short hint, never a paragraph. A whole card wrapped in a link used to put every
+// word of the card into the tag; anything over MAX now says "Open" (a link) or is cut short.
+const MAX = 32
+
 function labelFor(el: HTMLElement): string | null {
   const explicit = el.getAttribute('data-tag')
   if (explicit) return explicit
-  const aria = el.getAttribute('aria-label')
-  if (aria) return aria
-  const text = el.textContent?.replace(/\s+/g, ' ').trim()
-  return text || null
+  const raw = (el.getAttribute('aria-label') || el.textContent || '').replace(/\s+/g, ' ').trim()
+  if (!raw) return null
+  if (raw.length <= MAX) return raw
+  if (el.tagName === 'A') return 'Open'
+  return raw.slice(0, MAX - 1).replace(/\s+\S*$/, '') + '…'
 }
 
 // A small branded tag that follows the cursor over any link or button, anywhere on the site,

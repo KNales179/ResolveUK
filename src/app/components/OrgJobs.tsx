@@ -45,7 +45,7 @@ export function OrgJobs({ orgId, lead, demo }: { orgId: string; lead: boolean; d
           {offered.length} waiting · {underway.length} under way · {finished.length} done
         </p>
       </div>
-      {jobs === null && <div className="mt-4 h-24 animate-pulse rounded-2xl bg-[var(--c-field)]" />}
+      {jobs === null && <div className="skeleton mt-4 h-24 rounded-2xl" aria-hidden="true" />}
       {jobs?.length === 0 && <p className="mt-4 text-sm text-soft">No jobs yet. When the council offers you one, it shows here and your leads get a notification.</p>}
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         {[...offered, ...underway, ...finished].map((j) => (

@@ -11,6 +11,7 @@ import type { Org } from '../../lib/orgs'
 import { PointPicker } from '../components/AreaMap'
 import { useOrgs } from '../orgsData'
 import { useAppSession } from '../session'
+import { SkeletonCard, SkeletonLines } from '../../components/ui/Skeleton'
 
 const PILL: Record<RequestStatus, string> = { open: 'pill-reported', accepted: 'pill-progress', done: 'pill-cleared', cancelled: 'pill-closed' }
 const DEMO_VIEW_KEY = 'resolve.clearanceView'
@@ -99,7 +100,7 @@ export function AppClearance() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-serif text-4xl sm:text-5xl">Private land</h1>
+          <h1 className="font-serif text-4xl sm:text-5xl">Private <span className="hl">land</span></h1>
           <p className="mt-2 max-w-2xl text-soft">Rubbish dumped on a farm, a car park or a business's land is the landowner's to clear, not the council's. Get quotes from licensed clearance companies that cover the area, and choose one.</p>
         </div>
         <Link to="/app/clearance/new" className="btn btn-primary">
@@ -154,7 +155,7 @@ export function AppClearance() {
       )}
 
       <ul className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {all === null && [0, 1, 2].map((i) => <li key={i} className="card h-36 animate-pulse rounded-2xl" />)}
+        {all === null && [0, 1, 2].map((i) => <li key={i}><SkeletonCard /></li>)}
         {shown.map((r) => (
           <li key={r.id}>
             <Link to={`/app/clearance/${r.id}`} className="card request-card flex h-full gap-4 rounded-2xl p-4">
@@ -248,7 +249,7 @@ export function AppClearanceNew() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <BackLink to="/app/clearance">Private land</BackLink>
-      <h1 className="mt-4 font-serif text-4xl">Ask for clearance quotes</h1>
+      <h1 className="mt-4 font-serif text-4xl">Ask for clearance <span className="hl">quotes</span></h1>
       <p className="mt-2 max-w-3xl text-soft">For rubbish dumped on private land. If it's on a road, path or other public place, report it to the council instead; it's free.</p>
       <div className="mt-6 grid items-start gap-5 lg:grid-cols-[1fr_1.1fr]">
         <section className="card grid gap-4 rounded-3xl p-6">
@@ -515,7 +516,7 @@ function AskerPanel({ req, quotes, onAccept, onCancel }: { req: ClearanceRequest
                   quoted {timeAgo(q.created_at)}
                 </p>
               </div>
-              <p className="num shrink-0 font-serif text-3xl leading-none">{pounds(q.price_pence)}</p>
+              <p className="num shrink-0 font-serif text-3xl leading-none text-honey-display">{pounds(q.price_pence)}</p>
             </div>
             <p className="mt-2 text-sm">
               <span className="font-semibold">When:</span> {q.when_text}
@@ -605,7 +606,7 @@ function CompanyPanel({ req, companies, ourQuote, weWon, demo, onQuote, onWithdr
             )}
           </dl>
         ) : (
-          <p className="mt-2 text-sm text-soft">Loading…</p>
+          <SkeletonLines lines={3} className="mt-3" />
         )}
         {req.status === 'accepted' && (
           <div className="mt-5 border-t border-line pt-4">
@@ -633,7 +634,7 @@ function CompanyPanel({ req, companies, ourQuote, weWon, demo, onQuote, onWithdr
       <h2 className="font-serif text-2xl">{ourQuote ? 'Your quote' : 'Send a quote'}</h2>
       {ourQuote ? (
         <div className="quote-card mt-4 rounded-2xl p-4">
-          <p className="num font-serif text-3xl">{pounds(ourQuote.price_pence)}</p>
+          <p className="num font-serif text-3xl text-honey-display">{pounds(ourQuote.price_pence)}</p>
           <p className="mt-1 text-sm">
             <span className="font-semibold">When:</span> {ourQuote.when_text}
           </p>

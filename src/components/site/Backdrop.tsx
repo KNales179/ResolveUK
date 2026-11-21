@@ -198,7 +198,7 @@ function ContourStrip({ top, w, h, dark }: { top: number; w: number; h: number; 
         drawContours(ctx, w, h, color, alpha, top)
         return c
       }
-      el.replaceChildren(make(dark ? '#4fd1a0' : '#0b3d36', dark ? 0.09 : 0.1, 'backdrop-contours'), make(dark ? '#6ee7b7' : '#1f8a55', dark ? 0.42 : 0.38, 'backdrop-contours-glow'))
+      el.replaceChildren(make(dark ? '#4fd1a0' : '#0b3d36', dark ? 0.09 : 0.1, 'backdrop-contours'), make(dark ? '#6ee7b7' : '#1f8a55', dark ? 0.85 : 0.7, 'backdrop-contours-glow'))
     }
     // Draw it when it comes within a screen or so of view.
     const io = new IntersectionObserver(

@@ -16,6 +16,7 @@ import { STATUS_LABELS, statusGroup } from '../lib/status'
 import { supabase } from '../lib/supabase'
 import type { Report } from '../types'
 import { BackLink } from '../components/ui/BackLink'
+import { SkeletonLines } from '../components/ui/Skeleton'
 
 const TYPE_ICON: Record<string, IconName> = { 'fly-tipping': 'trash', pothole: 'road', graffiti: 'spray', 'abandoned-vehicle': 'car', 'damaged-infrastructure': 'lamp', other: 'more' }
 
@@ -469,14 +470,14 @@ function AccountBody() {
       <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
         <div className="accent-panel rounded-3xl p-8 sm:p-10">
           <p className="eyebrow">Optional, for whoever wants it</p>
-          <h1 className="mt-4 text-4xl sm:text-5xl">Keep track of the reports you've sent.</h1>
+          <h1 className="mt-4 text-4xl sm:text-5xl">Keep track of the reports <span className="hl">you've sent.</span></h1>
           <p className="mt-6 text-lg leading-relaxed opacity-90">
             Reporting still needs no account at all. Creating one just means a report can stay yours to follow, and, once the commercial route exists, yours to pick a quote on.
           </p>
         </div>
 
         <div>
-          {status === 'loading' && <p className="text-soft">Loading…</p>}
+          {status === 'loading' && <SkeletonLines lines={3} className="max-w-md" />}
           {status === 'signedOut' && <AuthForm />}
           {status === 'ready' && profile && <ProfileCard />}
         </div>

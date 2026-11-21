@@ -4,6 +4,7 @@ import { useStaffMe } from './auth'
 import { ReportRow } from './ReportRow'
 import { FALLBACK_CATEGORIES } from '../lib/categories'
 import type { ResponsibleBody, StaffReport } from '../types'
+import { SkeletonCard } from '../components/ui/Skeleton'
 
 export function StaffDashboard() {
   const me = useStaffMe()
@@ -46,7 +47,9 @@ export function StaffDashboard() {
         {error}
       </p>
     ) : (
-      <p className="text-soft">Loading…</p>
+      <div className="grid gap-3" aria-busy="true">
+        {[0, 1, 2].map((i) => <SkeletonCard key={i} />)}
+      </div>
     )
   }
 

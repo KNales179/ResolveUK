@@ -75,7 +75,12 @@ export function Comments({ storyId, onCount }: { storyId: string; onCount: (n: n
   const initial = (s.name || s.email || '?').trim().charAt(0).toUpperCase()
   return (
     <div className="comments border-t border-line px-4 pb-4 pt-3">
-      {list === null && <div className="h-10 animate-pulse rounded-xl bg-[var(--c-field)]" />}
+      {list === null && (
+        <div className="flex gap-3" aria-hidden="true">
+          <div className="skeleton size-8 shrink-0 rounded-full" />
+          <div className="grid flex-1 gap-2 pt-1"><div className="skeleton h-3 w-1/4" /><div className="skeleton h-3 w-3/4" /></div>
+        </div>
+      )}
       {visible.length > 0 && (
         <ul className="grid gap-3">
           {visible.map((c) => {

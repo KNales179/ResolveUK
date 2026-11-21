@@ -68,7 +68,7 @@ export function ReportsPage({ demo = false, storySlot }: { demo?: boolean; story
         <main className="mx-auto max-w-7xl px-4 pb-24 pt-10 sm:px-6">
         <div className="rise flex flex-wrap items-end justify-between gap-6">
           <div className="accent-panel max-w-2xl rounded-3xl p-6 sm:p-8">
-            <h1 className="text-4xl sm:text-5xl">Reported problems</h1>
+            <h1 className="text-4xl sm:text-5xl">Reported <span className="hl">problems</span></h1>
             <p className="mt-4 text-lg opacity-90">Open a report to see its photo, where it stands and everything that has happened to it.</p>
           </div>
           <Link to="/app/report" className="btn btn-primary">
@@ -120,7 +120,7 @@ export function ReportsPage({ demo = false, storySlot }: { demo?: boolean; story
         </p>
 
         {shown.length > 0 && (
-          <ul className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="report-grid mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {shown.map((r) => (
               <li key={r.id}>
                 <Link to={`${base}/${r.id}`} className="card group flex h-full flex-col rounded-3xl text-left transition hover:border-ink/40" data-report={r.id} data-tag="View details">

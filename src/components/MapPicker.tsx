@@ -8,12 +8,13 @@ import { Icon } from './ui/Icon'
 
 // Detailed vector maps from OpenFreeMap: free, no key, and made from OpenStreetMap data.
 // Vector tiles stay sharp and can be zoomed in much closer than the standard picture tiles.
-// OpenFreeMap's own "dark" style is barely legible (near-black roads/labels on a near-black
-// background); "fiord" is their other dark-toned style, a muted navy with much lighter,
-// actually-readable labels and roads, so it's used here instead.
+// Dark mode uses the same clear "liberty" map, darkened by a CSS filter on the map canvas
+// (.maplibregl-canvas in index.css): OpenFreeMap's own dark styles were either near-unreadable
+// ("dark") or a hard-to-look-at navy ("fiord"). Pins are page elements, not canvas, so they keep
+// their real colours.
 const STYLES: Record<ThemeName, string> = {
   light: 'https://tiles.openfreemap.org/styles/liberty',
-  dark: 'https://tiles.openfreemap.org/styles/fiord',
+  dark: 'https://tiles.openfreemap.org/styles/liberty',
 }
 
 // Only where the map starts before a spot is known. It is not a statement about where the service runs.

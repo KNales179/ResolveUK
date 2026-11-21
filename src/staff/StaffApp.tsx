@@ -9,6 +9,7 @@ import { StaffDashboard } from './Dashboard'
 import { StaffLogin, StaffNoAccess } from './Login'
 import { StaffManage } from './Manage'
 import { SetPassword } from './SetPassword'
+import { PageSkeleton } from '../components/ui/Skeleton'
 
 const ROLE_LABEL = { staff: 'Council or contractor staff', reviewer: 'Resolve reviewer', resolve_admin: 'Resolve admin' } as const
 const tab = ({ isActive }: { isActive: boolean }) => `rounded-full px-4 py-2 transition ${isActive ? 'bg-surface2 text-ink' : 'text-soft hover:text-ink'}`
@@ -17,7 +18,11 @@ function Shell() {
   const { status, profile, signOut } = useStaffAuth()
 
   if (status === 'loading') {
-    return <p className="grid min-h-svh place-items-center text-soft">Loading…</p>
+    return (
+      <div className="min-h-svh pt-24">
+        <PageSkeleton />
+      </div>
+    )
   }
   if (status === 'signedOut') return <StaffLogin />
   if (status === 'noAccess') return <StaffNoAccess />

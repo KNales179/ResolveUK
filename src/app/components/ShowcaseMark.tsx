@@ -17,9 +17,10 @@ const LR_BASE = '182 223'
 const LL_BASE = '59 223'
 const SPINE = 'M 16 236 C 20 190 42 160 78 140 C 112 121 150 106 150 66 C 150 32 126 14 96 14 L 18 14 L 18 150'
 
-const INK = '#f0f5ec'
-const MINT = '#4fd1a0'
-const SAGE = '#94c690'
+// Theme-aware: these read the showcase panel's light/dark tokens (--sc-* in index.css).
+const INK = 'var(--sc-ink)'
+const MINT = 'var(--sc-mint)'
+const SAGE = 'var(--sc-sage)'
 
 export function ShowcaseMark({ children }: { children?: ReactNode }) {
   const [still] = useState(reducedMotion)
@@ -210,10 +211,10 @@ export function ShowcaseMark({ children }: { children?: ReactNode }) {
 }
 
 const STAGES: Array<{ label: string; tone: string; note: string; title: string; bars: number }> = [
-  { label: 'Reported', tone: '#fbbf24', note: 'Just now', title: 'Bags dumped on Albert Terrace', bars: 1 },
-  { label: 'In progress', tone: '#8ec5ff', note: 'Council crew booked', title: 'Clearance booked for Albert Terrace', bars: 2 },
-  { label: 'Cleared', tone: MINT, note: '2 days to fix', title: 'Bags removed from Albert Terrace', bars: 3 },
-  { label: 'Verified', tone: '#a5e3c8', note: 'Checked by a neighbour', title: 'Albert Terrace is clear', bars: 4 },
+  { label: 'Reported', tone: 'var(--sc-rep)', note: 'Just now', title: 'Bags dumped on Albert Terrace', bars: 1 },
+  { label: 'In progress', tone: 'var(--sc-prog)', note: 'Council crew booked', title: 'Clearance booked for Albert Terrace', bars: 2 },
+  { label: 'Cleared', tone: 'var(--sc-clear)', note: '2 days to fix', title: 'Bags removed from Albert Terrace', bars: 3 },
+  { label: 'Verified', tone: 'var(--sc-ver)', note: 'Checked by a neighbour', title: 'Albert Terrace is clear', bars: 4 },
 ]
 
 // One report moving through its stages, in step with the logo.
@@ -226,13 +227,13 @@ function SampleCard({ stage }: { stage: Stage }) {
           <span className="font-semibold" style={{ color: s.tone }}>
             {stage === 3 ? '✓' : '●'} {s.label}
           </span>
-          <span className="text-[#b9d1c6]">{s.note}</span>
+          <span className="text-[var(--sc-soft)]">{s.note}</span>
         </div>
-        <p className="mt-2 text-sm font-semibold text-[#f0f5ec]">{s.title}</p>
+        <p className="mt-2 text-sm font-semibold text-[var(--sc-ink)]">{s.title}</p>
       </div>
       <div className="mt-3 grid grid-cols-4 gap-1.5" aria-hidden="true">
         {[0, 1, 2, 3].map((i) => (
-          <span key={i} className="auth-bar h-1.5 rounded-full" style={{ background: i < s.bars ? s.tone : 'rgb(255 255 255 / 0.2)', transitionDelay: `${i * 90}ms` }} />
+          <span key={i} className="auth-bar h-1.5 rounded-full" style={{ background: i < s.bars ? s.tone : 'var(--sc-bar-off)', transitionDelay: `${i * 90}ms` }} />
         ))}
       </div>
     </div>

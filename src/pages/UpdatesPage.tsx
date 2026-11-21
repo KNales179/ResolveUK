@@ -1,11 +1,28 @@
 import { Icon } from '../components/ui/Icon'
 import { PageBackdrop } from '../components/site/SiteShell'
-import { APP_VERSION, RELEASES } from '../lib/changelog'
+import { APP_VERSION, RELEASES, type Release } from '../lib/changelog'
 import { PLANNED, WORKING_NOW } from '../lib/roadmap'
 
+// One card per important update: a main release (x.y.0) with its small follow-ups (x.y.1 and up)
+// folded inside it as "Smaller changes". If a group has no x.y.0 entry, its oldest one leads.
+const GROUPS = (() => {
+  const byMinor = new Map<string, Release[]>()
+  for (const r of RELEASES) {
+    const key = r.version.split('.').slice(0, 2).join('.')
+    byMinor.set(key, [...(byMinor.get(key) ?? []), r])
+  }
+  return [...byMinor.values()].map((releases) => {
+    const lead = releases.find((r) => r.version.endsWith('.0')) ?? releases[releases.length - 1]
+    return { lead, small: releases.filter((r) => r !== lead), releases }
+  })
+})()
+
+const dayLabel = (date: string) =>
+  new Date(`${date}T12:00:00`).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+
 // The full history behind the "What's new" pop-up — every release in plain language, newest
-// first. Plain <details> rather than a hand-rolled collapsible: it's one page, visited rarely,
-// and <details> gets the expand/collapse behaviour (and keyboard support) for free.
+// first, grouped by important update (see GROUPS). Plain <details> rather than a hand-rolled
+// collapsible: <details> gets the expand/collapse behaviour (and keyboard support) for free.
 export function UpdatesPage() {
   return (
     <div className="relative">
@@ -40,32 +57,51 @@ export function UpdatesPage() {
           </div>
         </div>
 
-        <h2 className="mt-12 font-serif text-2xl">What has changed</h2>
-        <div className="mt-4 space-y-3">
-          {RELEASES.map((release) => (
-            <details key={release.version} className="card overflow-hidden p-0" open={release.version === APP_VERSION}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-5">
-                <span>
-                  <span className="font-semibold">{release.title}</span>
-                  {release.version === APP_VERSION && <span className="ml-2 rounded-full bg-surface2 px-2 py-0.5 text-xs font-semibold text-soft align-middle">Current</span>}
+        <h2 className="mt-12 font-serif text-2xl">What has <span className="hl">changed</span></h2>
+        <div className="mt-4 space-y-2">
+          {GROUPS.map((g, i) => (
+            <details key={g.lead.version} className="acc card overflow-hidden p-0" open={i === 0}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-3.5">
+                <span className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                  <span className="font-semibold">{g.lead.title}</span>
+                  {g.releases.some((r) => r.version === APP_VERSION) && (
+                    <span className="rounded-full bg-honey-soft px-2 py-0.5 text-xs font-semibold text-honey-text">Current</span>
+                  )}
                 </span>
                 <span className="flex shrink-0 items-center gap-3 text-xs text-soft">
-                  {release.date} <Icon name="chevron" className="dd-chevron size-4" />
+                  <span className="num hidden sm:inline">{dayLabel(g.lead.date)}</span>
+                  <Icon name="chevron" className="dd-chevron size-4" />
                 </span>
               </summary>
-              <ul className="space-y-4 border-t border-line p-5 pt-4">
-                {release.highlights.map((h, i) => (
-                  <li key={i} className="flex gap-3">
-                    <span className="icon-btn mt-0.5 shrink-0" aria-hidden="true">
-                      <Icon name={h.icon} className="size-4" />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold">{h.title}</p>
-                      <p className="mt-0.5 text-sm text-soft">{h.body}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-4 border-t border-line px-5 py-4">
+                <ul className="space-y-1.5">
+                  {g.lead.highlights.map((h, k) => (
+                    <li key={k} className="flex gap-2.5 text-sm leading-relaxed">
+                      <Icon name={h.icon} className="mt-1 size-3.5 shrink-0 text-accent" />
+                      <span className="min-w-0 text-soft">
+                        <span className="font-semibold text-ink">{h.title}.</span> {h.body}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="num text-xs text-soft">v{g.lead.version} · {dayLabel(g.lead.date)}</p>
+                {g.small.length > 0 && (
+                  <details className="acc rounded-xl border border-line">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-sm font-semibold">
+                      Smaller changes ({g.small.length})
+                      <Icon name="chevron" className="dd-chevron size-4 shrink-0 text-soft" />
+                    </summary>
+                    <ul className="divide-y divide-line border-t border-line">
+                      {g.small.map((r) => (
+                        <li key={r.version} className="px-4 py-2.5 text-sm">
+                          <span className="font-medium">{r.title}</span> <span className="num text-xs text-soft">v{r.version}</span>
+                          <p className="mt-0.5 text-xs leading-relaxed text-soft">{r.highlights.map((h) => h.title).join(' · ')}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
+              </div>
             </details>
           ))}
         </div>

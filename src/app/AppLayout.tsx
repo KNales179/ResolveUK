@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { toggleTheme, useThemeName } from '../lib/theme'
+import { usePageIntro } from '../lib/usePageIntro'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Backdrop, VeinsSync } from '../components/site/Backdrop'
 import { LEAF_LEFT_PATH, LEAF_RIGHT_PATH, PIN_PATH, R_PATH } from '../components/site/logoPaths'
@@ -33,10 +34,13 @@ export function AppLayout() {
   const s = useAppSession()
   const items = ITEMS.filter((i) => !i.show || canSee(s.role, i.show))
   const location = useLocation()
+  const mainRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname])
+  // The same page entrance as the public site, on every app page.
+  usePageIntro(mainRef, location.pathname)
 
   return (
     <div className="relative min-h-svh pb-24 lg:pb-0">
@@ -71,7 +75,7 @@ export function AppLayout() {
         </div>
       </header>
 
-      <main className="relative">
+      <main ref={mainRef} className="relative">
         <Outlet />
       </main>
 

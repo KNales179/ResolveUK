@@ -43,7 +43,7 @@ export function GetInvolvedPage() {
       <main className="cv grid-texture grid-shimmer mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8 sm:pt-40">
         <Reveal className="accent-panel rounded-3xl p-8 sm:p-12">
           <p className="eyebrow">Get involved</p>
-          <h1 className="mt-4 max-w-2xl text-4xl sm:text-5xl">Things you can do, on your own or with others.</h1>
+          <h1 className="mt-4 max-w-2xl text-4xl sm:text-5xl">Things you can do, <span className="hl">on your own or with others.</span></h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed opacity-90">
             Reporting a problem is the first step, not the only one. Some things are quickest to fix alone, and some only get fixed when a few people act together.
           </p>
@@ -120,7 +120,7 @@ export function GetInvolvedPage() {
         </Reveal>
 
         <Reveal className="panel-tint mt-14 rounded-3xl p-8 sm:p-10">
-          <h2 className="text-3xl sm:text-4xl">Three ways a problem gets resolved</h2>
+          <h2 className="text-3xl sm:text-4xl">Three ways a problem gets <span className="hl">resolved</span></h2>
           <p className="mt-3 max-w-2xl leading-relaxed text-soft">Who should act on a report depends on who is responsible for the place it happened. Reporting itself is the same either way, and open to anyone with no account needed.</p>
           <ul className="mt-8 grid gap-8 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line">
             {ROUTES.map((r) => (

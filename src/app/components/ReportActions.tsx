@@ -104,7 +104,7 @@ function WhoHasIt({ report, live, done, demo }: { report: Report; live?: Job; do
     <section className="rounded-2xl border border-line bg-[var(--c-field)] p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wide text-soft">Who's dealing with it</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-honey-text">Who's dealing with it</p>
           <p className="mt-1 font-semibold">{report.responsible_bodies?.name ?? 'Not assigned yet'}</p>
           {team?.organisations && (
             <p className="mt-1 flex items-center gap-1.5 text-sm">

@@ -282,7 +282,7 @@ function HeroCardStack({ reports, usingSamples }: { reports: Report[]; usingSamp
     <div ref={rootRef} className="stack-idle relative h-[19.5rem] sm:h-[18rem]">
       {display.map((s, i) => (
         <div key={s.id} className={`stack-card card stack-tint-${(i % 3) + 1} absolute inset-0 cursor-pointer rounded-2xl px-4 pb-6 pt-4 shadow-xl`}>
-          {usingSamples && <span className="absolute -top-3 right-5 z-10 rounded-md bg-ink px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-widest text-bg">Sample</span>}
+          {usingSamples && <span className="absolute -top-3 right-5 z-10 rounded-md bg-honey px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-widest text-honey-ink">Sample</span>}
           <div className="flex gap-3.5">
             <img src={s.img} alt={s.alt} loading="lazy" decoding="async" className="stack-card-media size-24 shrink-0 rounded-xl object-cover" />
             <div className="stack-card-text min-w-0">
@@ -441,7 +441,7 @@ export default function Home() {
                 <span className="hero-line-inner inline-block">Report it.</span>
               </span>
               <span className="block overflow-hidden">
-                <span className="hero-line-inner inline-block font-medium italic text-accent-display">Resolve it.</span>
+                <span className="hero-line-inner inline-block font-medium italic text-honey-display">Resolve it.</span>
               </span>
             </h1>
             <p className="hero-fade mt-7 max-w-xl text-lg leading-relaxed text-ink/80 sm:text-xl">
@@ -475,7 +475,7 @@ export default function Home() {
       {/* ---- why it exists (same as the About page's purpose) ---- */}
       <section className="grid-texture grid-shimmer">
         <div className="mx-auto max-w-7xl px-5 pt-10 pb-2 sm:px-8 sm:pt-12">
-          <StorySection label="Why it exists" title="Reporting shouldn't be the end of the story" art={<PurposeArt />}>
+          <StorySection label="Why it exists" title={<>Reporting shouldn't be <span className="hl">the end of the story</span></>} art={<PurposeArt />}>
             <p>
               Everyone has walked past the same mattress in the same lay-by for weeks. Someone probably reported it. Did they? Did anything happen? Was it actually cleared, or just marked as done?
             </p>
@@ -491,14 +491,14 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:gap-10">
             <Reveal className="accent-panel flex flex-col justify-center rounded-3xl p-8 sm:p-10">
               <p className="eyebrow">How it works</p>
-              <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Report it in a minute, then follow it.</h2>
+              <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Report it in a minute, then <span className="hl">follow it.</span></h2>
               <p className="mt-5 text-lg leading-relaxed opacity-85">Each report has a public history. Whoever takes it on, whether that is a council, a contractor or another organisation, adds to that history as it moves towards fixed.</p>
             </Reveal>
             <ol className="panel-tint divide-y divide-line overflow-hidden rounded-3xl">
               {STEPS.map(([n, title, text], i) => (
                 <CornerHover as="li" key={n}>
                   <Reveal delay={i * 70} className="grid grid-cols-[3rem_1fr] gap-4 p-4 sm:grid-cols-[4rem_1fr]">
-                    <span className="font-serif text-4xl leading-none text-accent sm:text-5xl">{n}</span>
+                    <span className="font-serif text-4xl leading-none text-honey-display sm:text-5xl">{n}</span>
                     <div>
                       <h3 className="text-xl font-semibold">{title}</h3>
                       <p className="mt-2 leading-relaxed text-soft">{text}</p>
@@ -516,7 +516,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
           <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">What you can report</p>
-            <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">The everyday problems that wear a place down.</h2>
+            <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">The everyday problems that <span className="hl">wear a place down.</span></h2>
           </Reveal>
           <div className="mt-8 grid gap-8 md:grid-cols-3 md:grid-rows-2">
             {/* The rotation lives on the inner <figure>, not the Reveal wrapper — GSAP writes its
@@ -570,7 +570,7 @@ export default function Home() {
           <Reveal className="panel-tint grid gap-10 rounded-3xl p-6 sm:p-10 lg:grid-cols-[.85fr_1.15fr] lg:items-center">
             <div>
               <p className="eyebrow">Why it matters</p>
-              <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Fly-tipping keeps rising.</h2>
+              <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">Fly-tipping <span className="hl">keeps rising.</span></h2>
               <p className="mt-5 text-lg leading-relaxed text-soft">
                 Councils in England dealt with <strong className="font-semibold text-ink">1.26 million</strong> fly-tipping incidents in 2024/25, up 9% in a year and nearly a third more than in 2018/19.
               </p>
@@ -591,7 +591,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
           <Reveal className="panel-tint max-w-2xl rounded-3xl p-6 sm:p-8">
             <p className="eyebrow">What happens to a report</p>
-            <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">From reported to fixed, one step at a time.</h2>
+            <h2 className="mt-4 text-4xl leading-[1.1] sm:text-5xl">From reported to <span className="hl">fixed</span>, one step at a time.</h2>
           </Reveal>
           {/* Padding lives on this wrapper, not the <ol> itself — .timeline-rail's connecting
               line is positioned relative to the ol's own box, so padding it directly would pull
@@ -621,7 +621,7 @@ export default function Home() {
       <section className="grid-texture grid-shimmer">
         <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12">
           <Reveal className="panel-tint rounded-3xl p-8 sm:p-10">
-            <h2 className="text-3xl leading-[1.1] sm:text-4xl">Find out more</h2>
+            <h2 className="text-3xl leading-[1.1] sm:text-4xl">Find out <span className="hl">more</span></h2>
             <ul className="mt-8 grid gap-6 md:grid-cols-3 md:gap-0 md:divide-x md:divide-line">
               {MORE.map(([to, title, text]) => (
                 <li key={to} className="md:px-8 md:first:pl-0 md:last:pr-0">

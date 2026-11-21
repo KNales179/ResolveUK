@@ -22,7 +22,10 @@ export function AppAdmin() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="font-serif text-4xl sm:text-5xl">Admin</h1>
+        <div>
+          <p className="eyebrow mb-2">Checks and approvals</p>
+          <h1 className="font-serif text-4xl sm:text-5xl">Admin</h1>
+        </div>
         <div className="flex gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Queue">
           {(
             [
@@ -339,7 +342,7 @@ function CommentQueue() {
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         {(queue ?? []).map((c) => (
           <article key={c.id} className="card rounded-2xl p-5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-soft">On {c.stories?.author_name ?? 'a post'}'s post</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-honey-text">On {c.stories?.author_name ?? 'a post'}'s post</p>
             <p className="mt-1 line-clamp-2 text-sm text-soft">{c.stories?.body}</p>
             <div className="comment-bubble mt-3 rounded-2xl px-4 py-3">
               <p className="text-sm font-semibold">

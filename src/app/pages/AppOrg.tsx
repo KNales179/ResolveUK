@@ -94,7 +94,7 @@ export function AppOrg() {
           <span className={`pill ${org.kind === 'community' ? 'pill-cleared' : 'pill-progress'}`}>{KIND_LABEL[org.kind]}</span>
           {org.status !== 'approved' && <span className="pill pill-reported ml-2">{org.status === 'pending' ? 'Waiting for a Resolve admin' : 'Not approved'}</span>}
           <h1 className="mt-3 font-serif text-4xl">{org.name}</h1>
-          <p className="mt-1 text-soft">{org.area_label}</p>
+          <p className="mt-1 font-semibold text-honey-text">{org.area_label}</p>
           <p className="mt-5 leading-relaxed">{org.description}</p>
           <dl className="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
             {org.kind === 'community' && (

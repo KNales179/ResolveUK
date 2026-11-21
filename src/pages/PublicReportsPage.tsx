@@ -42,7 +42,7 @@ export function PublicReportsPage() {
       <main className="mx-auto max-w-7xl px-5 pb-24 pt-32 sm:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div className="accent-panel max-w-2xl rounded-3xl p-6 sm:p-8">
-            <h1 className="text-4xl sm:text-5xl">Recent reports</h1>
+            <h1 className="text-4xl sm:text-5xl">Recent <span className="hl">reports</span></h1>
             <p className="mt-4 text-lg opacity-90">The latest problems people have reported. Open the Resolve UK app to see every report, follow one, or see them all on a map.</p>
           </div>
           <Link to="/report" className="btn btn-primary">
@@ -56,7 +56,7 @@ export function PublicReportsPage() {
           </p>
         )}
 
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="report-grid mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {recent.map((r) => (
             <li key={r.id} className="card flex h-full flex-col overflow-hidden rounded-3xl">
               <span className="relative block aspect-[4/3] w-full bg-surface2">
@@ -79,7 +79,7 @@ export function PublicReportsPage() {
 
         {stories.length > 0 && (
           <section className="mt-14">
-            <h2 className="font-serif text-3xl">What people are saying</h2>
+            <h2 className="font-serif text-3xl">What people are <span className="hl">saying</span></h2>
             <div className="mt-6 grid gap-5 md:grid-cols-3">
               {stories.map((st) => (
                 <article key={st.id} className="card flex flex-col rounded-3xl p-5">
@@ -94,7 +94,7 @@ export function PublicReportsPage() {
 
         <section className="stand-panel mt-14 grid gap-6 rounded-3xl p-8 sm:p-10 md:grid-cols-[1.3fr_auto] md:items-center">
           <div>
-            <h2 className="font-serif text-3xl">See everything in the app</h2>
+            <h2 className="font-serif text-3xl">See everything <span className="hl">in the app</span></h2>
             <p className="mt-3 max-w-2xl leading-relaxed text-soft">
               Every report with search and filters, the full history of each one, the map, and stories from your area. Back a report you've seen too, or post a story so the neighbourhood knows. Free to join, or try it first with sample data.
             </p>

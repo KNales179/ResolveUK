@@ -6,6 +6,7 @@ import { AreaMap } from '../components/AreaMap'
 import { JoinDialog } from '../components/JoinDialog'
 import { useOrgs } from '../orgsData'
 import { useAppSession } from '../session'
+import { SkeletonCard } from '../../components/ui/Skeleton'
 
 const TABS: Array<[OrgKind | 'all', string]> = [
   ['all', 'All'],
@@ -32,6 +33,7 @@ export function AppCommunity() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
+          <p className="eyebrow mb-2">Groups and companies</p>
           <h1 className="font-serif text-4xl sm:text-5xl">Community</h1>
           <p className="mt-2 max-w-2xl text-soft">Local groups that take on safe jobs in their own area, and licensed companies that clear private land. Every one is checked before it appears.</p>
         </div>
@@ -80,7 +82,7 @@ export function AppCommunity() {
         </div>
 
         <ul className="space-y-3 lg:max-h-[calc(58svh+2.6rem)] lg:overflow-y-auto lg:pr-1" data-lenis-prevent>
-          {orgs === null && <li className="card h-32 animate-pulse rounded-2xl" />}
+          {orgs === null && [0, 1].map((i) => <li key={i}><SkeletonCard /></li>)}
           {orgs?.length === 0 && (
             <li className="card rounded-2xl p-6 text-center">
               <p className="font-semibold">No groups here yet</p>

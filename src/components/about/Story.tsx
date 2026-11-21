@@ -6,7 +6,7 @@ import { LEAF_LEFT_PATH, LEAF_RIGHT_PATH, PIN_PATH, R_PATH } from '../site/logoP
 // itself uses (report cards, status labels, map pins), so the picture is the product, not stock art.
 // The layout follows the Fico landing page's story sections.
 
-export function StorySection({ id, label, title, art, flip = false, children }: { id?: string; label: string; title: string; art: ReactNode; flip?: boolean; children: ReactNode }) {
+export function StorySection({ id, label, title, art, flip = false, children }: { id?: string; label: string; title: ReactNode; art: ReactNode; flip?: boolean; children: ReactNode }) {
   return (
     <section id={id} className="grid scroll-mt-28 items-center gap-10 py-8 lg:grid-cols-2 lg:gap-16 lg:py-10">
       <div className={`story-glass ${flip ? 'lg:order-2' : ''}`}>
@@ -91,7 +91,7 @@ export function PurposeArt() {
       <TypingBubble className="rotate-1 self-end" text="I reported that pothole in March. Did anything happen?" />
       <TypingBubble className="-rotate-1 ml-6 self-start" text="Is it actually fixed, or just marked as done?" />
       <div className="card hover-lift mt-2 rounded-2xl p-5">
-        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-accent">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-honey-text">
           <Icon name="eye" className="size-3.5" /> One public record
         </p>
         <div className="mt-3 flex items-center gap-3">
@@ -164,7 +164,7 @@ export function Mission() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">Our mission</p>
-          <h2 className="mt-3 text-3xl sm:text-4xl">Simple, open, honest</h2>
+          <h2 className="mt-3 text-3xl sm:text-4xl">Simple, open, <span className="hl">honest</span></h2>
         </div>
         <p className="max-w-sm text-soft">Three promises every report on the site is held to.</p>
       </div>
@@ -212,7 +212,7 @@ export function Vision() {
       <div className="grid gap-6 p-8 sm:p-12 lg:grid-cols-[.9fr_1.1fr] lg:gap-12">
         <div>
           <p className="eyebrow">Our vision</p>
-          <h2 className="mt-3 text-3xl sm:text-5xl">Better places, together</h2>
+          <h2 className="mt-3 text-3xl sm:text-5xl">Better places, <span className="hl">together</span></h2>
           <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-xs text-soft">
             <span className="inline-flex items-center gap-1.5"><span className="vision-dot vision-pin-verified" /> Verified fixed</span>
             <span className="inline-flex items-center gap-1.5"><span className="vision-dot vision-pin-cleared" /> Cleared</span>
