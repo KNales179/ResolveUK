@@ -30,6 +30,7 @@ const ForgotPassword = lazy(() => import('./app/auth/ForgotPassword').then((m) =
 const CheckEmail = lazy(() => import('./app/auth/CheckEmail').then((m) => ({ default: m.CheckEmail })))
 const AppHome = lazy(() => import('./app/pages/AppHome').then((m) => ({ default: m.AppHome })))
 const AppAccount = lazy(() => import('./app/pages/AppAccount').then((m) => ({ default: m.AppAccount })))
+const AppTutorial = lazy(() => import('./app/pages/AppTutorial').then((m) => ({ default: m.AppTutorial })))
 const AppReports = lazy(() => import('./app/pages/AppReports').then((m) => ({ default: m.AppReports })))
 const AppMap = lazy(() => import('./app/pages/AppMap').then((m) => ({ default: m.AppMap })))
 const AppAdmin = lazy(() => import('./app/pages/AppAdmin').then((m) => ({ default: m.AppAdmin })))
@@ -103,6 +104,7 @@ export default function App() {
                 <Route path="staff" element={<AppStaff />} />
                 <Route path="admin" element={<AppAdmin />} />
                 <Route path="account" element={<AppAccount />} />
+                <Route path="tutorial" element={<AppTutorial />} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/app" replace />} />

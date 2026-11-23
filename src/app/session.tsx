@@ -33,6 +33,16 @@ function readDemo(): AppRole | null {
   }
 }
 
+// The demo's guided tours play once per demo session (see app/tour/Tour.tsx): starting or leaving
+// the demo forgets which ones were seen, so the next demo shows them fresh.
+function resetTours() {
+  try {
+    localStorage.removeItem('resolve.toursSeen')
+  } catch {
+    // storage blocked: nothing to forget
+  }
+}
+
 function writeDemo(role: AppRole | null) {
   try {
     if (role) localStorage.setItem(DEMO_KEY, JSON.stringify({ role }))
@@ -84,6 +94,7 @@ function SessionInner({ children }: { children: ReactNode }) {
   const realRole = signedIn && fetched?.email === auth.email ? fetched.role : null
 
   const startDemo = useCallback((role: AppRole = 'resident') => {
+    resetTours()
     writeDemo(role)
     setDemoRoleState(role)
   }, [])
@@ -92,6 +103,7 @@ function SessionInner({ children }: { children: ReactNode }) {
     setDemoRoleState(role)
   }, [])
   const exitDemo = useCallback(() => {
+    resetTours()
     writeDemo(null)
     setDemoRoleState(null)
   }, [])

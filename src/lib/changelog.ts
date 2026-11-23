@@ -20,6 +20,28 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '3.16.1',
+    date: '2026-11-23',
+    title: 'Guided tours',
+    highlights: [
+      {
+        icon: 'compass',
+        title: 'A guided tour of each part of the app',
+        body: 'The screen dims except the part being explained, with a short note and an arrow pointing at it. In the demo, each page\'s tour starts by itself the first time you open it. With your own account, open "How Resolve works" from your menu and pick a tour whenever you like.',
+      },
+      {
+        icon: 'rotate',
+        title: 'Lighter and smoother on phones',
+        body: 'Phones and tablets now draw much less in the background: the contour lines use a fraction of the memory and only exist near where you are, the header is solid instead of blurred, and the About page devices show a still picture instead of three moving demos. In the app, the soft moving background now stays still on phones, and nothing is redrawn when the address bar slides in and out while you scroll.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'More green in light mode',
+        body: 'Main buttons are now the deep brand green, and every page ends with a deep green footer.',
+      },
+    ],
+  },
+  {
     version: '3.15.3',
     date: '2026-11-23',
     title: 'A big map for choosing the spot, and devices that move like people',

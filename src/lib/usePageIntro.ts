@@ -29,7 +29,9 @@ export function usePageIntro(root: RefObject<HTMLElement | null>, key: string, e
       const heads = intro.filter((el) => el.tagName === 'H1')
       const rest = intro.filter((el) => el.tagName !== 'H1')
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      if (heads.length) tl.from(heads, { y: 34, opacity: 0, filter: 'blur(6px)', duration: 0.8, clearProps: 'filter,transform,opacity' }, 0)
+      // The heading's un-blur is skipped on touch screens: animating a blur is costly on a phone.
+      const touch = matchMedia('(pointer: coarse)').matches
+      if (heads.length) tl.from(heads, { y: 34, opacity: 0, ...(touch ? {} : { filter: 'blur(6px)' }), duration: 0.8, clearProps: 'filter,transform,opacity' }, 0)
       // A slight overshoot as each one lands (follow-through), rather than a dead stop.
       if (rest.length) tl.from(rest, { y: 22, opacity: 0, duration: 0.7, stagger: 0.06, ease: 'back.out(1.3)', clearProps: 'transform,opacity' }, 0.08)
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap, reducedMotion } from '../../lib/gsap'
 import { useThemeName } from '../../lib/theme'
 import { DEMO } from './devicesDemo'
@@ -31,12 +31,15 @@ function Screen({ name, label }: { name: Name; label: string }) {
   const box = useRef<HTMLDivElement>(null)
   const theme = useThemeName()
   const demo = DEMO[name] as unknown as { cssW: number; pages: Record<string, Page>; steps: Step[] }
-  const keys = Object.keys(demo.pages)
+  // On phones and small screens the devices show their first screen, still: three looping demos
+  // and some thirty large screenshots are too much for a phone to decode and animate smoothly.
+  const [small] = useState(() => matchMedia('(max-width: 760px), (pointer: coarse)').matches)
+  const keys = small ? [demo.steps[0].page] : Object.keys(demo.pages)
   const mouse = name === 'laptop'
 
   useEffect(() => {
     const el = box.current
-    if (!el || reducedMotion()) return
+    if (!el || reducedMotion() || small) return
     const layer = (k: string) => el.querySelector<HTMLElement>(`[data-page="${k}"]`)!
     const content = (k: string) => layer(k).querySelector<HTMLElement>('.demo-content')!
     const pointer = el.querySelector<HTMLElement>('.demo-pointer')!

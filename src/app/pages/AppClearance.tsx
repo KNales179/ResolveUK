@@ -154,7 +154,7 @@ export function AppClearance() {
         </p>
       )}
 
-      <ul className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <ul className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3" data-tour="requests">
         {all === null && [0, 1, 2].map((i) => <li key={i}><SkeletonCard /></li>)}
         {shown.map((r) => (
           <li key={r.id}>

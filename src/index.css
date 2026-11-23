@@ -1029,6 +1029,31 @@ a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(-
   color: var(--c-ink);
 }
 
+/* Guided tours (app/tour/Tour.tsx): the spotlight is a hole in a dark wash (a huge shadow round
+   it), ringed in honey; the bubble is deep brand green with the step count in honey. */
+.tour-spot { position: fixed; z-index: 1; border-radius: 14px; pointer-events: none; box-shadow: 0 0 0 200vmax rgb(4 16 14 / 0.66), 0 0 0 2px #e3b25c inset; }
+.tour-bubble { position: fixed; z-index: 3; padding: 1.1rem 1.15rem 1rem; border-radius: 1.1rem; background: #0b3d36; color: #eef4f0; box-shadow: 0 24px 50px -18px rgb(0 0 0 / 0.6); border: 1px solid rgb(255 255 255 / 0.1); }
+.tour-count { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: #f0c674; }
+.tour-arrow { position: fixed; z-index: 2; width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 14px solid #0b3d36; filter: drop-shadow(0 -1px 0 rgb(255 255 255 / 0.1)); }
+.tour .tour-next { background: #4fd1a0; color: #06231c; }
+.tour .tour-back { border: 1px solid rgb(255 255 255 / 0.3); color: #eef4f0; background: transparent; }
+.tour-skip { font-size: 0.85rem; font-weight: 600; color: rgb(238 244 240 / 0.75); padding: 0.5rem 0.25rem; min-height: 2.75rem; }
+.tour-skip:hover { color: #fff; }
+.tour-skip::after, .tour .btn::after { content: none !important; }
+
+/* Phones and tablets: lighter to draw. The header is solid rather than see-through and blurred
+   (blurring what scrolls underneath is costly on a phone, and text showed through it), and the
+   fixed film-grain layer is switched off (it is barely visible on a small screen anyway). */
+@media (pointer: coarse), (max-width: 760px) {
+  .site-header { background: color-mix(in oklab, var(--c-accent-vivid) 22%, var(--c-bg)); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  [data-theme="dark"] .site-header { background: var(--c-bg); }
+  .site-grain { display: none; }
+  /* The app's soft background (blurred colour mesh and leaves) stays still: a blur that moves has
+     to be redrawn every frame, which kept a phone busy on every app page even when nothing else
+     was happening. Still, it is drawn once and costs nothing more. */
+  .backdrop-mesh, .backdrop-leaves { animation: none; }
+}
+
 /* Outline buttons: on hover the brand green rises from the bottom and fills the button, and the
    text turns light as it does (solid, never see-through). Replaces the corner brackets on these
    buttons, so there is one hover effect, not two. Solid green buttons keep their own brighten.

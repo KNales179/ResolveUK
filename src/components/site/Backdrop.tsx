@@ -53,7 +53,15 @@ function DrawnBackdrop({ kind }: { kind: 'home' | 'page' }) {
 
     draw()
     let t = 0
+    // On a phone the address bar sliding in and out while scrolling counts as a resize; redrawing
+    // then threw the canvas away mid-scroll. Only a real change of width (or a big height change,
+    // like turning the phone) redraws it.
+    let lastW = window.innerWidth
+    let lastH = window.innerHeight
     const onResize = () => {
+      if (window.innerWidth === lastW && Math.abs(window.innerHeight - lastH) < 160) return
+      lastW = window.innerWidth
+      lastH = window.innerHeight
       window.clearTimeout(t)
       t = window.setTimeout(draw, 200)
     }
@@ -133,7 +141,9 @@ function ScrollContours({ dark }: { dark: boolean }) {
   // it stays under the pointer as the page scrolls. Off for anyone who prefers reduced motion.
   useEffect(() => {
     const el = host.current
-    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Not on touch screens either: there is no pointer to follow, and updating it on every scroll
+    // made the phone recheck the styles of the whole contour layer each frame.
+    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(pointer: coarse)').matches) return
     let raf = 0
     let cx = -9999
     let cy = -9999
@@ -186,8 +196,11 @@ function ContourStrip({ top, w, h, dark }: { top: number; w: number; h: number; 
   useEffect(() => {
     const el = box.current
     if (!el) return
+    // Phones and tablets: thin lines look the same at normal resolution (a quarter of the memory of
+    // double), and there is no mouse for the glow, so its second canvas is skipped.
+    const touch = matchMedia('(pointer: coarse)').matches
     const draw = () => {
-      const dpr = Math.min(2, window.devicePixelRatio || 1)
+      const dpr = touch ? 1 : Math.min(2, window.devicePixelRatio || 1)
       const make = (color: string, alpha: number, cls: string) => {
         const c = document.createElement('canvas')
         c.width = Math.round(w * dpr)
@@ -198,15 +211,17 @@ function ContourStrip({ top, w, h, dark }: { top: number; w: number; h: number; 
         drawContours(ctx, w, h, color, alpha, top)
         return c
       }
-      el.replaceChildren(make(dark ? '#4fd1a0' : '#0b3d36', dark ? 0.09 : 0.1, 'backdrop-contours'), make(dark ? '#6ee7b7' : '#1f8a55', dark ? 0.85 : 0.7, 'backdrop-contours-glow'))
+      const base = make(dark ? '#4fd1a0' : '#0b3d36', dark ? 0.09 : 0.1, 'backdrop-contours')
+      if (touch) el.replaceChildren(base)
+      else el.replaceChildren(base, make(dark ? '#6ee7b7' : '#1f8a55', dark ? 0.85 : 0.7, 'backdrop-contours-glow'))
     }
-    // Draw it when it comes within a screen or so of view.
+    // Drawn when it comes within a screen or so of view, and let go again when it is far away, so
+    // a long page only ever holds the few strips around where you are (memory stays flat).
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          io.disconnect()
-          draw()
-        }
+        const near = entries.some((e) => e.isIntersecting)
+        if (near && !el.firstChild) draw()
+        else if (!near && el.firstChild) el.replaceChildren()
       },
       { rootMargin: '900px 0px' },
     )

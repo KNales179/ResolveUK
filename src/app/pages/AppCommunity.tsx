@@ -81,7 +81,7 @@ export function AppCommunity() {
           </div>
         </div>
 
-        <ul className="space-y-3 lg:max-h-[calc(58svh+2.6rem)] lg:overflow-y-auto lg:pr-1" data-lenis-prevent>
+        <ul className="space-y-3 lg:max-h-[calc(58svh+2.6rem)] lg:overflow-y-auto lg:pr-1" data-lenis-prevent data-tour="org-list">
           {orgs === null && [0, 1].map((i) => <li key={i}><SkeletonCard /></li>)}
           {orgs?.length === 0 && (
             <li className="card rounded-2xl p-6 text-center">

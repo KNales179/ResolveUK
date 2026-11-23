@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { toggleTheme, useThemeName } from '../lib/theme'
 import { usePageIntro } from '../lib/usePageIntro'
+import { TourProvider } from './tour/Tour'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Backdrop, VeinsSync } from '../components/site/Backdrop'
 import { LEAF_LEFT_PATH, LEAF_RIGHT_PATH, PIN_PATH, R_PATH } from '../components/site/logoPaths'
@@ -48,6 +49,7 @@ export function AppLayout() {
   usePageIntro(mainRef, location.pathname)
 
   return (
+    <TourProvider>
     <div className="relative min-h-svh pb-24 lg:pb-0">
       <VeinsSync />
       <Backdrop kind="page" />
@@ -108,6 +110,7 @@ export function AppLayout() {
         document.body,
       )}
     </div>
+    </TourProvider>
   )
 }
 
@@ -167,6 +170,9 @@ function AccountMenu() {
           {/* On phones and tablets Private land is not in the bottom bar, so it lives here. */}
           <Link role="menuitem" to="/app/clearance" className="app-menu-item lg:hidden" onClick={() => setOpen(false)}>
             <Icon name="truck" className="size-4" /> Private land
+          </Link>
+          <Link role="menuitem" to="/app/tutorial" className="app-menu-item" onClick={() => setOpen(false)}>
+            <Icon name="compass" className="size-4" /> How Resolve works
           </Link>
           <Link role="menuitem" to="/" className="app-menu-item" onClick={() => setOpen(false)}>
             <Icon name="home" className="size-4" /> Back to the website
