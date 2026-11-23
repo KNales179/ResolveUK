@@ -26,7 +26,7 @@ export function AppAdmin() {
           <p className="eyebrow mb-2">Checks and approvals</p>
           <h1 className="font-serif text-4xl sm:text-5xl">Admin</h1>
         </div>
-        <div className="flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Queue">
+        <div className="seg seg-2 flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Queue">
           {(
             [
               ['stories', 'Stories'],

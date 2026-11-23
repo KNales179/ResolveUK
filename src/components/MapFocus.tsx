@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { foldCredits } from '../lib/mapCredits'
 import { createPortal } from 'react-dom'
 import maplibregl, { type Map as MapLibreMap } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -50,6 +51,7 @@ export function MapFocus({ start, onPick, onClose, title = 'Choose the spot' }: 
       dragRotate: false,
       pitchWithRotate: false,
     })
+    foldCredits(m)
     m.touchZoomRotate.disableRotation()
     map.current = m
     let t = 0

@@ -44,8 +44,12 @@ function DrawnBackdrop({ kind }: { kind: 'home' | 'page' }) {
           ? `radial-gradient(40% 50% at 15% 20%, ${rgba('#1f7a5a', 0.5)}, transparent 70%), radial-gradient(45% 45% at 85% 25%, ${rgba('#0f5c4f', 0.55)}, transparent 70%), radial-gradient(50% 55% at 60% 90%, ${rgba('#3d6b3a', 0.4)}, transparent 70%)`
           : `radial-gradient(40% 50% at 12% 18%, ${rgba('#94c690', 0.5)}, transparent 70%), radial-gradient(45% 45% at 88% 22%, ${rgba('#99b788', 0.45)}, transparent 70%), radial-gradient(50% 55% at 62% 92%, ${rgba('#cfe3b8', 0.65)}, transparent 70%), radial-gradient(35% 35% at 40% 55%, ${rgba('#e4efd9', 0.85)}, transparent 70%)`
         const [c, ctx, w, h] = viewportCanvas()
+        // Phones and tablets: the leaves' softness is drawn into the picture once, rather than a
+        // live blur the phone re-applies (like Fico's background, which has no live blur at all).
+        const bake = matchMedia('(pointer: coarse), (max-width: 760px)').matches && 'filter' in ctx
+        if (bake) ctx.filter = 'blur(8px)'
         drawLeaves(ctx, w, h, ink)
-        c.className = 'backdrop-leaves'
+        c.className = bake ? 'backdrop-leaves is-baked' : 'backdrop-leaves'
         c.style.opacity = dark ? '0.11' : '0.15'
         el.append(mesh, c)
       }
@@ -190,6 +194,22 @@ function ScrollContours({ dark }: { dark: boolean }) {
   )
 }
 
+// One shared drawing thread for every strip, started the first time one is needed. Browsers that
+// can't hand a canvas to another thread draw on the page as before.
+let contourThread: Worker | null | undefined
+function drawingThread(): Worker | null {
+  if (contourThread !== undefined) return contourThread
+  try {
+    contourThread =
+      typeof OffscreenCanvas !== 'undefined' && 'transferControlToOffscreen' in HTMLCanvasElement.prototype
+        ? new Worker(new URL('../../lib/contourWorker.ts', import.meta.url), { type: 'module' })
+        : null
+  } catch {
+    contourThread = null
+  }
+  return contourThread
+}
+
 function ContourStrip({ top, w, h, dark }: { top: number; w: number; h: number; dark: boolean }) {
   const box = useRef<HTMLDivElement>(null)
 
@@ -206,9 +226,15 @@ function ContourStrip({ top, w, h, dark }: { top: number; w: number; h: number; 
         c.width = Math.round(w * dpr)
         c.height = Math.round(h * dpr)
         c.className = cls
-        const ctx = c.getContext('2d')!
-        ctx.scale(dpr, dpr)
-        drawContours(ctx, w, h, color, alpha, top)
+        const thread = drawingThread()
+        if (thread) {
+          const off = c.transferControlToOffscreen()
+          thread.postMessage({ canvas: off, w, h, dpr, color, alpha, top }, [off])
+        } else {
+          const ctx = c.getContext('2d')!
+          ctx.scale(dpr, dpr)
+          drawContours(ctx, w, h, color, alpha, top)
+        }
         return c
       }
       const base = make(dark ? '#4fd1a0' : '#0b3d36', dark ? 0.09 : 0.1, 'backdrop-contours')

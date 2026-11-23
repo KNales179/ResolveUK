@@ -130,7 +130,7 @@ export function AppStaff() {
         {/* The queue */}
         <section className="card rounded-3xl p-4 sm:p-5" data-tour="staff-queue">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Show">
+            <div className="seg seg-3 flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Show">
               {(
                 [
                   ['claim', 'To claim', toClaim.length],

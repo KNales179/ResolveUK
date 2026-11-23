@@ -68,7 +68,7 @@ export function AppRegisterOrg() {
       <BackLink to="/app/community">Community</BackLink>
       <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
         <h1 className="font-serif text-4xl">{kind === 'community' ? 'Start a community group' : 'Register a clearance company'}</h1>
-        <div className="flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="What are you registering">
+        <div className="seg flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="What are you registering">
           {(['community', 'commercial'] as const).map((k) => (
             <button key={k} type="button" aria-pressed={kind === k} onClick={() => setParams({ kind: k })} className="rounded-lg px-4 py-2 text-sm font-semibold text-soft hover:text-ink aria-pressed:bg-accent-vivid aria-pressed:text-accent-ink">
               {k === 'community' ? 'Community group' : 'Clearance company'}

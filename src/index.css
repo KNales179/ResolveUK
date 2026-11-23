@@ -1065,7 +1065,55 @@ table { max-width: 100%; }
      to be redrawn every frame, which kept a phone busy on every app page even when nothing else
      was happening. Still, it is drawn once and costs nothing more. */
   .backdrop-mesh, .backdrop-leaves { animation: none; }
+  /* And no live blur either: the colour fields are soft gradients already, and the leaves have
+     their blur drawn in (Backdrop.tsx). */
+  .backdrop-mesh, .backdrop-leaves.is-baked { filter: none; }
+  /* Sections are simply there as you scroll, instead of fading and rising in late, and the photo
+     prints are not dropped in one by one. */
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .js .reveal.in .snap { animation: none; }
 }
+
+/* Phones: a button whose words don't fit on one line wraps onto two inside the button, instead of
+   running past the edge of its card or the screen. */
+@media (max-width: 639px) { .btn { max-width: 100%; white-space: normal; text-align: center; text-wrap: balance; } }
+
+/* Tab groups (Everything / Problems / Updates…): on a phone they are one tidy grid of equal tabs
+   instead of wrapping one stray tab onto a second line. A long label wraps inside its own tab.
+   .seg-2 / .seg-3 are for groups with more tabs than fit in one row. */
+@media (max-width: 639px) {
+  .seg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+  .seg.seg-2, .seg.seg-3 { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .seg.seg-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .seg.seg-3 > :last-child:nth-child(3n + 2) { grid-column: span 2; }
+  .seg.seg-2 > :last-child:nth-child(odd) { grid-column: span 2; }
+  .seg > * { display: flex; min-width: 0; align-items: center; justify-content: center; gap: 0.3rem; padding-inline: 0.5rem; text-align: center; font-size: 0.8125rem; line-height: 1.2; }
+}
+
+/* The first paint, before the app's code loads (the markup is in index.html). */
+.boot { min-height: 100svh; background: var(--c-bg); }
+.boot-bar { display: flex; align-items: center; gap: 0.5rem; height: 4rem; padding: 0 1rem; border-bottom: 1px solid var(--c-line); }
+.boot-logo { width: 2.4rem; height: 2.4rem; margin-right: auto; border-radius: 0.7rem; }
+.boot-btn { width: 2.75rem; height: 2.75rem; border-radius: 0.85rem; }
+.boot-body { display: grid; gap: 0.85rem; max-width: 80rem; margin: 0 auto; padding: 2.75rem 1.25rem; }
+.boot-l { display: block; height: 0.95rem; max-width: 100%; }
+.boot-h { display: block; height: 2.5rem; max-width: 100%; border-radius: 0.6rem; }
+.boot-card { display: block; height: 13rem; margin-top: 0.9rem; border-radius: 1.5rem; }
+@media (min-width: 1024px) { .boot-bar { padding: 0 2rem; } .boot-body { padding: 4rem 2rem; } .boot-card + .boot-card { display: none; } }
+
+/* The open phone menu is a solid sheet over the whole page, at any width it shows. */
+.site-header:has(#mobile-menu) { background: color-mix(in oklab, var(--c-accent-vivid) 22%, var(--c-bg)); backdrop-filter: none; -webkit-backdrop-filter: none; }
+[data-theme="dark"] .site-header:has(#mobile-menu) { background: var(--c-bg); }
+
+/* Photos show a soft shimmer where they will be until they arrive, instead of an empty gap that
+   suddenly fills. The shimmer stops once the photo has loaded (main.tsx marks it), so nothing keeps
+   animating behind a photo. */
+img.object-cover:not(.is-loaded), .snap img:not(.is-loaded), .pic-load img:not(.is-loaded) {
+  background: linear-gradient(90deg, var(--c-surface2) 25%, color-mix(in oklab, var(--c-surface2) 60%, var(--c-line)) 50%, var(--c-surface2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { img.object-cover:not(.is-loaded), .snap img:not(.is-loaded), .pic-load img:not(.is-loaded) { animation: none; } }
 
 /* Outline buttons: on hover the brand green rises from the bottom and fills the button, and the
    text turns light as it does (solid, never see-through). Replaces the corner brackets on these
@@ -1106,7 +1154,9 @@ table { max-width: 100%; }
   details.acc > :not(summary) { opacity: 0; translate: 0 -6px; transition: opacity 0.3s ease 0.06s, translate 0.3s ease 0.06s; }
   details.acc[open] > :not(summary) { opacity: 1; translate: 0 0; }
 }
-.snap figcaption { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.55rem; font-family: var(--font-serif); font-style: italic; font-size: 0.95rem; color: #2b3330; }
+.snap figcaption { position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.55rem; font-family: var(--font-serif); font-style: italic; font-size: 0.95rem; line-height: 1.25; color: #2b3330; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* On a phone the prints are narrow: a smaller caption that stays on its one line under the photo. */
+@media (max-width: 639px) { .snap figcaption { font-size: 0.74rem; left: 0.55rem; right: 0.55rem; bottom: 0.6rem; } }
 /* Community: the steps as pins along a dashed walking trail. */
 .trail-line { position: absolute; left: 1.4rem; right: 1.4rem; top: 1.4rem; border-top: 2px dashed color-mix(in oklab, var(--c-accent-ink) 45%, transparent); }
 [data-theme="dark"] .trail-line { border-top-color: color-mix(in oklab, var(--c-accent) 55%, transparent); }

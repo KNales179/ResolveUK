@@ -15,7 +15,10 @@
     <title>Resolve UK · See it. Report it. Resolve it.</title>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- What shows the instant the page opens, before the app's code has loaded: the header and a
+         page in soft shimmering shapes (styles: .boot in src/index.css). React replaces it all as
+         soon as it starts. -->
+    <div id="root"><div class="boot" aria-hidden="true"><div class="boot-bar"><span class="skeleton boot-logo"></span><span class="skeleton boot-btn"></span><span class="skeleton boot-btn"></span></div><div class="boot-body"><span class="skeleton boot-l" style="width:7rem"></span><span class="skeleton boot-h" style="width:85%"></span><span class="skeleton boot-h" style="width:60%"></span><span class="skeleton boot-l" style="width:95%;margin-top:.6rem"></span><span class="skeleton boot-l" style="width:88%"></span><span class="skeleton boot-l" style="width:70%"></span><span class="skeleton boot-card"></span><span class="skeleton boot-card"></span></div></div></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

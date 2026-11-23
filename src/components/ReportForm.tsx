@@ -402,7 +402,7 @@ export function ReportForm({ done = '/reports', reporterId = null, demo = false 
                   <span className="tile-icon">
                     <Icon name={TYPE_ICON[c.code] ?? 'more'} />
                   </span>
-                  <span className="font-bold leading-tight">{c.label}</span>
+                  <span className="hyphens-auto break-words font-bold leading-tight">{c.label}</span>
                   <span className="text-xs text-soft">{TYPE_HINT[c.code] ?? ''}</span>
                 </label>
               ))}

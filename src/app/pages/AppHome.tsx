@@ -152,7 +152,7 @@ export function AppHome() {
           </div>
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-2">
-            <div className="flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Show">
+            <div className="seg flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Show">
               {FILTERS.map(([id, label]) => (
                 <button key={id} type="button" aria-pressed={kind === id} onClick={() => setKind(id)} className="rounded-lg px-3 py-1.5 text-sm font-semibold text-soft hover:text-ink aria-pressed:bg-accent-vivid aria-pressed:text-accent-ink">
                   {label}

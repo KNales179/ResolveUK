@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { foldCredits } from '../../lib/mapCredits'
 import { Icon } from '../../components/ui/Icon'
 
 const MapFocus = lazy(() => import('../../components/MapFocus').then((m) => ({ default: m.MapFocus })))
@@ -84,6 +85,7 @@ export function AreaMap({ orgs, focus, onPick, className = '' }: { orgs: Org[]; 
   useEffect(() => {
     if (!box.current) return
     const m = new maplibregl.Map({ container: box.current, style: STYLES[theme], center: [-2.5, 54.2], zoom: 5, attributionControl: { compact: true } })
+    foldCredits(m)
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
     map.current = m
     const draw = () => {
@@ -170,6 +172,7 @@ export function AreaPicker({ value, onChange, start }: { value: Polygon | null; 
   useEffect(() => {
     if (!box.current) return
     const m = new maplibregl.Map({ container: box.current, style: STYLES[theme], center: start ?? [-2.5, 54.2], zoom: start ? 12 : 5.2, attributionControl: { compact: true } })
+    foldCredits(m)
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
     m.doubleClickZoom.disable()
     map.current = m
@@ -242,6 +245,7 @@ export function PointPicker({ value, onChange, className = '', readOnly = false 
   useEffect(() => {
     if (!box.current) return
     const m = new maplibregl.Map({ container: box.current, style: STYLES[theme], center: value ?? [-2.5, 54.2], zoom: value ? 14 : 5.2, attributionControl: { compact: true } })
+    foldCredits(m)
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
     map.current = m
     m.on('load', () => {

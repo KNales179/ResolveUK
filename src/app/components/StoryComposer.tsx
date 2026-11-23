@@ -87,7 +87,7 @@ export function StoryComposer({ report }: { report: Report }) {
 
       {open ? (
         <div className="mt-4">
-          <div className="mb-3 flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="What are you posting?">
+          <div className="mb-3 seg flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="What are you posting?">
             {KINDS.map(([k, label]) => (
               <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)} className="flex-1 rounded-lg px-3 py-1.5 text-sm font-semibold text-soft hover:text-ink aria-pressed:bg-accent-vivid aria-pressed:text-accent-ink">
                 {label}

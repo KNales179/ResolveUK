@@ -279,23 +279,26 @@ function HeroCardStack({ reports, usingSamples }: { reports: Report[]; usingSamp
 
   return (
     // .stack-idle opts the stack out of the site-wide CursorTag — it shows its own tag instead.
-    <div ref={rootRef} className="stack-idle relative h-[19.5rem] sm:h-[18rem]">
+    // The cards share one grid cell instead of a fixed height, so the stack is always as tall as its
+    // longest card: a long title or buttons wrapping on a small phone can never spill out of it.
+    <div ref={rootRef} className="stack-idle relative grid">
       {display.map((s, i) => (
-        <div key={s.id} className={`stack-card card stack-tint-${(i % 3) + 1} absolute inset-0 cursor-pointer rounded-2xl px-4 pb-6 pt-4 shadow-xl`}>
+        <div key={s.id} className={`stack-card card stack-tint-${(i % 3) + 1} relative [grid-area:1/1] cursor-pointer rounded-2xl px-4 pb-6 pt-4 shadow-xl`}>
           {usingSamples && <span className="absolute -top-3 right-5 z-10 rounded-md bg-honey px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-widest text-honey-ink">Sample</span>}
           <div className="flex gap-3.5">
-            <img src={s.img} alt={s.alt} loading="lazy" decoding="async" className="stack-card-media size-24 shrink-0 rounded-xl object-cover" />
+            <img src={s.img} alt={s.alt} loading="lazy" decoding="async" className="stack-card-media size-20 shrink-0 rounded-xl object-cover sm:size-24" />
             <div className="stack-card-text min-w-0">
               <span className={`pill pill-${s.group}`}>{s.label}</span>
-              <h3 className="mt-2 text-base font-semibold leading-snug">{s.title}</h3>
+              <h3 className="mt-2 line-clamp-3 text-[0.95rem] font-semibold leading-snug sm:text-base">{s.title}</h3>
               <p className="mt-1 text-xs text-soft">{s.time}</p>
             </div>
           </div>
           <ol className="stack-card-text mt-5 grid grid-cols-4 gap-1.5 text-[0.65rem] font-medium text-soft" aria-label="Progress">
             {['Reported', 'Acknowledged', 'Cleared', 'Verified'].map((label, i2) => (
-              <li key={label} className="text-center">
+              <li key={label} className="min-w-0 hyphens-auto break-words text-center">
                 <span className={`mb-1.5 block h-1 rounded-full ${i2 < s.step ? 'bg-accent' : 'bg-line'}`} />
-                {label}
+                {/* A marked break point, so on the narrowest phones it reads "Acknow-ledged". */}
+                {label === 'Acknowledged' ? 'Acknow­ledged' : label}
               </li>
             ))}
           </ol>
@@ -312,7 +315,7 @@ function HeroCardStack({ reports, usingSamples }: { reports: Report[]; usingSamp
               // with, so swapping label never shifts anything.
               <div className="stack-card-text mt-4 border-t border-line pt-4">
                 <p className="text-sm font-medium">{displayBackers} people back this</p>
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2.5 sm:gap-4">
                   {/* Both wrappers stay the same element across re-renders (only their inner
                       content swaps between a real control and a plain label) — the GSAP effect
                       below attaches its hover listeners to these wrappers once, on mount, and
@@ -408,7 +411,8 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    if (reducedMotion()) return
+    // Phones and tablets open straight onto the finished hero (see usePageIntro for why).
+    if (reducedMotion() || matchMedia('(pointer: coarse), (max-width: 760px)').matches) return
     const ctx = gsap.context(() => {
       const lines = gsap.utils.toArray<HTMLElement>('.hero-line-inner')
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } })

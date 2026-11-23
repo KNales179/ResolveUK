@@ -348,7 +348,7 @@ function StaffPanel({ report, live, jobs, demo, onJobs, onStory }: { report: Rep
       {/* An official update */}
       <div className="mt-5 border-t border-line pt-4">
         <p className="text-sm font-semibold">Post an official update</p>
-        <div className="mt-2 flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Kind of update">
+        <div className="mt-2 seg flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Kind of update">
           {(['progress', 'resolved'] as const).map((k) => (
             <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)} className="flex-1 rounded-lg px-3 py-1.5 text-sm font-semibold text-soft hover:text-ink aria-pressed:bg-accent-vivid aria-pressed:text-accent-ink">
               {k === 'progress' ? 'Progress' : 'Resolved'}

@@ -7,7 +7,9 @@ import { gsap, ScrollTrigger, reducedMotion } from './gsap'
 // on whichever page actually uses GSAP scroll animation.
 export function useLenis(): void {
   useEffect(() => {
-    if (reducedMotion()) return
+    // Touch screens scroll natively (Lenis leaves touch alone anyway), so it isn't run there at all
+    // rather than ticking every frame for nothing.
+    if (reducedMotion() || matchMedia('(pointer: coarse)').matches) return
     const lenis = new Lenis()
     document.documentElement.classList.add('lenis')
     lenis.on('scroll', ScrollTrigger.update)

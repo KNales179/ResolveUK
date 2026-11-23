@@ -20,6 +20,40 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '3.16.5',
+    date: '2026-11-24',
+    title: 'Smooth like a native app',
+    highlights: [
+      {
+        icon: 'rotate',
+        title: 'Scrolling never waits for the background',
+        body: 'The contour lines behind the pages are now drawn to one side, away from the page itself, so scrolling never stops to draw them. On phones the app’s soft background no longer runs a live blur. Moving between pages keeps the header and menu in place and shows a skeleton only where the new page is arriving.',
+      },
+      {
+        icon: 'check',
+        title: 'Everything stays in its box',
+        body: 'Every page was checked on phones and tablets for words or buttons spilling out of their cards. Buttons now wrap onto two lines when a phone is too narrow, tab groups in the app line up as equal tabs, the report form’s category names fit their tiles, the map’s "Choose on a big map" button sits on the map, and the chart legend on Why this matters no longer overlaps on tablets.',
+      },
+    ],
+  },
+  {
+    version: '3.16.4',
+    date: '2026-11-24',
+    title: 'Smoother on phones',
+    highlights: [
+      {
+        icon: 'rotate',
+        title: 'Pages open straight away on phones',
+        body: 'On phones and tablets the sections no longer fade in as you scroll: the page is simply there. While something is still on its way, a soft shimmering shape holds its place, from the very first moment the site opens to each photo as it loads.',
+      },
+      {
+        icon: 'check',
+        title: 'Tidier on small screens',
+        body: 'The guided tour now lights up exactly the part it is talking about, even on long pages. The phone menu covers the whole screen. The region chart on Why this matters gives every bar the full width on a phone. Photo captions, the sample report on the home page and the map credits all stay inside their space.',
+      },
+    ],
+  },
+  {
     version: '3.16.3',
     date: '2026-11-23',
     title: 'Fits the smallest phones',

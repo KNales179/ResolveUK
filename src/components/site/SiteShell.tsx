@@ -71,6 +71,16 @@ function Nav() {
   const open = openOn === pathname
   const setOpen = (next: boolean | ((o: boolean) => boolean)) =>
     setOpenOn((typeof next === 'function' ? next(open) : next) ? pathname : null)
+  // While the phone menu is open it covers the whole screen and the page behind stays still.
+  useEffect(() => {
+    if (!open) return
+    const html = document.documentElement
+    const was = html.style.overflow
+    html.style.overflow = 'hidden'
+    return () => {
+      html.style.overflow = was
+    }
+  }, [open])
 
   return (
     <header className="site-header fixed inset-x-0 top-0 z-40 border-b border-line">
@@ -121,7 +131,7 @@ function Nav() {
           </div>
         </nav>
         {open && (
-          <div id="mobile-menu" data-lenis-prevent className="max-h-[calc(100svh-4rem)] overflow-y-auto overscroll-contain border-t border-line py-3 xl:hidden">
+          <div id="mobile-menu" data-lenis-prevent className="h-[calc(100dvh-4rem-1px)] overflow-y-auto overscroll-contain border-t border-line pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 xl:hidden">
             <div className="grid gap-1 text-base font-semibold">
               <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/">
                 Home

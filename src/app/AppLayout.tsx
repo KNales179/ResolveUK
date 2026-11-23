@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { toggleTheme, useThemeName } from '../lib/theme'
-import { usePageIntro } from '../lib/usePageIntro'
+import { PageIntro } from '../components/site/PageTransition'
+import { PageSkeleton } from '../components/ui/Skeleton'
 import { TourProvider } from './tour/Tour'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Backdrop, VeinsSync } from '../components/site/Backdrop'
@@ -40,13 +41,11 @@ export function AppLayout() {
   const items = ITEMS.filter((i) => !i.show || canSee(s.role, i.show))
   const bottomItems = items.filter((i) => i.bottom !== false)
   const location = useLocation()
-  const mainRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname])
   // The same page entrance as the public site, on every app page.
-  usePageIntro(mainRef, location.pathname)
 
   return (
     <TourProvider>
@@ -82,8 +81,15 @@ export function AppLayout() {
         </div>
       </header>
 
-      <main ref={mainRef} className="relative">
-        <Outlet />
+      <main className="relative">
+        {/* Like Fico: each section has its own loading boundary, so the header and tab bar stay put
+            and only this area shows a skeleton while a page's code arrives. Keyed by section (a
+            report opening in the drawer is still the Reports page, so it never remounts it). */}
+        <Suspense key={location.pathname.startsWith('/app/reports') ? '/app/reports' : location.pathname} fallback={<PageSkeleton />}>
+          <PageIntro id={location.pathname}>
+            <Outlet />
+          </PageIntro>
+        </Suspense>
       </main>
 
       {/* Phones and tablets: the sections as a bottom tab bar, in thumb reach. */}

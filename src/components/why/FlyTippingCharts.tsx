@@ -159,20 +159,21 @@ export function RegionChart() {
       note="Fly-tipping incidents per 1,000 people, 2024/25. The dashed line is the England average, 21.4."
       table={<Table head={['Region', 'Per 1,000 people']} rows={[...REGIONS.map(([r, v]) => [r, v.toFixed(1)]), ['England', ENGLAND.toFixed(1)]]} />}
     >
-      <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 border-l-2 border-dashed border-[var(--c-ink)] opacity-40" style={{ left: `calc(9.5rem + (100% - 9.5rem - 2.5rem) * ${ENGLAND / RMAX})` }} aria-hidden="true" />
-        <ul className="space-y-1.5">
-          {REGIONS.map(([region, v]) => (
-            <li key={region} className="grid grid-cols-[9.5rem_1fr_2.5rem] items-center gap-0 text-sm">
-              <span className="truncate pr-3 text-soft" title={region}>{region === 'Yorkshire and The Humber' ? 'Yorkshire & Humber' : region}</span>
-              <span className="h-5">
-                <span className="series-1-bg block h-full rounded-r" style={{ width: `${(v / RMAX) * 100}%` }} />
-              </span>
-              <span className="pl-2 text-right text-xs font-semibold tabular-nums">{v.toFixed(1)}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* On a phone each region gets the full width for its bar, with its name and rate above it;
+          from tablet size the name, bar and rate sit side by side. The dashed mark on every bar is
+          the England average. */}
+      <ul className="space-y-3 sm:space-y-1.5">
+        {REGIONS.map(([region, v]) => (
+          <li key={region} className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-1.5 text-sm sm:grid-cols-[9.5rem_1fr_2.75rem] sm:gap-0">
+            <span className="truncate text-soft sm:pr-3" title={region}>{region === 'Yorkshire and The Humber' ? 'Yorkshire & Humber' : region}</span>
+            <span className="text-right font-semibold tabular-nums sm:order-3 sm:pl-2 sm:text-xs">{v.toFixed(1)}</span>
+            <span className="relative col-span-2 h-4 rounded-full bg-[color-mix(in_oklab,var(--c-ink)_7%,transparent)] sm:order-2 sm:col-span-1 sm:h-5 sm:rounded-none sm:bg-transparent">
+              <span className="series-1-bg block h-full rounded-full sm:rounded-l-none sm:rounded-r" style={{ width: `${(v / RMAX) * 100}%` }} />
+              <span className="pointer-events-none absolute -inset-y-1 border-l-2 border-dashed border-[var(--c-ink)] opacity-40" style={{ left: `${(ENGLAND / RMAX) * 100}%` }} aria-hidden="true" />
+            </span>
+          </li>
+        ))}
+      </ul>
     </Frame>
   )
 }
@@ -214,7 +215,7 @@ export function PlacesChart() {
           />
         ))}
       </div>
-      <ul className="mt-5 grid gap-x-6 gap-y-2.5 text-sm sm:grid-cols-2">
+      <ul className="mt-5 grid gap-x-6 gap-y-2.5 text-sm sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {PLACES.map(([place, n, cls], i) => (
           <li key={place} className={`flex items-center gap-2.5 transition-opacity ${on !== null && on !== i ? 'opacity-50' : ''}`} onMouseEnter={() => setOn(i)} onMouseLeave={() => setOn(null)}>
             <span className={`size-3 shrink-0 rounded-sm ${cls}-bg`} />

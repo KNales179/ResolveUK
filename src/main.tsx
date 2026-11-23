@@ -11,6 +11,14 @@ import { initServiceWorker } from './lib/swUpdate'
 
 initServiceWorker()
 
+// Photos shimmer (index.css) until they arrive; this marks each one as loaded, or as failed, so the
+// shimmer stops. Load and error events don't bubble, so this listens in the capture phase.
+const markLoaded = (e: Event) => {
+  if (e.target instanceof HTMLImageElement) e.target.classList.add('is-loaded')
+}
+document.addEventListener('load', markLoaded, true)
+document.addEventListener('error', markLoaded, true)
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

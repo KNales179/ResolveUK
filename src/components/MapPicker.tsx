@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { foldCredits } from '../lib/mapCredits'
 import maplibregl, { type GeoJSONSource, type Map as MapLibreMap, type Marker } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import '../map.css'
@@ -101,6 +102,7 @@ export function MapPicker({ position, onChange, onLocate, locating, onExpand }: 
         dragRotate: false,
         pitchWithRotate: false,
       })
+      foldCredits(m)
     } catch {
       setFailed(true)
       return
@@ -187,7 +189,7 @@ export function MapPicker({ position, onChange, onLocate, locating, onExpand }: 
         </button>
       </div>
       {onExpand && (
-        <button type="button" className="map-expand btn btn-ghost btn-sm" onClick={onExpand}>
+        <button type="button" className="map-expand btn btn-ghost btn-sm absolute" onClick={onExpand}>
           <Icon name="expand" className="size-4" /> {position ? 'Fine-tune on a big map' : 'Choose on a big map'}
         </button>
       )}

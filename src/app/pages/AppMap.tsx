@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { foldCredits } from '../../lib/mapCredits'
 import { Link, useNavigate } from 'react-router-dom'
 import maplibregl, { type Map as MapLibreMap, type Marker } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -59,6 +60,7 @@ export function AppMap() {
   useEffect(() => {
     if (!box.current || map.current) return
     const m = new maplibregl.Map({ container: box.current, style: STYLES[theme], center: [-2.5, 54.2], zoom: 5, attributionControl: { compact: true } })
+    foldCredits(m)
     m.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right')
     map.current = m
     // The map measures its box when it is created, which can be before the page has finished

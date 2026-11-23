@@ -64,7 +64,7 @@ export function AppCommunity() {
         </div>
       )}
 
-      <div className="mt-6 flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Show">
+      <div className="mt-6 seg flex flex-wrap gap-1 rounded-xl border border-line bg-[var(--c-field)] p-1" role="group" aria-label="Show">
         {TABS.map(([id, label]) => (
           <button key={id} type="button" aria-pressed={tab === id} onClick={() => setTab(id)} className="rounded-lg px-4 py-2 text-sm font-semibold text-soft transition hover:text-ink aria-pressed:bg-accent-vivid aria-pressed:text-accent-ink">
             {label}
