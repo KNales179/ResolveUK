@@ -16,13 +16,17 @@ interface Item {
   end?: boolean
   short?: string
   show?: 'staff' | 'admin'
+  /** false: kept off the phone's bottom bar (used less often; it is in the account menu there). */
+  bottom?: boolean
 }
 const ITEMS: Item[] = [
   { to: '/app', label: 'Home', icon: 'home', end: true },
   { to: '/app/reports', label: 'Reports', icon: 'layers' },
   { to: '/app/map', label: 'Map', icon: 'map' },
   { to: '/app/community', label: 'Community', icon: 'users' },
-  { to: '/app/clearance', label: 'Private land', short: 'Land', icon: 'truck' },
+  // Most residents rarely need it, so on phones it moves to the account menu, which also leaves
+  // fewer, wider tabs in the bottom bar (frequency of use, Fitts's law).
+  { to: '/app/clearance', label: 'Private land', short: 'Land', icon: 'truck', bottom: false },
   { to: '/app/staff', label: 'Staff', icon: 'building', show: 'staff' },
   { to: '/app/admin', label: 'Admin', icon: 'shield', show: 'admin' },
 ]
@@ -33,6 +37,7 @@ const ITEMS: Item[] = [
 export function AppLayout() {
   const s = useAppSession()
   const items = ITEMS.filter((i) => !i.show || canSee(s.role, i.show))
+  const bottomItems = items.filter((i) => i.bottom !== false)
   const location = useLocation()
   const mainRef = useRef<HTMLElement>(null)
 
@@ -82,8 +87,8 @@ export function AppLayout() {
       {/* Phones and tablets: the sections as a bottom tab bar, in thumb reach. */}
       {createPortal(
         <nav className="app-bottom-nav fixed inset-x-0 bottom-0 z-40 border-t border-line lg:hidden" aria-label="App sections" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-          <ul className="mx-auto grid max-w-xl" style={{ gridTemplateColumns: `repeat(${items.length + (items.length <= 5 ? 1 : 0)}, minmax(0, 1fr))` }}>
-            {items.map((i) => (
+          <ul className="mx-auto grid max-w-xl" style={{ gridTemplateColumns: `repeat(${bottomItems.length + (bottomItems.length <= 5 ? 1 : 0)}, minmax(0, 1fr))` }}>
+            {bottomItems.map((i) => (
               <li key={i.to}>
                 <NavLink to={i.to} end={i.end} className={({ isActive }) => `app-bottom-tab ${isActive ? 'app-bottom-tab-on' : ''}`} data-no-tag>
                   <Icon name={i.icon} className="size-5" />
@@ -92,7 +97,7 @@ export function AppLayout() {
               </li>
             ))}
             {/* With more than five sections the account stays in the avatar menu at the top. */}
-            {items.length <= 5 && <li>
+            {bottomItems.length <= 5 && <li>
               <NavLink to="/app/account" className={({ isActive }) => `app-bottom-tab ${isActive ? 'app-bottom-tab-on' : ''}`} data-no-tag>
                 <Icon name="user" className="size-5" />
                 <span>Account</span>
@@ -158,6 +163,10 @@ function AccountMenu() {
           <div className="my-1 h-px bg-line" />
           <Link role="menuitem" to="/app/account" className="app-menu-item" onClick={() => setOpen(false)}>
             <Icon name="user" className="size-4" /> Your account
+          </Link>
+          {/* On phones and tablets Private land is not in the bottom bar, so it lives here. */}
+          <Link role="menuitem" to="/app/clearance" className="app-menu-item lg:hidden" onClick={() => setOpen(false)}>
+            <Icon name="truck" className="size-4" /> Private land
           </Link>
           <Link role="menuitem" to="/" className="app-menu-item" onClick={() => setOpen(false)}>
             <Icon name="home" className="size-4" /> Back to the website

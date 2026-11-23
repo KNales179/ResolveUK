@@ -30,7 +30,8 @@ export function usePageIntro(root: RefObject<HTMLElement | null>, key: string, e
       const rest = intro.filter((el) => el.tagName !== 'H1')
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
       if (heads.length) tl.from(heads, { y: 34, opacity: 0, filter: 'blur(6px)', duration: 0.8, clearProps: 'filter,transform,opacity' }, 0)
-      if (rest.length) tl.from(rest, { y: 22, opacity: 0, duration: 0.65, stagger: 0.06, clearProps: 'transform,opacity' }, 0.08)
+      // A slight overshoot as each one lands (follow-through), rather than a dead stop.
+      if (rest.length) tl.from(rest, { y: 22, opacity: 0, duration: 0.7, stagger: 0.06, ease: 'back.out(1.3)', clearProps: 'transform,opacity' }, 0.08)
 
       const later = outermost(all(LATER).filter((el) => el.getBoundingClientRect().top >= fold && !intro.some((i) => i.contains(el))))
       if (later.length) {

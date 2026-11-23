@@ -32,6 +32,7 @@ const PATHS = {
   'eye-off': '<path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M6.2 6.3C3.9 7.9 2 12 2 12s4 7 10 7c1.9 0 3.6-.5 5-1.3M17.9 17.8C19.9 16.2 22 12 22 12s-1.7-3-4.6-5"/><path d="M14.1 5.3A10 10 0 0 0 12 5C6 5 2 12 2 12"/>',
   map: '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
+  expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',
   minus: '<path d="M5 12h14"/>',
   layers: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
   more: '<circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/>',

@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { ReporterAuthProvider, useReporterAuth } from '../lib/reporterAuth'
 import { supabase } from '../lib/supabase'
+import { onOtherTab, tellOtherTabs } from '../lib/tabSync'
 
 // Who is using the app at /app, and what they can see.
 //
@@ -36,6 +37,7 @@ function writeDemo(role: AppRole | null) {
   try {
     if (role) localStorage.setItem(DEMO_KEY, JSON.stringify({ role }))
     else localStorage.removeItem(DEMO_KEY)
+    tellOtherTabs({ type: 'demo', role })
   } catch {
     // storage blocked: the demo still runs for this visit
   }
@@ -93,6 +95,14 @@ function SessionInner({ children }: { children: ReactNode }) {
     writeDemo(null)
     setDemoRoleState(null)
   }, [])
+  // Starting, switching or leaving the demo in another tab does the same here.
+  useEffect(
+    () =>
+      onOtherTab((msg) => {
+        if (msg.type === 'demo') setDemoRoleState(msg.role ? readDemo() : null)
+      }),
+    [],
+  )
 
   const value = useMemo<AppSession>(() => {
     if (demoRole) {

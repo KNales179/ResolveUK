@@ -9,6 +9,7 @@ import { photoUrl } from '../lib/photos'
 import { backersOf, STATUS_LABELS, statusGroup, type StatusGroup } from '../lib/status'
 import { useReports } from '../lib/useReports'
 import type { Report } from '../types'
+import { SentNotice } from '../components/ui/SentNotice'
 
 const FILTERS: Array<[StatusGroup | 'all', string]> = [
   ['all', 'All'],
@@ -77,9 +78,7 @@ export function ReportsPage({ demo = false, storySlot }: { demo?: boolean; story
         </div>
 
         {notice && (
-          <p className="msg msg-ok mt-8" role="status">
-            {notice}
-          </p>
+          <SentNotice text={notice} className="mt-8" />
         )}
 
         <div className="rise relative z-20 mt-10 flex flex-wrap items-center gap-3" style={{ animationDelay: '.1s' }}>
@@ -125,7 +124,7 @@ export function ReportsPage({ demo = false, storySlot }: { demo?: boolean; story
               <li key={r.id}>
                 <Link to={`${base}/${r.id}`} className="card group flex h-full flex-col rounded-3xl text-left transition hover:border-ink/40" data-report={r.id} data-tag="View details">
                   <span className="relative block aspect-[4/3] w-full overflow-hidden rounded-t-3xl bg-surface2">
-                    <img src={photoUrl(r.photo_path)} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" />
+                    <img src={photoUrl(r.photo_path)} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105" />
                     <span className="absolute left-3 top-3">
                       <span className={`pill pill-${statusGroup(r.current_status)}`}>{STATUS_LABELS[r.current_status]}</span>
                     </span>

@@ -49,19 +49,23 @@ interface Props {
   onChange: (position: Position) => void
   onLocate: () => void
   locating: boolean
+  /** Opens the big, full-screen picker. On a touch screen, tapping the small map opens it too. */
+  onExpand?: () => void
 }
 
-export function MapPicker({ position, onChange, onLocate, locating }: Props) {
+const touch = () => matchMedia('(pointer: coarse)').matches
+
+export function MapPicker({ position, onChange, onLocate, locating, onExpand }: Props) {
   const box = useRef<HTMLDivElement>(null)
   const map = useRef<MapLibreMap | null>(null)
   const marker = useRef<Marker | null>(null)
-  const latest = useRef({ position, onChange })
+  const latest = useRef({ position, onChange, onExpand })
   const theme = useThemeName()
   const firstTheme = useRef(theme)
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
-    latest.current = { position, onChange }
+    latest.current = { position, onChange, onExpand }
   })
 
   // Draws (or clears) the circle showing how far out the phone's location might be.
@@ -110,7 +114,12 @@ export function MapPicker({ position, onChange, onLocate, locating }: Props) {
       const { lng, lat } = pin.getLngLat()
       latest.current.onChange({ lat, lng, accuracy: null, source: 'manual' })
     })
-    m.on('click', (e) => latest.current.onChange({ lat: e.lngLat.lat, lng: e.lngLat.lng, accuracy: null, source: 'manual' }))
+    // On a phone a small map is fiddly, so a tap opens the big picker; with a mouse, a click
+    // drops the pin right there.
+    m.on('click', (e) => {
+      if (touch() && latest.current.onExpand) return latest.current.onExpand()
+      latest.current.onChange({ lat: e.lngLat.lat, lng: e.lngLat.lng, accuracy: null, source: 'manual' })
+    })
     m.on('style.load', drawAccuracy)
 
     return () => {
@@ -177,6 +186,11 @@ export function MapPicker({ position, onChange, onLocate, locating }: Props) {
           <Icon name="crosshair" className={`size-4 ${locating ? 'animate-pulse text-accent' : ''}`} />
         </button>
       </div>
+      {onExpand && (
+        <button type="button" className="map-expand btn btn-ghost btn-sm" onClick={onExpand}>
+          <Icon name="expand" className="size-4" /> {position ? 'Fine-tune on a big map' : 'Choose on a big map'}
+        </button>
+      )}
     </div>
   )
 }

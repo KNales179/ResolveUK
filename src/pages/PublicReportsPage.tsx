@@ -8,6 +8,7 @@ import { photoUrl } from '../lib/photos'
 import { STATUS_LABELS, statusGroup } from '../lib/status'
 import { useReports } from '../lib/useReports'
 import { fetchPublishedStories, type Story } from '../lib/stories'
+import { SentNotice } from '../components/ui/SentNotice'
 
 const TYPE_ICON: Record<string, IconName> = { 'fly-tipping': 'trash', pothole: 'road', graffiti: 'spray', 'abandoned-vehicle': 'car', 'damaged-infrastructure': 'lamp', other: 'more' }
 const SHOWN = 6
@@ -51,9 +52,7 @@ export function PublicReportsPage() {
         </div>
 
         {notice && (
-          <p className="msg msg-ok mt-8" role="status">
-            {notice}
-          </p>
+          <SentNotice text={notice} className="mt-8" />
         )}
 
         <ul className="report-grid mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

@@ -30,11 +30,15 @@ export function AppRegisterOrg() {
     if (name.trim().length < 2) return setError('Give it a name.')
     if (areaLabel.trim().length < 2) return setError('Say which area it covers, in a few words.')
     if (!area) return setError('Outline the area it covers on the map: click at least three points.')
-    if (kind === 'commercial' && carrier.trim().length < 4) return setError('A clearance company needs its waste carrier registration number.')
+    // Accept it however it is typed ("cbdu 123-456", stray spaces in an email) and tidy it here,
+    // rather than making the person fix the format.
+    const carrierClean = carrier.replace(/[\s\-./]/g, '').toUpperCase()
+    const emailClean = email.trim().toLowerCase()
+    if (kind === 'commercial' && carrierClean.length < 4) return setError('A clearance company needs its waste carrier registration number.')
     if (!agree) return setError('Please tick the box to confirm.')
     if (!s.demo) {
       setBusy(true)
-      const problem = await registerOrg({ kind, name, description, area, areaLabel, meets, contactEmail: email, wasteCarrierNumber: carrier })
+      const problem = await registerOrg({ kind, name: name.trim(), description: description.trim(), area, areaLabel: areaLabel.trim(), meets: meets.trim(), contactEmail: emailClean, wasteCarrierNumber: carrierClean })
       setBusy(false)
       if (problem) return setError(problem)
     }

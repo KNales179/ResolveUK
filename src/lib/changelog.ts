@@ -20,6 +20,50 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '3.15.3',
+    date: '2026-11-23',
+    title: 'A big map for choosing the spot, and devices that move like people',
+    highlights: [
+      {
+        icon: 'map',
+        title: 'Choose the spot on a big map',
+        body: '"Choose on a big map" opens a full-screen map with a pin fixed in the middle: drag the map under it, or search for a street, postcode or place. It shows the address under the pin as you go, and "Use this spot" sets it. On a phone, tapping the small map opens it. Works for reports and for private land requests.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'The About page devices, used like a person would',
+        body: 'The laptop scrolls with a mouse wheel and clicks through Home, Reported problems and Community with a cursor. The tablet and phone flick through the app and tap into a report and the map. Headers and tab bars stay fixed while the page scrolls under them.',
+      },
+    ],
+  },
+  {
+    version: '3.14.1',
+    date: '2026-11-22',
+    title: 'Snappier to use, and tabs that stay in step',
+    highlights: [
+      {
+        icon: 'sparkles',
+        title: 'Buttons you can feel',
+        body: 'Buttons dip as you press them and spring back when you let go. Thanking a post, saying you have seen a problem too, or following a report now pops with a burst and a little "+1", and sending a report shows a tick that draws itself.',
+      },
+      {
+        icon: 'check',
+        title: 'No more waiting on small things',
+        body: '"I have seen this too" and Follow now change straight away instead of showing "Saving…", and quietly undo themselves if something goes wrong.',
+      },
+      {
+        icon: 'users',
+        title: 'Easier on a phone',
+        body: 'Every button, tab and map control is now at least a finger-width (44px) to tap. Private land moved from the bottom bar into the account menu, leaving fewer, wider tabs for the things you use most.',
+      },
+      {
+        icon: 'layers',
+        title: 'All your tabs stay in step',
+        body: 'Switching light or dark, starting or leaving the demo, switching its role, or reading notifications in one tab now updates every other open tab of the site. If you sign out in one tab, the others say so on the sign-in screen.',
+      },
+    ],
+  },
+  {
     version: '3.13.6',
     date: '2026-11-21',
     title: 'Smoother pages, clearer maps and the right logo colours',

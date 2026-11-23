@@ -20,6 +20,7 @@ const inUK = (p: Position) => p.lat >= UK_BOUNDS.minLat && p.lat <= UK_BOUNDS.ma
 
 // The map library is large, so it loads in the background and the form is usable straight away.
 const MapPicker = lazy(() => import('./MapPicker').then((m) => ({ default: m.MapPicker })))
+const MapFocus = lazy(() => import('./MapFocus').then((m) => ({ default: m.MapFocus })))
 
 const TYPE_ICON: Record<string, IconName> = {
   'fly-tipping': 'trash',
@@ -94,6 +95,7 @@ export function ReportForm({ done = '/reports', reporterId = null, demo = false 
   const [dragging, setDragging] = useState(false)
   const [position, setPosition] = useState<Position | null>(null)
   const [locating, setLocating] = useState(false)
+  const [focusMap, setFocusMap] = useState(false) // the big, full-screen map picker
   const [geoError, setGeoError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -306,7 +308,18 @@ export function ReportForm({ done = '/reports', reporterId = null, demo = false 
 
   const map = (
     <Suspense fallback={<div className="skeleton size-full rounded-none" aria-label="Loading the map" />}>
-      <MapPicker position={position} onChange={setPosition} onLocate={() => findMe()} locating={locating} />
+      <MapPicker position={position} onChange={setPosition} onLocate={() => findMe()} locating={locating} onExpand={() => setFocusMap(true)} />
+      {focusMap && (
+        <MapFocus
+          title="Where is the problem?"
+          start={position}
+          onClose={() => setFocusMap(false)}
+          onPick={(p) => {
+            setPosition({ ...p, accuracy: null, source: 'manual' })
+            setFocusMap(false)
+          }}
+        />
+      )}
     </Suspense>
   )
 

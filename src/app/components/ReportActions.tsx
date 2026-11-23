@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../../components/ui/Icon'
 import { timeAgo } from '../../lib/format'
 import { photoUrl } from '../../lib/photos'
+import { celebrate } from '../../lib/feedback'
 import { checkCleared, fetchJobsForReport, isFollowing, JOB_STATUS_LABEL, offerJob, orgsForReport, postStaffUpdate, sampleJobs, setFollowing, VOLUNTEER_SAFE, withdrawJob, type Job } from '../../lib/jobs'
 import { KIND_LABEL } from '../../lib/orgs'
 import { fetchReportStories, sampleStories, STORY_KIND_LABEL, type Story } from '../../lib/stories'
@@ -91,11 +92,14 @@ function WhoHasIt({ report, live, done, demo }: { report: Report; live?: Job; do
     }
   }, [report.id, demo, s.userId])
 
-  async function toggle() {
-    if (demo) return setFollow((f) => !f)
-    if (!s.userId) return
+  // Switches straight away, then switches back if the server says no.
+  async function toggle(el?: HTMLElement) {
+    const next = !following
+    if (next) celebrate(el ?? null)
+    setFollow(next)
+    if (demo || !s.userId) return
     setBusy(true)
-    if (await setFollowing(report.id, !following, s.userId)) setFollow(!following)
+    if (!(await setFollowing(report.id, next, s.userId))) setFollow(!next)
     setBusy(false)
   }
 
@@ -116,7 +120,7 @@ function WhoHasIt({ report, live, done, demo }: { report: Report; live?: Job; do
             </p>
           )}
         </div>
-        <button type="button" aria-pressed={following} className="btn btn-ghost btn-sm" onClick={() => void toggle()} disabled={busy}>
+        <button type="button" aria-pressed={following} className="btn btn-ghost btn-sm" onClick={(e) => void toggle(e.currentTarget)} disabled={busy}>
           <Icon name={following ? 'check' : 'bell'} className="size-4" /> {following ? 'Following' : 'Follow'}
         </button>
       </div>

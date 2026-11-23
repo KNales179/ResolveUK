@@ -25,6 +25,10 @@ interface ReporterAuth {
 
 const Ctx = createContext<ReporterAuth | null>(null)
 
+/** sessionStorage key: set when this tab was signed out by another tab. Read (and cleared) by SignIn. */
+export const SIGNED_OUT_ELSEWHERE = 'resolve.signedOutElsewhere'
+let signingOutHere = false
+
 // A separate, lighter account system for the person sending a report, not for staff. Signing up here
 // never grants staff access: that stays gated by the unrelated staff_profiles table.
 export function ReporterAuthProvider({ children }: { children: ReactNode }) {
@@ -36,7 +40,19 @@ export function ReporterAuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data }) => {
       if (alive) setSession((current) => (current === undefined ? data.session : current))
     })
-    const { data } = supabase.auth.onAuthStateChange((_event, next) => setSession(next))
+    const { data } = supabase.auth.onAuthStateChange((event, next) => {
+      // Signed out, but not from this tab: it happened in another open tab (Supabase shares the
+      // sign-in between tabs). Leave a note so the sign-in screen can say so.
+      if (event === 'SIGNED_OUT' && !signingOutHere) {
+        try {
+          sessionStorage.setItem(SIGNED_OUT_ELSEWHERE, '1')
+        } catch {
+          // storage blocked: the sign-in screen just won't explain why
+        }
+      }
+      signingOutHere = false
+      setSession(next)
+    })
     return () => {
       alive = false
       data.subscription.unsubscribe()
@@ -109,6 +125,7 @@ export function ReporterAuthProvider({ children }: { children: ReactNode }) {
         return error ? error.message : null
       },
       async signOut() {
+        signingOutHere = true
         await supabase.auth.signOut()
       },
       async updateProfile(fields) {

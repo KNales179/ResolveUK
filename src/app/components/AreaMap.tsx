@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { Icon } from '../../components/ui/Icon'
+
+const MapFocus = lazy(() => import('../../components/MapFocus').then((m) => ({ default: m.MapFocus })))
 import maplibregl, { type GeoJSONSource, type Map as MapLibreMap } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import '../../map.css'
@@ -221,6 +224,8 @@ export function PointPicker({ value, onChange, className = '', readOnly = false 
   const theme = useThemeName()
   const [locating, setLocating] = useState(false)
   const [problem, setProblem] = useState<string | null>(null)
+  const [focus, setFocus] = useState(false) // the big, full-screen picker
+  const focusRef = useRef(() => setFocus(true))
 
   const place = (p: [number, number], fly = false) => {
     const m = map.current
@@ -245,6 +250,8 @@ export function PointPicker({ value, onChange, className = '', readOnly = false 
     })
     if (!readOnly)
       m.on('click', (e) => {
+        // On a touch screen a tap opens the big picker instead of dropping the pin on a small map.
+        if (matchMedia('(pointer: coarse)').matches) return focusRef.current()
         const p: [number, number] = [+e.lngLat.lng.toFixed(5), +e.lngLat.lat.toFixed(5)]
         place(p)
         onChange(p)
@@ -290,6 +297,9 @@ export function PointPicker({ value, onChange, className = '', readOnly = false 
           <button type="button" className="btn btn-ghost btn-sm" onClick={locate} disabled={locating}>
             {locating ? 'Finding you…' : 'Use my location'}
           </button>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={() => setFocus(true)}>
+            <Icon name="expand" className="size-4" /> {value ? 'Fine-tune on a big map' : 'Choose on a big map'}
+          </button>
           <span className="text-sm text-soft">or click the map where it is.</span>
         </div>
       )}
@@ -298,6 +308,21 @@ export function PointPicker({ value, onChange, className = '', readOnly = false 
           <div ref={box} className="size-full" aria-label={readOnly ? 'Map showing where it is' : 'Map: click to place the pin'} />
         </div>
       </div>
+      {focus && (
+        <Suspense fallback={null}>
+          <MapFocus
+            title="Where is the waste?"
+            start={value ? { lng: value[0], lat: value[1] } : null}
+            onClose={() => setFocus(false)}
+            onPick={({ lat, lng }) => {
+              const p: [number, number] = [+lng.toFixed(5), +lat.toFixed(5)]
+              place(p, true)
+              onChange(p)
+              setFocus(false)
+            }}
+          />
+        </Suspense>
+      )}
       {problem && (
         <p className="msg msg-error mt-2" role="alert">
           {problem}

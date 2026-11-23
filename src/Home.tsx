@@ -524,7 +524,7 @@ export default function Home() {
                 silently override a Tailwind rotate class (inline style beats any class). */}
             <Reveal className="md:col-span-2 md:row-span-2">
               <figure className="photo-print group relative min-h-[20rem] -rotate-3 overflow-hidden rounded-lg">
-                <Pic name="rubbish-street" widths={[400, 678]} width={678} height={452} alt="Piles of black rubbish bags on a residential street" className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" sizes="(min-width:768px) 66vw, 100vw" />
+                <Pic name="rubbish-street" widths={[400, 678]} width={678} height={452} alt="Piles of black rubbish bags on a residential street" className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105" sizes="(min-width:768px) 66vw, 100vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
                 <figcaption className="absolute bottom-0 p-6 text-white">
                   <p className="font-serif text-3xl">Fly-tipping and dumped waste</p>
@@ -534,7 +534,7 @@ export default function Home() {
             </Reveal>
             <Reveal delay={70}>
               <figure className="photo-print group relative min-h-[12rem] rotate-3 overflow-hidden rounded-lg">
-                <Pic name="litter-picking-cumbria" widths={[400, 640]} width={640} height={427} alt="A volunteer litter-picking beside a path in Cumbria" className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" sizes="(min-width:768px) 33vw, 100vw" />
+                <Pic name="litter-picking-cumbria" widths={[400, 640]} width={640} height={427} alt="A volunteer litter-picking beside a path in Cumbria" className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105" sizes="(min-width:768px) 33vw, 100vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-transparent" />
                 <figcaption className="absolute bottom-0 p-5 text-white">
                   <p className="font-serif text-2xl">Litter</p>
@@ -543,7 +543,7 @@ export default function Home() {
             </Reveal>
             <Reveal delay={140}>
               <figure className="photo-print group relative min-h-[12rem] -rotate-2 overflow-hidden rounded-lg">
-                <Pic name="roadside-litter" widths={[400, 480]} width={480} height={639} alt="Litter scattered along a roadside verge" className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" sizes="(min-width:768px) 33vw, 100vw" />
+                <Pic name="roadside-litter" widths={[400, 480]} width={480} height={639} alt="Litter scattered along a roadside verge" className="absolute inset-0 size-full object-cover transition duration-500 group-hover:scale-105" sizes="(min-width:768px) 33vw, 100vw" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-transparent" />
                 <figcaption className="absolute bottom-0 p-5 text-white">
                   <p className="font-serif text-2xl">Roadside litter</p>

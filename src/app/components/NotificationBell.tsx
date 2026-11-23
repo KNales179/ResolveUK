@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { onOtherTab, tellOtherTabs } from '../../lib/tabSync'
 import { Link } from 'react-router-dom'
 import { Icon } from '../../components/ui/Icon'
 import { timeAgo } from '../../lib/format'
@@ -33,6 +34,15 @@ export function NotificationBell() {
     }
   }, [load])
 
+  // Notifications read in another tab show as read here too.
+  useEffect(
+    () =>
+      onOtherTab((msg) => {
+        if (msg.type === 'notifications-read') setList((l) => l.map((n) => ({ ...n, read_at: n.read_at ?? new Date().toISOString() })))
+      }),
+    [],
+  )
+
   useEffect(() => {
     if (!open) return
     const away = (e: MouseEvent) => {
@@ -54,6 +64,7 @@ export function NotificationBell() {
     setOpen(next)
     if (next && unread) {
       if (!s.demo) void markNoticesRead()
+      tellOtherTabs({ type: 'notifications-read' })
       // shown as read from the next time the panel opens, so the new ones stay highlighted now
       window.setTimeout(() => setList((l) => l.map((n) => ({ ...n, read_at: n.read_at ?? new Date().toISOString() }))), 1500)
     }

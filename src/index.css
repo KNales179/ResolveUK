@@ -948,7 +948,7 @@ a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(-
 /* Community: photo prints scattered like snapshots from a litter pick. */
 .snap { position: absolute; background: #fbfaf6; padding: 0.55rem 0.55rem 2.1rem; border-radius: 4px; box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.12); transition: rotate 0.4s ease, scale 0.4s ease, box-shadow 0.4s ease; }
 .snap picture { display: block; height: 100%; overflow: hidden; border-radius: 2px; }
-.snap img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; transition: transform 0.7s ease; }
+.snap img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 2px; transition: transform 0.45s var(--ease-out); }
 /* The same as the homepage prints: hovering one straightens it, lifts it to the top and zooms the
    photo a little. */
 .snap:hover { rotate: 0deg; scale: 1.06; z-index: 5; box-shadow: 0 28px 50px -20px rgb(0 0 0 / 0.55), 0 3px 8px rgb(0 0 0 / 0.14); }
@@ -961,6 +961,91 @@ a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(-
 }
 @keyframes snap-drop { from { opacity: 0; translate: 0 -36px; scale: 1.18; } }
 
+/* ---- Motion and touch: the UI/UX principles applied across the site ----
+   One shared set of curves, so every movement has the same character (overall appeal). */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);       /* slow in, slow out, weighted to the end */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* overshoots a little, then settles (follow-through) */
+}
+/* Anticipation: a button dips quickly while pressed (the wind-up), then springs back past its size
+   and settles when let go. Pressing is fast (70ms) so it never feels slow (snappy timing). */
+.btn, .icon-btn, .feed-action, .back-link, .app-bottom-tab {
+  transition: transform 0.38s var(--ease-spring), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, filter 0.2s ease;
+}
+.btn:active, .icon-btn:active, .feed-action:active, .back-link:active, .app-bottom-tab:active {
+  transform: scale(0.93); transition-duration: 0.07s; transition-timing-function: ease-in;
+}
+.btn:disabled:active { transform: none; }
+/* Bigger hit areas on touch screens (Fitts's law): every control at least 44 by 44 px. The look
+   stays the same; only the space you can tap grows. */
+@media (pointer: coarse) {
+  .btn-sm, .app-tab, .map-filter, .back-link, .feed-action, .comment-link { min-height: 2.75rem; }
+  .app-tab, .comment-link { display: inline-flex; align-items: center; }
+  .icon-btn { width: 2.75rem; height: 2.75rem; }
+  .maplibregl-ctrl-group button { width: 44px !important; height: 44px !important; }
+  .faq > summary { min-height: 3.25rem; }
+}
+/* Exaggerated feedback (see lib/feedback.ts): a ring that spreads from the button, and a "+1"
+   that floats up. Fixed to the screen so a button changing or disappearing doesn't cut them off. */
+.fx-ring { position: fixed; z-index: 999; pointer-events: none; border-radius: 999px; border: 2px solid var(--c-honey); }
+.fx-float { position: fixed; z-index: 999; pointer-events: none; font-weight: 800; font-size: 0.95rem; color: var(--c-honey-display); text-shadow: 0 1px 2px rgb(0 0 0 / 0.25); }
+/* "Report sent": the circle pops in with a spring, draws round, then the tick draws itself. */
+.sent-circle { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-dasharray: 88; }
+.sent-tick { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 22; }
+@media (prefers-reduced-motion: no-preference) {
+  .sent-badge { animation: sent-pop 0.55s var(--ease-spring) both; }
+  .sent-circle { animation: sent-circle 0.5s var(--ease-out) both; }
+  .sent-tick { stroke-dashoffset: 22; animation: sent-tick 0.32s var(--ease-out) 0.42s forwards; }
+}
+@keyframes sent-pop { from { transform: scale(0.3); opacity: 0; } }
+@keyframes sent-circle { from { stroke-dashoffset: 88; } to { stroke-dashoffset: 0; } }
+@keyframes sent-tick { to { stroke-dashoffset: 0; } }
+
+/* The big map picker (MapFocus): the pin sits fixed in the middle with its tip on the exact spot.
+   While the map moves it lifts and its shadow spreads; when the map stops it drops back with a
+   little bounce, so it feels like setting a pin down. */
+.map-focus-pin { position: absolute; left: 50%; top: 50%; z-index: 5; color: var(--pin-reported); pointer-events: none; transform: translate(-50%, -100%); transition: transform 0.3s var(--ease-spring); filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.35)); }
+.map-focus-pin.is-moving { transform: translate(-50%, calc(-100% - 16px)); transition-duration: 0.15s; transition-timing-function: ease-out; }
+.map-focus-shadow { position: absolute; left: 50%; top: 50%; z-index: 4; width: 16px; height: 6px; margin: -3px 0 0 -8px; border-radius: 50%; background: rgb(0 0 0 / 0.35); pointer-events: none; transition: transform 0.25s ease, opacity 0.25s ease; }
+.map-focus-shadow.is-moving { transform: scale(1.7); opacity: 0.45; }
+.map-focus-top, .map-focus-bottom { background: var(--c-surface); }
+.map-expand { position: absolute; left: 0.75rem; bottom: 0.75rem; z-index: 10; background: var(--c-surface); box-shadow: 0 6px 16px -8px rgb(0 0 0 / 0.4); }
+
+/* Light mode, more brand green (so it carries its ~30% share, not just a pale tint):
+   1. Main buttons are the deep brand green with light text, instead of pale mint that disappeared
+      on the pale page. On the green panels they stay mint, so they still show up there. */
+:root:not([data-theme="dark"]) .btn-primary { background: #1f6b4f; color: #f3f7f2; }
+:root:not([data-theme="dark"]) .btn-primary:hover { filter: brightness(1.12); }
+:root:not([data-theme="dark"]) .accent-panel .btn-primary { background: #4fd1a0; color: #06231c; }
+/* 2. The footer on every page is deep green, framing each page in the brand colour. It swaps its
+      own colour tokens, so its text, links, logo and hover marks all follow. */
+:root:not([data-theme="dark"]) .site-footer {
+  background: #0b3d36;
+  border-top-color: transparent;
+  --c-surface: #0b3d36; --c-ink: #eef4f0; --c-soft: #b9d1c6; --c-line: rgb(255 255 255 / 0.14);
+  --c-accent: #4fd1a0; --c-logo-mark: #eef4f0; --c-logo-leaf-r: #4fd1a0;
+  --c-logo-leaf-l: color-mix(in oklab, #0b3d36 40%, #4fd1a0);
+  --c-honey: #e3b25c; --c-honey-text: #e8bd6e; --c-honey-display: #e8bd6e;
+  color: var(--c-ink);
+}
+
+/* Outline buttons: on hover the brand green rises from the bottom and fills the button, and the
+   text turns light as it does (solid, never see-through). Replaces the corner brackets on these
+   buttons, so there is one hover effect, not two. Solid green buttons keep their own brighten.
+   Touch screens have no hover, so they keep the press effect only. */
+.btn-ghost, .btn-ink-ghost, .back-link {
+  --fill: #1f6b4f; --fill-ink: #f3f7f2;
+  background-image: linear-gradient(var(--fill), var(--fill));
+  background-repeat: no-repeat; background-position: 50% 100%; background-size: 100% 0%;
+  transition: transform 0.38s var(--ease-spring), background-size 0.28s var(--ease-out), color 0.28s ease, border-color 0.28s ease;
+}
+/* On the green panels the fill would match the panel, so there it rises in mint with dark text. */
+.accent-panel .btn-ghost, .accent-panel .btn-ink-ghost { --fill: #4fd1a0; --fill-ink: #06231c; }
+.btn-ghost::after, .btn-ink-ghost::after, .back-link::after { content: none !important; }
+@media (hover: hover) {
+  .btn-ghost:hover, .btn-ink-ghost:hover, .back-link:hover { background-size: 100% 100%; color: var(--fill-ink); border-color: var(--fill); }
+}
+
 /* Reported problems: hovering a report brings it forward and quietly dims the others, so the eye
    goes to the one under the pointer. Uses translate/scale (not transform) so it never fights the
    page's GSAP entrance. */
@@ -968,7 +1053,7 @@ a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(-
 .report-grid > li:hover, .report-grid > li:focus-within { translate: 0 -6px; box-shadow: 0 24px 44px -22px rgb(var(--c-shadow) / 0.55); border-radius: 1.5rem; }
 /* The others step back without turning see-through: greyer and a touch darker, never fainter. */
 .report-grid:has(> li:hover) > li:not(:hover) { filter: saturate(0.45) brightness(0.9); scale: 0.98; }
-.report-grid > li img { transition: transform 0.7s ease; }
+.report-grid > li img { transition: transform 0.45s var(--ease-out); }
 .report-grid > li:hover img { transform: scale(1.05); }
 
 /* Every page apart from the homepage: cards lift a little under the pointer. */

@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useReporterAuth } from '../../lib/reporterAuth'
+import { SIGNED_OUT_ELSEWHERE, useReporterAuth } from '../../lib/reporterAuth'
 import { useAuthOptions } from '../../lib/authOptions'
 import { PasswordField } from '../../components/ui/PasswordField'
 import { GoogleIcon } from '../../components/ui/GoogleIcon'
@@ -21,6 +21,16 @@ export function SignIn() {
   const [error, setError] = useState<string | null>(null)
   const [wrong, setWrong] = useState(false)
   const [busy, setBusy] = useState(false)
+  // Sent here because the account was signed out in another open tab: say so, once.
+  const [elsewhere] = useState(() => {
+    try {
+      const was = sessionStorage.getItem(SIGNED_OUT_ELSEWHERE) === '1'
+      sessionStorage.removeItem(SIGNED_OUT_ELSEWHERE)
+      return was
+    } catch {
+      return false
+    }
+  })
 
   async function submit(e: FormEvent) {
     e.preventDefault()
@@ -53,6 +63,11 @@ export function SignIn() {
         <h1 className="font-serif text-3xl">Welcome back</h1>
         <p className="mt-1.5 text-soft">Sign in to follow your reports and see what's happening near you.</p>
       </div>
+      {elsewhere && (
+        <p className="msg msg-info" role="status">
+          You signed out in another tab, so this one has been signed out too.
+        </p>
+      )}
 
       <form onSubmit={submit} noValidate className="space-y-4">
         <div>

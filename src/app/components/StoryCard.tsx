@@ -8,6 +8,7 @@ import { photoUrl } from '../../lib/photos'
 import { timeAgo } from '../../lib/format'
 import { backReport } from '../../lib/nearby'
 import { backedReportIds } from '../../lib/device'
+import { celebrate } from '../../lib/feedback'
 import { OPEN_STATUSES, STATUS_LABELS, statusGroup } from '../../lib/status'
 import { STORY_KIND_VERB, type Story } from '../../lib/stories'
 
@@ -23,22 +24,23 @@ export function StoryCard({ story, reportBase = '/app/reports', footer, variant 
   const r = story.reports
   const [backed, setBacked] = useState(() => (r ? backedReportIds().has(r.id) : false))
   const [added, setAdded] = useState(0)
-  const [busy, setBusy] = useState(false)
+  const busy = false // backing is instant now (see back()); kept for FeedPost's props
   const canBack = r ? OPEN_STATUSES.includes(r.current_status) : false
   const people = r ? 1 + (r.report_supports?.[0]?.count ?? 0) + added : 0
 
   if (variant === 'feed') return <FeedPost story={story} reportBase={reportBase} backed={backed} busy={busy} canBack={canBack} people={people} onBack={() => void back()} thanked={thanked} />
 
+  // Shown as done straight away (no "Saving…" wait), then put back if the server says no.
   async function back() {
-    if (!r) return
-    setBusy(true)
+    if (!r || backed) return
+    setBacked(true)
+    setAdded(1)
     try {
-      if ((await backReport(r.id)) === 'added') setAdded(1)
-      setBacked(true)
+      const result = await backReport(r.id)
+      if (result !== 'added') setAdded(0) // it was already counted from this device
     } catch {
-      // stays as it was; the button can be pressed again
-    } finally {
-      setBusy(false)
+      setBacked(false)
+      setAdded(0)
     }
   }
 
@@ -93,8 +95,8 @@ export function StoryCard({ story, reportBase = '/app/reports', footer, variant 
               <Icon name="check" className="size-4 text-accent" /> You've seen this too
             </span>
           ) : (
-            <button type="button" className="btn btn-ghost btn-sm" onClick={() => void back()} disabled={busy}>
-              <Icon name="eye" className="size-4" /> {busy ? 'Saving…' : "I've seen this too"}
+            <button type="button" className="btn btn-ghost btn-sm" onClick={(e) => { celebrate(e.currentTarget, '+1'); void back() }}>
+              <Icon name="eye" className="size-4" /> I've seen this too
             </button>
           )
         )}
@@ -192,7 +194,7 @@ function FeedPost({ story, reportBase, backed, busy, canBack, people, onBack, th
       )}
       <div className="feed-actions mt-2 grid grid-cols-3 border-t border-line">
         {thankable ? (
-          <button type="button" aria-pressed={mine} className="feed-action" onClick={() => void thank()}>
+          <button type="button" aria-pressed={mine} className="feed-action" onClick={(e) => { if (!mine) celebrate(e.currentTarget, '+1'); void thank() }}>
             <Icon name={mine ? 'check' : 'sparkles'} className={`size-4 ${mine ? 'text-accent' : ''}`} /> {mine ? 'Thanked' : 'Thanks'}
           </button>
         ) : r && canBack ? (
@@ -201,8 +203,8 @@ function FeedPost({ story, reportBase, backed, busy, canBack, people, onBack, th
               <Icon name="check" className="size-4 text-accent" /> Seen it too
             </span>
           ) : (
-            <button type="button" className="feed-action" onClick={onBack} disabled={busy}>
-              <Icon name="eye" className="size-4" /> {busy ? 'Saving…' : "I've seen it too"}
+            <button type="button" className="feed-action" onClick={(e) => { celebrate(e.currentTarget, '+1'); onBack() }} disabled={busy}>
+              <Icon name="eye" className="size-4" /> I've seen it too
             </button>
           )
         ) : (

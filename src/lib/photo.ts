@@ -31,9 +31,12 @@ export async function preparePhoto(file: File): Promise<PreparedPhoto> {
     if (!blob) throw new Error('no blob')
     return { blob, ext: 'jpg' }
   } catch {
-    // The browser could not read it. Send the original if it is a type we accept.
-    const ext = EXTENSIONS[file.type]
-    if (!ext) throw new Error('That photo type is not supported. Please choose a JPEG, PNG or WebP photo.')
-    return { blob: file, ext }
+    // The browser could not read it. Never send the original instead: it can still carry the
+    // location the photo was taken (often someone's home). Ask for a different photo.
+    throw new Error(
+      EXTENSIONS[file.type]
+        ? "That photo couldn't be read on this device. Please try a different photo, or take a screenshot of it and send that."
+        : 'That photo type is not supported. Please choose a JPEG, PNG or WebP photo.',
+    )
   }
 }

@@ -1,4 +1,11 @@
 import { useSyncExternalStore } from 'react'
+import { onOtherTab, tellOtherTabs } from './tabSync'
+
+// Switching the theme in one tab switches every other open tab of the site too (no animation
+// there: the change happens while that tab is in the background).
+onOtherTab((msg) => {
+  if (msg.type === 'theme') document.documentElement.dataset.theme = msg.theme
+})
 
 // Follows the device's light or dark setting. The toggle only tries the other one for this visit;
 // a refresh goes back to the device setting. Where the browser supports it, the switch plays as a
@@ -7,6 +14,7 @@ import { useSyncExternalStore } from 'react'
 export function toggleTheme(origin?: { x: number; y: number }): void {
   const root = document.documentElement
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark'
+  tellOtherTabs({ type: 'theme', theme: next })
 
   if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     root.dataset.theme = next
