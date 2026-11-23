@@ -46,7 +46,7 @@ export function CommercialPage() {
         played = true
         io.disconnect()
         ctx.add(() => {
-          busy = press(gsap.timeline().to(el, { y: 0, rotation: 1.2, opacity: 1, duration: 0.85, ease: 'power3.out' }).addLabel('stamp', '+=0.15'))
+          busy = press(gsap.timeline().to(el, { y: 0, rotation: innerWidth < 400 ? 0.5 : 1.2, opacity: 1, duration: 0.85, ease: 'power3.out' }).addLabel('stamp', '+=0.15'))
         })
       },
       { threshold: 0.45 },

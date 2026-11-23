@@ -271,7 +271,7 @@ export function SizeChart() {
       </div>
       <div className="ml-10 mt-2 flex gap-2" aria-hidden="true">
         {SIZES.map(([label]) => (
-          <span key={label} className="flex-1 text-center text-[0.68rem] leading-tight text-soft">{label}</span>
+          <span key={label} className="min-w-0 flex-1 text-center text-[0.68rem] leading-tight text-soft [overflow-wrap:anywhere]">{label}</span>
         ))}
       </div>
     </Frame>

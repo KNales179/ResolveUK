@@ -74,8 +74,9 @@ export function FlyTippingChart() {
       </div>
       <div className="ml-10 mt-2 flex gap-2 sm:gap-3" aria-hidden="true">
         {FLY_TIPPING.map(([year]) => (
-          <span key={year} className="flex-1 text-center text-[0.7rem] tabular-nums text-soft sm:text-xs">
-            {year.replace('20', "'").replace('/', '/')}
+          <span key={year} className="min-w-0 flex-1 text-center text-[0.7rem] leading-tight tabular-nums text-soft sm:text-xs">
+            {/* On the smallest phones the label breaks after the slash instead of running off the edge. */}
+            {year.replace('20', "'").split('/')[0]}/<wbr />{year.split('/')[1]}
           </span>
         ))}
       </div>

@@ -221,7 +221,7 @@
 
   /* Custom dropdown (button + list), so even the open menu matches. */
   .dd { position: relative; }
-  .dd-btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-width: 11rem; }
+  .dd-btn { display: inline-flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-width: min(11rem, 100%); max-width: 100%; }
   .dd-list {
     position: absolute; z-index: 30; top: calc(100% + 0.5rem); left: 0; min-width: 100%; max-height: 18rem; overflow: auto;
     border-radius: 0.8rem; padding: 0.35rem; background: var(--c-surface); border: 1px solid var(--c-line);
@@ -1040,6 +1040,19 @@ a.feed-action:hover, button.feed-action:hover:not(:disabled) { background: var(-
 .tour-skip { font-size: 0.85rem; font-weight: 600; color: rgb(238 244 240 / 0.75); padding: 0.5rem 0.25rem; min-height: 2.75rem; }
 .tour-skip:hover { color: #fff; }
 .tour-skip::after, .tour .btn::after { content: none !important; }
+
+/* ---- Responsive safety (phones and tablets) ----
+   1. A grid column may shrink to fit the screen. By default a column never gets narrower than its
+      widest unbreakable content (a one-line title cut off with "…", a row of chips), so on a
+      phone one such line made the whole page wider than the screen.
+   2. The page itself can never be wider than the screen. If anything is ever too wide, it is cut
+      at the edge instead of the phone zooming the whole page out to fit it (which shifted
+      everything and cut off the header). "clip", unlike "hidden", keeps sticky headers working.
+   3. Wide tables scroll inside their own box. */
+.grid > * { min-width: 0; }
+html, body { overflow-x: clip; }
+table { max-width: 100%; }
+.chart-table, .table-scroll { max-width: 100%; overflow-x: auto; }
 
 /* Phones and tablets: lighter to draw. The header is solid rather than see-through and blurred
    (blurring what scrolls underneath is costly on a phone, and text showed through it), and the

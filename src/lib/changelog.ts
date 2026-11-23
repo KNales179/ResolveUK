@@ -20,7 +20,19 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
-    version: '3.16.1',
+    version: '3.16.3',
+    date: '2026-11-23',
+    title: 'Fits the smallest phones',
+    highlights: [
+      {
+        icon: 'check',
+        title: 'Charts and the sample note fit small phones',
+        body: 'Every page was checked on screens from the smallest phones up to tablets held sideways. The year labels under the charts no longer run off the edge on small phones, and the sample waste transfer note on the Commercial page tilts a little less so its corners stay on screen.',
+      },
+    ],
+  },
+  {
+    version: '3.16.2',
     date: '2026-11-23',
     title: 'Guided tours',
     highlights: [
@@ -28,6 +40,11 @@ export const RELEASES: Release[] = [
         icon: 'compass',
         title: 'A guided tour of each part of the app',
         body: 'The screen dims except the part being explained, with a short note and an arrow pointing at it. In the demo, each page\'s tour starts by itself the first time you open it. With your own account, open "How Resolve works" from your menu and pick a tour whenever you like.',
+      },
+      {
+        icon: 'check',
+        title: 'Everything fits on phones and tablets',
+        body: 'Some cards and sections were slightly wider than a phone screen, which made the whole page zoom out and shift sideways. Every page now fits the screen exactly, on phones and tablets.',
       },
       {
         icon: 'rotate',
