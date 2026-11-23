@@ -5,11 +5,8 @@ import { toggleTheme, useThemeName } from '../../lib/theme'
 import { applyBgForTheme } from '../../lib/bgPreview'
 import { Logo } from './Logo'
 import { AnimatedLogo } from './AnimatedLogo'
-import { IntroSplash } from './IntroSplash'
 import { CornerHover } from '../ui/CornerHover'
 import { PageTransition } from './PageTransition'
-import { UpdateBanner } from './UpdateBanner'
-import { WhatsNewModal } from './WhatsNewModal'
 import { InstallDialog } from './InstallDialog'
 import { InstallNudge } from './InstallNudge'
 import { Backdrop, VeinsSync } from './Backdrop'
@@ -54,9 +51,9 @@ function AboutMenu() {
       </button>
       <div className="dd-list min-w-[12rem]" role="menu">
         {ABOUT_LINKS.map(([href, label]) => (
-          <Link key={href} to={href} role="menuitem" className="dd-opt" onClick={() => setOpen(false)}>
+          <NavLink key={href} to={href} role="menuitem" className="dd-opt" onClick={() => setOpen(false)}>
             <span>{label}</span>
-          </Link>
+          </NavLink>
         ))}
       </div>
     </div>
@@ -133,28 +130,63 @@ function Nav() {
         {open && (
           <div id="mobile-menu" data-lenis-prevent className="h-[calc(100dvh-4rem-1px)] overflow-y-auto overscroll-contain border-t border-line pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 xl:hidden">
             <div className="grid gap-1 text-base font-semibold">
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/">
-                Home
-              </Link>
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/reports">
-                Reported problems
-              </Link>
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/community">
-                Community
-              </Link>
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/commercial">
-                Commercial
-              </Link>
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/about">
-                About
-              </Link>
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/why">
-                Why this matters
-              </Link>
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/get-involved">
-                Get involved
-              </Link>
-              <Link className="rounded-lg px-4 py-3 hover:bg-surface2" to="/app">
+              <NavLink className="menu-link" to="/" end>
+                {({ isActive }) => (
+                  <>
+                    Home
+                    {isActive && <span className="menu-here">You’re here</span>}
+                  </>
+                )}
+              </NavLink>
+              <NavLink className="menu-link" to="/reports">
+                {({ isActive }) => (
+                  <>
+                    Reported problems
+                    {isActive && <span className="menu-here">You’re here</span>}
+                  </>
+                )}
+              </NavLink>
+              <NavLink className="menu-link" to="/community">
+                {({ isActive }) => (
+                  <>
+                    Community
+                    {isActive && <span className="menu-here">You’re here</span>}
+                  </>
+                )}
+              </NavLink>
+              <NavLink className="menu-link" to="/commercial">
+                {({ isActive }) => (
+                  <>
+                    Commercial
+                    {isActive && <span className="menu-here">You’re here</span>}
+                  </>
+                )}
+              </NavLink>
+              <NavLink className="menu-link" to="/about">
+                {({ isActive }) => (
+                  <>
+                    About
+                    {isActive && <span className="menu-here">You’re here</span>}
+                  </>
+                )}
+              </NavLink>
+              <NavLink className="menu-link" to="/why">
+                {({ isActive }) => (
+                  <>
+                    Why this matters
+                    {isActive && <span className="menu-here">You’re here</span>}
+                  </>
+                )}
+              </NavLink>
+              <NavLink className="menu-link" to="/get-involved">
+                {({ isActive }) => (
+                  <>
+                    Get involved
+                    {isActive && <span className="menu-here">You’re here</span>}
+                  </>
+                )}
+              </NavLink>
+              <Link className="menu-link" to="/app">
                 Your account
               </Link>
               <Link className="btn btn-primary mt-1" to="/report">
@@ -276,11 +308,8 @@ export function SiteShell() {
       <Nav />
       <PageTransition />
       <Footer />
-      <UpdateBanner />
-      <WhatsNewModal />
       <InstallDialog />
       <InstallNudge />
-      <IntroSplash />
     </>
   )
 }

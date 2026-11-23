@@ -11,30 +11,28 @@ onOtherTab((msg) => {
 // a refresh goes back to the device setting. Where the browser supports it, the switch plays as a
 // circle growing from the button that was clicked until it covers the screen and reveals the new
 // theme underneath it, instead of an instant flip.
-export function toggleTheme(origin?: { x: number; y: number }): void {
+// Switching light and dark: a quick, light crossfade (about a third of a second) from the old look
+// to the new one, and the sun/moon icon gives a small spin. Only opacity changes during the fade,
+// which the graphics chip does on its own, so it stays smooth on a phone (the earlier growing
+// circle redrew a full-page picture every frame). Instant for anyone who prefers less motion, and
+// in browsers without view transitions. `_origin` (where the tap was) is kept so callers needn't change.
+export function toggleTheme(_origin?: { x: number; y: number }): void {
   const root = document.documentElement
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark'
   tellOtherTabs({ type: 'theme', theme: next })
 
-  if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // The icon's spin is switched on at the same moment as the new theme, so the outgoing icon is
+  // never caught mid-spin.
+  const apply = () => {
+    if (!still) {
+      root.classList.add('theme-switching')
+      window.setTimeout(() => root.classList.remove('theme-switching'), 600)
+    }
     root.dataset.theme = next
-    return
   }
-
-  const x = origin?.x ?? window.innerWidth / 2
-  const y = origin?.y ?? window.innerHeight / 2
-  const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
-
-  const transition = document.startViewTransition(() => {
-    root.dataset.theme = next
-  })
-
-  transition.ready.then(() => {
-    root.animate(
-      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
-      { duration: 650, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' },
-    )
-  })
+  if (!document.startViewTransition || still) apply()
+  else document.startViewTransition(apply)
 }
 
 export type ThemeName = 'light' | 'dark'

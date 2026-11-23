@@ -1,9 +1,13 @@
 import { lazy, Suspense } from 'react'
 import { PageSkeleton } from './components/ui/Skeleton'
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import Home from './Home'
 import { SiteShell } from './components/site/SiteShell'
 import { CursorTag } from './components/ui/CursorTag'
+import { IntroSplash } from './components/site/IntroSplash'
+import { UpdateBanner } from './components/site/UpdateBanner'
+import { WhatsNewModal } from './components/site/WhatsNewModal'
+import { isRunningInstalled } from './lib/install'
 
 // Each page loads only when it is visited, so the landing page does not download the map or the database code.
 const ReportPage = lazy(() => import('./pages/ReportPage').then((m) => ({ default: m.ReportPage })))
@@ -50,13 +54,45 @@ const Blank = (
   </div>
 )
 
+// The installed app is the app itself, the way Fico works: the public website is never shown in it.
+// A website address opened there goes to the same thing inside the app (or the app's home), and
+// the app then shows the sign-in screen to anyone who isn't signed in. The one exception is
+// resetting a password, which has to work wherever the email link opens.
+const IN_APP: Array<[RegExp, (m: RegExpMatchArray) => string]> = [
+  [/^\/report\/?$/, () => '/app/report'],
+  [/^\/reports\/([^/]+)/, (m) => `/app/reports/${m[1]}`],
+  [/^\/reports\/?$/, () => '/app/reports'],
+  [/^\/community\/?$/, () => '/app/community'],
+  [/^\/commercial\/?$/, () => '/app/clearance'],
+  [/^\/account\/?$/, () => '/app/account'],
+  [/^\/updates\/?$/, () => '/app/updates'],
+]
+function appPathFor(pathname: string): string {
+  for (const [re, to] of IN_APP) {
+    const m = pathname.match(re)
+    if (m) return to(m)
+  }
+  return '/app'
+}
+
+function Website() {
+  const { pathname } = useLocation()
+  if (isRunningInstalled() && pathname !== '/reset-password') return <Navigate to={appPathFor(pathname)} replace />
+  return <SiteShell />
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <CursorTag />
+      {/* On every page, the website's and the app's alike (as in Fico), so the installed app still
+          gets the opening animation, the "What's new" note and the "new version ready" banner. */}
+      <IntroSplash />
+      <UpdateBanner />
+      <WhatsNewModal />
       <Suspense fallback={Blank}>
         <Routes>
-          <Route element={<SiteShell />}>
+          <Route element={<Website />}>
             <Route index element={<Home />} />
             <Route path="report" element={<ReportPage />} />
             <Route path="reports" element={<PublicReportsPage />} />
@@ -105,6 +141,7 @@ export default function App() {
                 <Route path="admin" element={<AppAdmin />} />
                 <Route path="account" element={<AppAccount />} />
                 <Route path="tutorial" element={<AppTutorial />} />
+                <Route path="updates" element={<UpdatesPage inApp />} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/app" replace />} />

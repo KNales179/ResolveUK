@@ -20,6 +20,35 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '3.16.7',
+    date: '2026-11-24',
+    title: 'The installed app is just the app',
+    highlights: [
+      {
+        icon: 'home',
+        title: 'Opening the installed app goes straight in',
+        body: 'Once Resolve is installed on a phone or computer, it opens on your home page if you are signed in, or on the sign-in screen if not. The public website pages are no longer shown inside the installed app; a website link opened there takes you to the same thing in the app. The opening animation, the “What’s new” note and the “new version ready” message now show in the app too.',
+      },
+      {
+        icon: 'sparkles',
+        title: 'A gentler light and dark switch',
+        body: 'Switching between light and dark is now a quick, soft fade with a small turn of the sun and moon icon, instead of a growing circle. It is lighter work for a phone, so it stays smooth.',
+      },
+    ],
+  },
+  {
+    version: '3.16.6',
+    date: '2026-11-24',
+    title: 'You can see where you are',
+    highlights: [
+      {
+        icon: 'compass',
+        title: 'Menus show the page you are on',
+        body: 'The phone menu marks the page you are on with a green bar and a “You’re here” label. In the app, the account menu marks Private land and How Resolve works when you are on them, and the Account tab in the bottom bar lights up too.',
+      },
+    ],
+  },
+  {
     version: '3.16.5',
     date: '2026-11-24',
     title: 'Smooth like a native app',

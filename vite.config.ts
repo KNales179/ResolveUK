@@ -34,7 +34,11 @@ export default defineConfig({
         theme_color: '#99b788',
         background_color: '#0b3d36',
         display: 'standalone',
-        start_url: '/report',
+        // The installed app opens on the app itself (signed in: home; otherwise sign-in), as in Fico.
+        // `id` stays what the old start address made it, so phones that already installed Resolve
+        // treat this as the same app and update it rather than seeing a new one.
+        id: '/report',
+        start_url: '/app',
         icons: [
           {
             src: 'icons/icon-192.png',

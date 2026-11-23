@@ -5,6 +5,7 @@ import { toggleTheme, useThemeName } from '../lib/theme'
 import { PageIntro } from '../components/site/PageTransition'
 import { PageSkeleton } from '../components/ui/Skeleton'
 import { TourProvider } from './tour/Tour'
+import { isRunningInstalled } from '../lib/install'
 import { Icon, type IconName } from '../components/ui/Icon'
 import { Backdrop, VeinsSync } from '../components/site/Backdrop'
 import { LEAF_LEFT_PATH, LEAF_RIGHT_PATH, PIN_PATH, R_PATH } from '../components/site/logoPaths'
@@ -106,7 +107,9 @@ export function AppLayout() {
             ))}
             {/* With more than five sections the account stays in the avatar menu at the top. */}
             {bottomItems.length <= 5 && <li>
-              <NavLink to="/app/account" className={({ isActive }) => `app-bottom-tab ${isActive ? 'app-bottom-tab-on' : ''}`} data-no-tag>
+              {/* Private land and How Resolve works are opened from the account menu on phones, so
+                  while you're on one of them the Account tab shows where you are. */}
+              <NavLink to="/app/account" className={({ isActive }) => `app-bottom-tab ${isActive || /^\/app\/(clearance|tutorial)/.test(location.pathname) ? 'app-bottom-tab-on' : ''}`} data-no-tag>
                 <Icon name="user" className="size-5" />
                 <span>Account</span>
               </NavLink>
@@ -124,7 +127,7 @@ function ThemeButton() {
   const theme = useThemeName()
   return (
     <button type="button" className="icon-btn" aria-label="Switch light or dark" onClick={(e) => toggleTheme({ x: e.clientX, y: e.clientY })}>
-      <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
+      <Icon key={theme} name={theme === 'dark' ? 'sun' : 'moon'} />
     </button>
   )
 }
@@ -170,19 +173,20 @@ function AccountMenu() {
             </p>
           </div>
           <div className="my-1 h-px bg-line" />
-          <Link role="menuitem" to="/app/account" className="app-menu-item" onClick={() => setOpen(false)}>
+          <NavLink role="menuitem" to="/app/account" className="app-menu-item" onClick={() => setOpen(false)}>
             <Icon name="user" className="size-4" /> Your account
-          </Link>
+          </NavLink>
           {/* On phones and tablets Private land is not in the bottom bar, so it lives here. */}
-          <Link role="menuitem" to="/app/clearance" className="app-menu-item lg:hidden" onClick={() => setOpen(false)}>
+          <NavLink role="menuitem" to="/app/clearance" className="app-menu-item lg:hidden" onClick={() => setOpen(false)}>
             <Icon name="truck" className="size-4" /> Private land
-          </Link>
-          <Link role="menuitem" to="/app/tutorial" className="app-menu-item" onClick={() => setOpen(false)}>
+          </NavLink>
+          <NavLink role="menuitem" to="/app/tutorial" className="app-menu-item" onClick={() => setOpen(false)}>
             <Icon name="compass" className="size-4" /> How Resolve works
-          </Link>
-          <Link role="menuitem" to="/" className="app-menu-item" onClick={() => setOpen(false)}>
+          </NavLink>
+          {/* The installed app never shows the website (as in Fico), so no link back to it there. */}
+          {!isRunningInstalled() && <Link role="menuitem" to="/" className="app-menu-item" onClick={() => setOpen(false)}>
             <Icon name="home" className="size-4" /> Back to the website
-          </Link>
+          </Link>}
           <button role="menuitem" type="button" className="app-menu-item w-full" onClick={() => void signOut()}>
             <Icon name="logout" className="size-4" /> {s.demo ? 'Leave the demo' : 'Sign out'}
           </button>

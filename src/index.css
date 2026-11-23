@@ -235,6 +235,7 @@
   .dd-opt { display: flex; align-items: center; justify-content: space-between; gap: 1rem; width: 100%; text-align: left; border-radius: 0.5rem; padding: 0.6rem 0.8rem; font-size: 0.925rem; }
   .dd-opt:hover, .dd-opt:focus-visible { background: var(--c-surface2); }
   .dd-opt[aria-selected="true"] { color: var(--c-accent); font-weight: 700; }
+  .dd-opt[aria-current="page"] { font-weight: 700; background: color-mix(in oklab, var(--c-accent-vivid) 22%, transparent); box-shadow: inset 3px 0 0 var(--c-accent-vivid); }
   .dd-opt .dd-check { opacity: 0; }
   .dd-opt[aria-selected="true"] .dd-check { opacity: 1; }
 
@@ -330,7 +331,11 @@
 /* The theme toggle's circular reveal: suppress the browser's own cross-fade on the root so only the
    clip-path circle grown from the clicked button (see toggleTheme) is visible. Page-to-page
    navigation is a separate GSAP crossfade (see PageTransition.tsx), not a view transition. */
-::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+/* Light/dark switch (lib/theme.ts): the browser's own crossfade, kept short and soft. */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.32s; animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1); }
+/* The sun/moon icon arriving after a switch: a small turn and settle. */
+@keyframes theme-icon-in { from { rotate: -70deg; scale: 0.55; opacity: 0; } }
+.theme-switching .icon-btn[aria-label*="light"] svg { animation: theme-icon-in 0.42s var(--ease-spring); }
 
 /* Colour on the homepage is a zoned, solid panel next to plain ground — never a gradient wash
    across a whole section. Light mode stays mostly white/plain; dark mode's plain ground is already
@@ -515,6 +520,14 @@
 
 /* Main nav links: a sliding underline on hover, plus a permanent one for the active page. */
 .nav-link { position: relative; }
+/* Phone menu rows. The page you are on is marked three ways, so it reads at a glance in either
+   theme: a green bar at its left edge, a soft green tint and a small "You're here" label. */
+.menu-link { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; border-radius: 0.6rem; padding: 0.75rem 1rem; transition: background-color 0.2s ease; }
+.menu-link:hover { background: var(--c-surface2); }
+.menu-link[aria-current="page"] { background: color-mix(in oklab, var(--c-accent-vivid) 45%, var(--c-bg)); box-shadow: inset 4px 0 0 var(--c-accent-ink); }
+[data-theme="dark"] .menu-link[aria-current="page"] { background: color-mix(in oklab, var(--c-accent-vivid) 18%, var(--c-bg)); box-shadow: inset 3px 0 0 var(--c-accent-vivid); }
+.menu-here { flex-shrink: 0; border-radius: 999px; padding: 0.2rem 0.6rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em; background: var(--c-accent-vivid); color: var(--c-accent-ink); }
+:root:not([data-theme="dark"]) .menu-here { background: #1f6b4f; color: #f3f7f2; }
 .nav-link::after {
   content: ''; position: absolute; left: 14px; right: 14px; bottom: 3px; height: 2px; border-radius: 1px;
   background: var(--c-accent); transform: scaleX(0); transform-origin: center; transition: transform 0.25s ease;
@@ -745,6 +758,9 @@ label.tile:hover::after, label.tile:focus-within::after, label.dropzone:hover::a
 .app-avatar::after { content: none !important; }
 .app-menu-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.75rem; border-radius: 0.6rem; font-size: 0.9rem; font-weight: 500; text-align: left; }
 .app-menu-item:hover { background: var(--c-surface2); }
+/* The page you are on, in the account menu: tinted, with a green bar at its left edge. */
+.app-menu-item[aria-current="page"] { font-weight: 700; background: color-mix(in oklab, var(--c-accent-vivid) 30%, var(--c-surface)); box-shadow: inset 3px 0 0 var(--c-accent-ink); }
+[data-theme="dark"] .app-menu-item[aria-current="page"] { background: color-mix(in oklab, var(--c-accent-vivid) 16%, var(--c-surface)); box-shadow: inset 3px 0 0 var(--c-accent-vivid); }
 .app-menu-item::after { content: none !important; }
 /* The demo banner: deep green with light text in light mode, mint with dark text in dark mode. */
 .demo-banner { background: #0b3d36; color: #f0f5ec; }

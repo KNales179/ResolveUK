@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { isRunningInstalled } from '../../lib/install'
 import { Icon, type IconName } from '../ui/Icon'
 import { markVersionSeen, unseenReleases, type Release } from '../../lib/changelog'
 
@@ -9,6 +10,9 @@ import { markVersionSeen, unseenReleases, type Release } from '../../lib/changel
 // same as a short "here's where things stand" blurb would read.
 export function WhatsNewModal() {
   const [releases, setReleases] = useState<Release[]>([])
+  // In the app (or the installed app) the full list opens inside the app, not on the website.
+  const { pathname } = useLocation()
+  const updatesPath = pathname.startsWith('/app') || isRunningInstalled() ? '/app/updates' : '/updates'
 
   useEffect(() => {
     setReleases(unseenReleases())
@@ -58,7 +62,7 @@ export function WhatsNewModal() {
             ))}
           </div>
           <div className="mt-6 flex items-center justify-between gap-3">
-            <Link to="/updates" className="text-sm font-semibold text-soft hover:text-ink" onClick={close}>
+            <Link to={updatesPath} className="text-sm font-semibold text-soft hover:text-ink" onClick={close}>
               See everything that's changed
             </Link>
             <button type="button" className="btn btn-primary btn-sm" onClick={close}>

@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link, useLocation, useOutlet } from 'react-router-dom'
+import { isRunningInstalled } from '../lib/install'
 import { gsap, reducedMotion } from '../lib/gsap'
 import { toggleTheme, useThemeName } from '../lib/theme'
 import { drawContours } from '../lib/backdrops'
@@ -31,6 +32,7 @@ export function AuthLayout() {
   const location = useLocation()
   const outlet = useOutlet()
   const card = useRef<HTMLDivElement>(null)
+  const installed = isRunningInstalled()
   const prev = useRef(location.pathname)
 
   useLayoutEffect(() => {
@@ -54,7 +56,18 @@ export function AuthLayout() {
       <div className="mx-auto grid min-h-svh w-full max-w-7xl gap-8 px-4 py-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:px-8 lg:py-8">
         <section className="flex min-w-0 flex-col">
           <header className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight" aria-label="Resolve UK, back to the website">
+            {/* In the installed app there is no website to go back to (as in Fico): just the name. */}
+            {installed ? (
+              <span className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
+              <svg viewBox="0 0 198 223" className="h-8 w-auto" aria-hidden="true">
+                <path fill="var(--c-logo-mark)" fillRule="evenodd" d={`${R_PATH} ${PIN_PATH}`} />
+                <path fill="var(--c-accent)" d={LEAF_RIGHT_PATH} />
+                <path fill="var(--c-accent-display)" d={LEAF_LEFT_PATH} />
+              </svg>
+              Resolve UK
+            </span>
+            ) : (
+              <Link to="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight" aria-label="Resolve UK, back to the website">
               <svg viewBox="0 0 198 223" className="h-8 w-auto" aria-hidden="true">
                 <path fill="var(--c-logo-mark)" fillRule="evenodd" d={`${R_PATH} ${PIN_PATH}`} />
                 <path fill="var(--c-accent)" d={LEAF_RIGHT_PATH} />
@@ -62,6 +75,7 @@ export function AuthLayout() {
               </svg>
               Resolve UK
             </Link>
+            )}
             <button type="button" className="icon-btn" aria-label="Switch light or dark" onClick={(e) => toggleTheme({ x: e.clientX, y: e.clientY })}>
               <ThemeIcon />
             </button>
@@ -75,12 +89,16 @@ export function AuthLayout() {
 
           <footer className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 pb-1 text-xs text-soft lg:justify-start">
             <span>© {new Date().getFullYear()} Resolve UK · an early prototype</span>
-            <Link to="/about" className="underline underline-offset-2 hover:text-ink">
-              About
-            </Link>
-            <Link to="/" className="underline underline-offset-2 hover:text-ink">
-              Back to the website
-            </Link>
+            {!installed && (
+              <>
+                <Link to="/about" className="underline underline-offset-2 hover:text-ink">
+                  About
+                </Link>
+                <Link to="/" className="underline underline-offset-2 hover:text-ink">
+                  Back to the website
+                </Link>
+              </>
+            )}
           </footer>
         </section>
 
@@ -94,7 +112,7 @@ export function AuthLayout() {
 
 function ThemeIcon() {
   const theme = useThemeName()
-  return <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
+  return <Icon key={theme} name={theme === 'dark' ? 'sun' : 'moon'} />
 }
 
 function Showcase() {

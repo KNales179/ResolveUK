@@ -23,11 +23,12 @@ const dayLabel = (date: string) =>
 // The full history behind the "What's new" pop-up — every release in plain language, newest
 // first, grouped by important update (see GROUPS). Plain <details> rather than a hand-rolled
 // collapsible: <details> gets the expand/collapse behaviour (and keyboard support) for free.
-export function UpdatesPage() {
+// `inApp`: shown inside the app (its own header is in the page flow, and it has its own background).
+export function UpdatesPage({ inApp = false }: { inApp?: boolean }) {
   return (
     <div className="relative">
-      <PageBackdrop />
-      <section className="relative mx-auto max-w-4xl px-5 pt-28 pb-20 sm:px-8 sm:pt-36">
+      {!inApp && <PageBackdrop />}
+      <section className={`relative mx-auto max-w-4xl px-5 pb-20 sm:px-8 ${inApp ? 'pt-8 sm:pt-10' : 'pt-28 sm:pt-36'}`}>
         <div className="accent-panel rounded-3xl p-6 sm:p-8">
           <h1 className="flex items-center gap-2.5 text-3xl font-semibold tracking-tight">
             <Icon name="sparkles" className="size-7" /> Updates

@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { isRunningInstalled } from '../../lib/install'
 import { SIGNED_OUT_ELSEWHERE, useReporterAuth } from '../../lib/reporterAuth'
 import { useAuthOptions } from '../../lib/authOptions'
 import { PasswordField } from '../../components/ui/PasswordField'
@@ -123,12 +124,12 @@ export function SignIn() {
           </Link>
         </p>
       )}
-      <p className="text-center text-xs text-soft">
+      {!isRunningInstalled() && <p className="text-center text-xs text-soft">
         Just want to report something?{' '}
         <Link to="/report" className="font-semibold underline underline-offset-2 hover:text-ink">
           Report without an account
         </Link>
-      </p>
+      </p>}
     </div>
   )
 }
