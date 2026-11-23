@@ -20,6 +20,18 @@ export interface Release {
 
 export const RELEASES: Release[] = [
   {
+    version: '3.16.8',
+    date: '2026-11-24',
+    title: 'The home photo on every screen',
+    highlights: [
+      {
+        icon: 'sparkles',
+        title: 'The landscape photo is back on phones and tablets',
+        body: 'The photo behind the top of the home page now shows on every screen. On computers and tablets held sideways it fades in from the side, as before; on phones and tablets held upright it rises softly from below, behind the sample reports, and stays clear of the headline. It drifts gently into place as the page opens.',
+      },
+    ],
+  },
+  {
     version: '3.16.7',
     date: '2026-11-24',
     title: 'The installed app is just the app',

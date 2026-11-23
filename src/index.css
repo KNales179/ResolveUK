@@ -309,11 +309,40 @@
 /* Both photos are built for a wide viewport: the hero's mask reveals a horizontal band next to
    the card stack (on a narrow, tall mobile screen that band becomes an odd full-height vertical
    stripe instead), and the long page-bg tiled at 100% width shows a tight, busy crop of foliage
-   detail once that width is a phone's. Below tablet width both just drop out to the plain page
-   colour instead — still legible, not fighting the text on top of it. The card stack and every
-   other animation are untouched; this is the two background photos only. */
+   detail once that width is a phone's. Below tablet width the long page photo drops out to the
+   plain page colour; the hero photo changes direction instead (below). */
 @media (max-width: 767px) {
-  .hero-photo, .page-bg { display: none; }
+  .page-bg { display: none; }
+}
+
+/* Phones, and tablets held upright (below the width where the hero splits into two columns): the
+   card stack sits under the headline there, so the hero photo rises from below instead, behind
+   the cards. It is clear behind the headline, full (at its usual 70%) behind the cards, and melts
+   away at the very bottom into the shade strip, so there is never a hard edge. Laptops, desktops
+   and tablets held sideways keep the fade in from the side. */
+@media (max-width: 767px), (orientation: portrait) and (max-width: 1023px) {
+  .hero-photo {
+    inset: auto 0 0 0; height: 64%;
+    background-position: center 60%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 48%, black 84%, transparent 100%);
+    -webkit-mask-composite: source-over;
+    mask-image: linear-gradient(to bottom, transparent 0%, black 48%, black 84%, transparent 100%);
+    mask-composite: add;
+  }
+}
+/* When the homepage opens, the photo drifts gently into place from the direction it fades in from:
+   the side on wide screens, from below on phones and upright tablets. One layer moving and fading
+   (no redrawing), so it stays smooth on a phone. */
+/* The hero's outline button can now sit over the photo on phones: a solid page-coloured fill keeps
+   its edge and words clear (on wide screens it sits on the plain page colour anyway). */
+.hero-fade .btn-ghost { background-color: var(--c-bg); }
+@keyframes hero-photo-side { from { opacity: 0; translate: 56px 0; } }
+@keyframes hero-photo-rise { from { opacity: 0; translate: 0 56px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-photo { animation: hero-photo-side 1.5s var(--ease-out) 0.15s backwards; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 767px), (prefers-reduced-motion: no-preference) and (orientation: portrait) and (max-width: 1023px) {
+  .hero-photo { animation-name: hero-photo-rise; }
 }
 
 /* ---- Motion, always switched off for anyone who asks ---- */
